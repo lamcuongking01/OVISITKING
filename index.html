@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SHOP KEY PREMIUM</title>
+    <style>
+        /* Giao diện tối phong cách gaming cyber */
+        body {
+            background: radial-gradient(circle, #1a1a2e 0%, #0f0f1a 100%);
+            color: #ffffff;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .shop-card {
+            background-color: #161623;
+            border: 1px solid #2d2d44;
+            width: 100%;
+            max-width: 440px;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            position: relative;
+            box-sizing: border-box;
+        }
+
+        /* Thanh màu nổi bật trên đỉnh */
+        .shop-card::before {
+            content: "";
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(90deg, #00e676, #00b0ff, #ff3d00);
+            border-top-left-radius: 16px; border-top-right-radius: 16px;
+        }
+
+        .title { text-align: center; margin-bottom: 15px; }
+        .title h1 {
+            font-size: 26px; margin: 0; font-weight: 800; letter-spacing: 2px;
+            background: linear-gradient(90deg, #00c6ff, #0072ff);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .title p { font-size: 11px; color: #88889b; margin: 5px 0 0 0; }
+
+        /* KHU VỰC GIỮA: NÚT LOGO PLAY GAMES KIÊM CHỨC NĂNG ẤN HIỆN MENU GAME */
+        .logo-container {
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            margin: 25px 0;
+        }
+        
+        /* Vùng nút bấm to ở giữa */
+        .play-games-select-btn {
+            width: 90px; 
+            height: 90px; 
+            background-color: #0f0f1a; 
+            border: 2px solid #00e676;
+            border-radius: 50%; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center;
+            box-shadow: 0 0 18px rgba(0, 230, 118, 0.4); 
+            cursor: pointer; 
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .play-games-select-btn:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 0 28px rgba(0, 230, 118, 0.7); 
+        }
+        .play-games-select-btn:active { transform: scale(0.95); }
+
+        .logo-label { 
+            font-size: 12px; 
+            color: #00e676; 
+            margin-top: 10px; 
+            font-weight: bold; 
+            letter-spacing: 1px; 
+            text-align: center;
+        }
+
+        /* THIẾT KẾ MENU THẢ XUỐNG (DROPDOWN CHỌN GAME) */
+        .dropdown-container {
+            position: relative;
+            width: 100%;
+            margin-bottom: 18px;
+        }
+        
+        /* Thanh hiển thị tên game đang chọn ở hiện tại */
+        .game-display-bar {
+            background-color: #1f1f35;
+            border: 1px solid #3b3b54;
+            border-radius: 10px;
+            padding: 12px 15px;
+            text-align: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #00b0ff;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .game-display-bar:hover { border-color: #00b0ff; }
+
+        /* Danh sách game ẩn đi, ấn vào logo ở giữa hoặc thanh bar sẽ hiện */
+        .dropdown-menu-list {
+            display: none;
+            position: absolute;
+            top: 100%; left: 0; right: 0;
+            background-color: #1a1a2e;
+            border: 2px solid #00b0ff;
+            border-radius: 12px;
+            margin-top: 8px;
+            max-height: 280px;
+            overflow-y: auto;
+            z-index: 99;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.8);
+        }
+
+        /* Từng mục game để chọn */
+        .dropdown-game-item {
+            padding: 14px 18px;
+            cursor: pointer;
+            border-bottom: 1px solid #282842;
+            transition: background 0.2s;
+        }
+        .dropdown-game-item:last-child { border-bottom: none; }
+        .dropdown-game-item:hover { background-color: #252542; }
+
+        .game-title-text { font-size: 15px; font-weight: bold; display: block; color: #fff; }
+        .game-desc-text { font-size: 11px; color: #a5a5bb; display: block; margin-top: 4px; } /* Dòng chữ nhỏ hiện ở dưới tên game */
+
+        /* Ô CHỌN GIÁ TIỀN & THỜI GIAN */
+        .section-title { display: block; font-size: 14px; color: #b3b3c6; margin-bottom: 8px; font-weight: bold; }
+        
+        .select-price-input {
+            width: 100%; background-color: #1f1f35; border: 1px solid #3b3b54;
+            border-radius: 10px; padding: 12px; color: #fff; font-size: 14px; outline: none; box-sizing: border-box; margin-bottom: 18px;
+        }
+        .select-price-input:focus { border-color: #00b0ff; }
+
+        /* NÚT KÍCH HOẠT */
+        .submit-btn {
+            width: 100%; background: linear-gradient(90deg, #0072ff, #00c6ff); color: white;
+            border: none; border-radius: 10px; padding: 14px; font-size: 15px; font-weight: bold;
+            cursor: pointer; box-shadow: 0 5px 15px rgba(0, 114, 255, 0.3); transition: 0.1s;
+        }
+        .submit-btn:active { transform: scale(0.98); }
+
+        /* KHU VỰC HIỂN THỊ MÃ KEY VÀ NGÀY THÁNG NĂM (XUẤT HIỆN PHÍA DƯỚI) */
+        .key-display-box {
+            display: none; 
+            background-color: #11111c;
+            border: 1px dashed #00b0ff;
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            box-sizing: border-box;
+        }
+        .key-row {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-size: 13px;
+        }
+        .key-row:last-child { margin-bottom: 0; }
+        .key-label { color: #88889b; }
+        .key-value { font-weight: bold; color: #ffffff; }
+        .key-string { color: #ffea00; font-family: monospace; font-size: 15px; letter-spacing: 1px; }
+        .time-string { color: #00e676; }
+
+        .footer-note { text-align: center; font-size: 11px; color: #555566; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+    <div class="shop-card">
+        <div class="title">
+            <h1>OVISITKING HUB</h1>
+            <p>Hệ thống quản lý và cấp phát Key tự động</p>
+        </div>
+
+        <form onsubmit="XuLyTaoKey(event)">
+            
+            <!-- Ở GIỮA: NÚT ẤN VÀO CÓ LOGO GOOGLE PLAY GAMES -->
+            <div class="logo-container">
+                <div class="play-games-select-btn" type="button" onclick="toggleGameMenu()" title="Bấm vào đây để chọn Game">
+                    <!-- Mã vẽ SVG Logo Play Games chuẩn màu sắc -->
+                    <svg width="45" height="45" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M11.5 12L3 4.5V19.5L11.5 12Z" fill="#00E676"/>
+                        <path d="M16.5 12L11.5 17L3 19.5L11.5 12Z" fill="#00B0FF"/>
+                        <path d="M16.5 12L11.5 7L3 4.5L11.5 12Z" fill="#FF3D00"/>
+                        <path d="M21 12L16.5 16.5L11.5 12L16.5 7.5L21 12Z" fill="#FFEA00"/>
+                    </svg>
+                </div>
+                <div class="logo-label" id="clickHintText">BẤM LOGO ĐỂ CHỌN GAME</div>
+            </div>
+
+            <!-- THANH THẢ XUỐNG CHỌN GAME -->
+            <div class="dropdown-container">
+                <!-- Thanh hiển thị trạng thái game đang được lựa chọn -->
+                <div class="game-display-bar" id="selectedGameDisplay" onclick="toggleGameMenu()">
+                    -- CHƯA CHỌN GAME --
+                </div>
+                
+                <!-- MENU ẨN HIỆN CHỨA 3 GAME THEO YÊU CẦU -->
+                <div class="dropdown-menu-list" id="menuGameList">
+                    <!-- Free Fire Thường -->
+                    <div class="dropdown-game-item" onclick="selectGame('Free Fire Thường', 'Bản hack gốc an toàn, chống ban gắt gao')">
+                        <span class="game-title-text">Free Fire Thường</span>
+                        <span class="game-desc-text">Bản hack gốc an toàn, chống ban gắt gao</span>
+                    </div>
+                    <!-- Free Fire Max -->
+                    <div class="dropdown-game-item" onclick="selectGame('Free Fire Max', 'Hỗ trợ đồ họa HD cực mượt')">
+                        <span class="game-title-text">Free Fire Max</span>
+                        <span class="game-desc-text">Hỗ trợ đồ họa HD cực mượt</span>
+                    </div>
+                    <!-- Blood Strike Vây Hãm -->
+                    <div class="dropdown-game-item" onclick="selectGame('Blood Strike Vây Hãm', 'Bypass Menu - Đầy đủ tính năng mới')">
+                        <span class="game-title-text">Blood Strike Vây Hãm</span>
+                        <span class="game-desc-text">Bypass Menu - Đầy đủ tính năng mới</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Ô chứa giá trị ẩn để xử lý dữ liệu -->
+            <input type="hidden" id="hidden_game_selected" value="">
+
+            <!-- Ô CHỌN BẢNG GIÁ THEO ĐÚNG YÊU CẦU -->
+            <label class="section-title">Chọn Gói Cước & Thời Gian:</label>
+            <select class="select-price-input" id="goi_key_gia">
+                <option value="free">Bản thường - FREE (1 lần / 1 thiết bị IP / 1 ngày)</option>
+                <option value="1">Gói 1 Ngày — 20k</option>
+                <option value="3">Gói 3 Ngày — 50k</option>
+                <option value="7">Gói 7 Ngày — 80k</option>
+                <option value="30">Gói 30 Ngày — 135k</option>
+            </select>
+
+            <button type="submit" class="submit-btn">KÍCH HOẠT HỆ THỐNG</button>
+        </form>
+
+        <!-- KHU VỰC HIỂN THỊ MÃ KEY VÀ NGÀY THÁNG NĂM (HIỆN BÊN DƯỚI) -->
+        <div class="key-display-box" id="resultBox">
+            <div class="key-row">
+                <span class="key-label">Game Đã Chọn:</span>
+                <span class="key-value" id="resGame">--</span>
+            </div>
+            <div class="key-row">
+                <span class="key-label">Mã Key Kích Hoạt:</span>
+                <span class="key-value key-string" id="resKey">--</span>
+            </div>
+            <div class="key-row">
+                <span class="key-label">Ngày Hết Hạn:</span>
+                <span class="key-value time-string" id="resTime">--/--/---- --:--:--</span>
+            </div>
+        </div>
+
+        <div class="footer-note">
+            Hệ thống tự động lưu cấu hình IP thiết bị khi dùng bản Free.
+        </div>
+    </div>
+
+    <script>
+        // Hàm xử lý ẩn/hiện menu danh sách game khi click vào logo hoặc thanh bar
+        function toggleGameMenu() {
+            var menu = document.getElementById('menuGameList');
+            if (menu.style.display === "block") {
+                menu.style.display = "none";
+            } else {
+                menu.style.display = "block";
+            }
+        }
+
+        // Hàm xử lý chọn game từ danh sách xổ xuống
+        function selectGame(name, description) {
+            // Cập nhật text lên thanh hiển thị
+            document.getElementById('selectedGameDisplay').innerText = "🎮 Đang chọn: " + name;
+            // Lưu giá trị vào ô ẩn
+            document.getElementById('hidden_game_selected').value = name;
+            // Đóng menu lại
+            document.getElementById('menuGameList').style.display = "none";
+            // Đổi gợi ý chữ ở dưới logo cho chuyên nghiệp
+            document.getElementById('clickHintText').innerText = "ĐÃ ĐỒNG BỘ GAME!";
+            document.getElementById('clickHintText').style.color = "#00b0ff";
+        }
+
+        // Đóng menu nếu bấm trượt ra khu vực ngoài card chọn
+        window.onclick = function(event) {
+            if (!event.target.matches('.play-games-select-btn') && !event.target.matches('svg') && !event.target.matches('path') && !event.target.matches('.game-display-bar')) {
+                document.getElementById('menuGameList').style.display = "none";
+            }
+        }
+
+        // Hàm xử lý tính toán sinh Key và Ngày/Tháng/Năm hết hạn bên dưới
+        function XuLyTaoKey(event) {
+            event.preventDefault();
+
+            // Kiểm tra xem người dùng đã bấm chọn game chưa
+            var gameHienTai = document.getElementById('hidden_game_selected').value;
+            if(!gameHienTai) {
+                alert("Vui lòng click vào Logo ở giữa hoặc thanh menu để CHỌN GAME trước!");
+                return;
+            }
+            
+            var thoiGianGoi = document.getElementById('goi_key_gia').value; 
+            
+            // Tạo mã Key ngẫu nhiên kèm thương hiệu độc quyền
+            var maKeyNgauNhien = "OVISITKING-" + Math.random().toString(36).substring(2, 10).toUpperCase() + "-" + Math.floor(1000 + Math.random() * 9000);
+            
+            // Tính toán ngày tháng năm tương lai
+            var date = new Date();
+            var soNgayCong = 0;
+
+            if (thoiGianGoi === "free" || thoiGianGoi === "1") {
+                soNgayCong = 1;
+            } else if (thoiGianGoi === "3") {
+                soNgayCong = 3;
+            } else if (thoiGianGoi === "7") {
+                soNgayCong = 7;
+            } else if (thoiGianGoi === "30") {
+                soNgayCong = 30;
+            }
+
+            date.setDate(date.getDate() + soNgayCong);
+
+            // Chuyển đổi định dạng Ngày/Tháng/Năm chuẩn Việt Nam
+            var dd = String(date.getDate()).padStart(2, '0');
+            var mm = String(date.getMonth() + 1).padStart(2, '0'); // Tháng chạy từ 0-11
+            var yyyy = date.getFullYear();
+            var hh = String(date.getHours()).padStart(2, '0');
+            var min = String(date.getMinutes()).padStart(2, '0');
+            var ss = String(date.getSeconds()).padStart(2, '0');
+
+            var thoiGianKetThucFormat = dd + "/" + mm + "/" + yyyy + " vào lúc " + hh + ":" + min + ":" + ss;
+
+            // Đổ toàn bộ dữ liệu ra khu vực hiển thị bên dưới Key
+            document.getElementById('resGame').innerText = gameHienTai;
+            document.getElementById('resKey').innerText = maKeyNgauNhien;
+            document.getElementById('resTime').innerText = thoiGianKetThucFormat;
+
+            // Kích hoạt hiển thị hộp thông tin lên
+            document.getElementById('resultBox').style.display = "block";
+        }
+    </script>
+</body>
+</html>
