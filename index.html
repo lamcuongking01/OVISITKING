@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OVISITKING SHOP</title>
+    <title>OVISITKING APP</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-dark: #090a0f;
-            --card-bg: #141622;
-            --card-sub: #1b1e2e;
-            --primary-blue: #5856d6;
+            --bg-dark: #0d0f17;
+            --card-bg: #141724;
+            --card-sub: #1c2033;
+            --border-color: #23283d;
             --text-white: #ffffff;
-            --text-gray: #7e8494;
-            --border-color: #242838;
-            --accent-green: #00ff66;
-            --accent-red: #ef4444;
+            --text-gray: #6b758e;
+            --primary-blue: #2563eb;
+            --accent-green: #10b981;
+            --accent-yellow: #f59e0b;
         }
 
         * {
@@ -23,17 +23,414 @@
             margin: 0;
             padding: 0;
             font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-            -webkit-tap-highlight-color: transparent;
+            -webkit-tap-highlight-color: rgba(0,0,0,0);
         }
 
         body {
             background-color: var(--bg-dark);
             color: var(--text-white);
-            padding: 12px;
+            padding: 16px;
             display: flex;
             justify-content: center;
-            background-image: radial-gradient(circle at top, #1c1836 0%, var(--bg-dark) 70%);
             min-height: 100vh;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+
+        .mini-app-container {
+            width: 100%;
+            max-width: 480px;
+        }
+
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .user-profile-box {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar-circle {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background-color: #2a314d;
+            border: 2px solid var(--primary-blue);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        /* KHẮC PHỤC NÚT NẠP TIỀN / VÍ TIỀN */
+        .wallet-trigger-btn {
+            background: linear-gradient(135deg, #1e3a8a, var(--primary-blue));
+            border: 1px solid rgba(255,255,255,0.2);
+            padding: 8px 16px;
+            border-radius: 20px;
+            text-align: right;
+            cursor: pointer;
+            color: white;
+            font-weight: bold;
+            display: block;
+        }
+        .wallet-trigger-btn:active { opacity: 0.8; }
+        .wallet-label { font-size: 9px; color: #93c5fd; text-transform: uppercase; display: block; }
+        .wallet-amount { font-size: 13px; }
+
+        .deposit-bank-box {
+            display: none;
+            background: #151929;
+            border: 1px dashed var(--primary-blue);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .qr-bank-img {
+            width: 100%;
+            max-width: 220px;
+            border-radius: 12px;
+            margin: 10px 0;
+        }
+
+        .stats-header-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            text-align: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .stat-header-item .num { font-size: 18px; font-weight: 700; }
+        .stat-header-item .label { font-size: 11px; color: var(--text-gray); margin-top: 2px; }
+
+        .section-box {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 16px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+
+        .box-title-lbl {
+            font-size: 12px;
+            color: var(--text-gray);
+            margin-bottom: 8px;
+            font-weight: 600;
+            display: block;
+        }
+
+        /* FIX HOÀN TOÀN KHU VỰC CHỌN GAME BẰNG THẺ SELECT CỦA HỆ THỐNG */
+        .select-game-wrapper {
+            position: relative;
+            background-color: var(--card-sub);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+        .native-select-field {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; cursor: pointer; z-index: 5;
+            -webkit-appearance: none;
+        }
+        .game-meta-flex { display: flex; align-items: center; gap: 12px; pointer-events: none; }
+        .game-avatar-box { width: 36px; height: 36px; background: #2a314d; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+
+        /* DANH SÁCH GÓI MUA */
+        .empty-packages-text { text-align: center; color: var(--text-gray); font-size: 14px; padding: 15px 0; }
+        .packages-list-wrap { display: none; }
+        
+        .package-row {
+            display: flex; justify-content: space-between; align-items: center;
+            background-color: var(--card-sub); padding: 14px; border-radius: 10px;
+            margin-bottom: 8px; font-size: 13px; cursor: pointer;
+            border: 1px solid transparent;
+        }
+        .package-row input { margin-right: 12px; width: 18px; height: 18px; cursor: pointer; }
+
+        /* NÚT THỰC THI THANH TOÁN TIÊU CHUẨN */
+        .btn-submit-buy {
+            width: 100%; height: 46px; background-color: #282d42; color: var(--text-gray);
+            border: none; border-radius: 23px; font-size: 14px; font-weight: 600;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            cursor: pointer; margin-top: 15px;
+        }
+        .btn-submit-buy.active { 
+            background: linear-gradient(135deg, #2563eb, #1d4ed8); 
+            color: white; 
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .filter-tabs-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px; }
+        .tab-button { background-color: var(--card-sub); border: none; color: var(--text-gray); padding: 8px 0; border-radius: 8px; font-size: 11px; text-align: center; cursor: pointer; }
+        .tab-button.active { background-color: #4f46e5; color: white; }
+        .search-input-box { width: 100%; padding: 10px 12px; background-color: #0b0d14; border: 1px solid var(--border-color); border-radius: 10px; color: white; font-size: 12px; margin-bottom: 12px; outline: none; }
+        .history-item-card { background-color: var(--card-sub); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 8px; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+    <div class="mini-app-container">
+
+        <div class="app-header">
+            <div class="user-profile-box">
+                <div id="userAvatar" class="user-avatar-circle">👑</div>
+                <div>
+                    <div style="font-size: 16px; font-weight: 800; letter-spacing: 0.5px;">OVISITKING</div>
+                    <div id="txtUserTelegram" style="font-size: 12px; color: var(--text-gray);">Khách Hàng</div>
+                </div>
+            </div>
+            <button class="wallet-trigger-btn" onclick="toggleDepositBox()">
+                <span class="wallet-label">Ví Tiền</span>
+                <span class="wallet-amount"><span id="vBalance">0</span>đ</span>
+            </button>
+        </div>
+
+        <div id="depositBox" class="deposit-bank-box">
+            <h4 style="font-size: 14px; margin-bottom: 4px; color: #fff;">NẠP TIỀN BANK TỰ ĐỘNG</h4>
+            <img class="qr-bank-img" src="https://i.imgur.com/bY309Xl.jpeg" alt="QR Bank">
+            <div style="background:#0b0d14; padding:10px; border-radius:8px; font-size:12px; text-align:left; margin-bottom: 10px; border: 1px solid var(--border-color);">
+                📌 Nội dung CK bắt buộc: <b style="color:var(--accent-yellow);" id="depositSyntax">OVS NAP</b>
+            </div>
+            <button onclick="simulateAutoDeposit()" style="width:100%; padding:10px; background:var(--accent-green); border:none; border-radius:8px; color:white; font-weight:bold; cursor:pointer;">
+                [Test] Cộng nhanh tiền tự động (+200k)
+            </button>
+        </div>
+
+        <div class="stats-header-grid">
+            <div class="stat-header-item"><div class="num" id="statTotal" style="color: #fff;">0</div><div class="label">Tổng key</div></div>
+            <div class="stat-header-item"><div class="num" style="color: var(--accent-green);">0</div><div class="label">Hoạt động</div></div>
+            <div class="stat-header-item"><div class="num" style="color: #ef4444;">0</div><div class="label">Hết hạn</div></div>
+        </div>
+
+        <div class="section-box">
+            <span class="box-title-lbl">📦 Chọn ứng dụng</span>
+            
+            <div class="select-game-wrapper">
+                <select class="native-select-field" id="gameSelector" onchange="onGameSelected(this)">
+                    <option value="" disabled selected>-- Bấm để chọn Game --</option>
+                    <option value="Free Fire Thường|com.dts.freefireth|🔥">Free Fire Thường (com.dts.freefireth)</option>
+                    <option value="Free Fire Max|com.dts.freefiremax|⚡">Free Fire Max (com.dts.freefiremax)</option>
+                    <option value="Blood Strike: Vây Hãm|com.netease.newspikevn|💀">Blood Strike: Vây Hãm (com.netease.newspikevn)</option>
+                </select>
+                <div class="game-meta-flex">
+                    <div class="game-avatar-box" id="currentIcon">🎮</div>
+                    <div>
+                        <div style="font-size:14px; font-weight:600;" id="currentTitle">Nhấn chọn game</div>
+                        <div style="font-size:11px; color:var(--text-gray);" id="currentSub">Chưa chọn game nào</div>
+                    </div>
+                </div>
+                <div style="color: var(--text-gray); font-size: 12px; pointer-events: none;">▼</div>
+            </div>
+
+            <span class="box-title-lbl">💎 Chọn gói</span>
+            <div id="emptyPkgText" class="empty-packages-text">Vui lòng chọn game ở trên trước</div>
+
+            <div id="packagesList" class="packages-list-wrap">
+                <label class="package-row">
+                    <span style="display:flex;align-items:center;"><input type="radio" name="priceRadio" value="0" data-label="1 IP Free" checked> 1 IP Free (Dùng thử)</span>
+                    <span style="color:var(--accent-green); font-weight:bold;">0đ</span>
+                </label>
+                <label class="package-row">
+                    <span style="display:flex;align-items:center;"><input type="radio" name="priceRadio" value="20000" data-label="1 Ngày"> Gói 1 Ngày</span>
+                    <span style="color:white; font-weight:bold;">20.000đ</span>
+                </label>
+                <label class="package-row">
+                    <span style="display:flex;align-items:center;"><input type="radio" name="priceRadio" value="40000" data-label="3 Ngày"> Gói 3 Ngày</span>
+                    <span style="color:white; font-weight:bold;">40.000đ</span>
+                </label>
+                <label class="package-row">
+                    <span style="display:flex;align-items:center;"><input type="radio" name="priceRadio" value="80000" data-label="7 Ngày"> Gói 7 Ngày</span>
+                    <span style="color:white; font-weight:bold;">80.000đ</span>
+                </label>
+                <label class="package-row">
+                    <span style="display:flex;align-items:center;"><input type="radio" name="priceRadio" value="135000" data-label="30 Ngày"> Gói 30 Ngày</span>
+                    <span style="color:white; font-weight:bold;">135.000đ</span>
+                </label>
+            </div>
+
+            <button id="btnSubmitBuy" class="btn-submit-buy" onclick="executeOrderNow()">
+                <span id="btnMainText">Mua ngay</span>
+                <span style="font-size:10px; opacity:0.7; margin-top:2px;" id="btnSubText">chưa chọn gói</span>
+            </button>
+        </div>
+
+        <div class="section-box">
+            <div style="font-size: 15px; font-weight: 600; margin-bottom: 12px;">🔑 Key của bạn</div>
+            <div class="filter-tabs-container">
+                <button class="tab-button active">Tất cả</button>
+                <button class="tab-button">Hoạt động</button>
+                <button class="tab-button">Hết hạn</button>
+                <button class="tab-button">Bị khoá</button>
+            </div>
+            <input type="text" class="search-input-box" placeholder="Tìm kiếm GKey...">
+            <div id="historyDisplayArea"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // LƯU Ý: HÃY THAY MÃ TOKEN MỚI ĐÃ ĐỔI TỪ BOTFATHER VÀO ĐÂY
+        const BOT_TOKEN = "ĐIỀN_TOKEN_MỚI_CỦA_BẠN_VÀO_ĐÂY";
+        
+        let userChatID = "777666555"; 
+        let walletBalance = 40000; 
+        let chosenGame = "";
+        let chosenPkgName = "";
+        let savedKeysList = [];
+
+        window.onload = function() {
+            if (window.Telegram && window.Telegram.WebApp) {
+                const tg = window.Telegram.WebApp;
+                tg.ready();
+                tg.expand();
+                if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                    userChatID = tg.initDataUnsafe.user.id.toString();
+                    document.getElementById('txtUserTelegram').innerText = "@" + (tg.initDataUnsafe.user.username || tg.initDataUnsafe.user.first_name);
+                    if (tg.initDataUnsafe.user.photo_url) {
+                        document.getElementById('userAvatar').style.backgroundImage = `url('${tg.initDataUnsafe.user.photo_url}')`;
+                        document.getElementById('userAvatar').innerText = "";
+                    }
+                }
+            }
+
+            document.getElementById('depositSyntax').innerText = `OVS NAP ${userChatID}`;
+            
+            if(localStorage.getItem('ovs_bal_' + userChatID)) {
+                walletBalance = parseInt(localStorage.getItem('ovs_bal_' + userChatID));
+            } else {
+                localStorage.setItem('ovs_bal_' + userChatID, walletBalance);
+            }
+
+            if(localStorage.getItem('ovs_keys_' + userChatID)) {
+                savedKeysList = JSON.parse(localStorage.getItem('ovs_keys_' + userChatID));
+            }
+
+            renderUI();
+        };
+
+        function renderUI() {
+            document.getElementById('vBalance').innerText = walletBalance.toLocaleString('vi-VN');
+            document.getElementById('statTotal').innerText = savedKeysList.length;
+            
+            let html = "";
+            if(savedKeysList.length > 0) {
+                savedKeysList.forEach(k => {
+                    html += `<div class="history-item-card">
+                        <div style="display:flex; justify-content:space-between; font-weight:bold; color:var(--accent-green); margin-bottom:4px;">
+                            <span>${k.title}</span><span style="color:var(--text-gray); font-size:10px;">${k.time}</span>
+                        </div>
+                        <div style="color:var(--text-gray); font-size:11px;">Package: ${k.pkg}</div>
+                        <div style="background:#0b0d14; padding:8px; border-radius:6px; color:#34d399; font-family:monospace; margin-top:4px; font-weight:bold; word-break:break-all;">${k.key}</div>
+                        <div style="font-size:10px; color:var(--accent-yellow); margin-top:4px;">Thời hạn: ${k.dur}</div>
+                    </div>`;
+                });
+            } else {
+                html = `<div style="text-align:center; padding:30px 0; color:var(--text-gray);">🔒 Chưa có Key nào công khai.</div>`;
+            }
+            document.getElementById('historyDisplayArea').innerHTML = html;
+        }
+
+        function toggleDepositBox() {
+            let box = document.getElementById('depositBox');
+            box.style.display = (box.style.display === 'block') ? 'none' : 'block';
+        }
+
+        function simulateAutoDeposit() {
+            walletBalance += 200000;
+            localStorage.setItem('ovs_bal_' + userChatID, walletBalance);
+            renderUI();
+            alert("✓ Tự động: Đã nạp thành công +200.000đ vào ví tài khoản!");
+        }
+
+        // Xử lý khi chọn game từ Select Option mặc định của trình duyệt di động
+        function onGameSelected(selectObj) {
+            let value = selectObj.value;
+            if(!value) return;
+
+            let parts = value.split('|');
+            chosenGame = parts[0];
+            chosenPkgName = parts[1];
+            let icon = parts[2];
+
+            document.getElementById('currentTitle').innerText = chosenGame;
+            document.getElementById('currentSub').innerText = chosenPkgName;
+            document.getElementById('currentIcon').innerText = icon;
+
+            document.getElementById('emptyPkgText').style.display = 'none';
+            document.getElementById('packagesList').style.display = 'block';
+
+            let btn = document.getElementById('btnSubmitBuy');
+            btn.className = "btn-submit-buy active";
+            document.getElementById('btnSubText').innerText = "Nhấn để nhận mã ngay";
+        }
+
+        function executeOrderNow() {
+            if(!chosenGame) {
+                alert("Bạn chưa lựa chọn ứng dụng game!");
+                return;
+            }
+
+            let radio = document.querySelector('input[name="priceRadio"]:checked');
+            let price = parseInt(radio.value);
+            let labelDur = radio.getAttribute('data-label');
+
+            if(walletBalance < price) {
+                alert("❌ Số dư tài khoản không đủ! Hãy nhấn vào nút Ví Tiền để nạp thêm.");
+                return;
+            }
+
+            walletBalance -= price;
+            localStorage.setItem('ovs_bal_' + userChatID, walletBalance);
+
+            let abc = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            let randKey = "";
+            for(let i=0; i<20; i++) randKey += abc.charAt(Math.floor(Math.random() * abc.length));
+
+            let orderId = "OVS" + Math.floor(100000 + Math.random() * 900000);
+            let timeString = new Date().toLocaleString('vi-VN');
+
+            savedKeysList.unshift({
+                title: chosenGame,
+                pkg: chosenPkgName,
+                key: randKey,
+                time: timeString,
+                dur: labelDur
+            });
+
+            localStorage.setItem('ovs_keys_' + userChatID, JSON.stringify(savedKeysList));
+            renderUI();
+
+            let textMsg = `👑 *OVISITKING KEY SHOP* 👑\n\n` +
+                           `🎉 *Key Purchase Successful!*\n\n` +
+                           `• Order code : \`${orderId}\`\n` +
+                           `• License : \`${randKey}\`\n` +
+                           `• Package : *${chosenPkgName}*\n` +
+                           `• Type : *VIP Premium* — ${labelDur} / ${price.toLocaleString('vi-VN')}đ\n\n` +
+                           `_Hệ thống đã cập nhật mã bản quyền vào danh sách của bạn._`;
+
+            fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ chat_id: userChatID, text: textMsg, parse_mode: "Markdown" })
+            })
+            .then(() => alert("✓ Giao dịch hoàn tất! Key đã gửi về tin nhắn Telegram."))
+            .catch(() => alert("✓ Đã lưu Key thành công vào lịch sử ứng dụng."));
+        }
+    </script>
+</body>
+</html>
         }
 
         .mini-app-container {
