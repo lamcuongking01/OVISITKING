@@ -3,26 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OVISITKING VIP</title>
+    <title>OVISITKING KEY SHOP</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root {
-            --bg-dark: #0d0f17;
-            --card-bg: #141724;
-            --card-sub: #1c2033;
-            --border-color: #23283d;
+            --bg-dark: #0f111a;
+            --card-bg: #151824;
+            --card-sub: #1e2235;
+            --border-color: #262b42;
             --text-white: #ffffff;
-            --text-gray: #6b758e;
-            --primary-blue: #2563eb;
-            --accent-green: #10b981;
-            --accent-yellow: #f59e0b;
+            --text-gray: #7882a1;
+            --primary-blue: #0088cc;
+            --accent-green: #34d399;
+            --accent-purple: #8b5cf6;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             -webkit-tap-highlight-color: rgba(0,0,0,0);
         }
 
@@ -33,7 +33,6 @@
             display: flex;
             justify-content: center;
             min-height: 100vh;
-            user-select: none;
         }
 
         .mini-app-container {
@@ -41,191 +40,385 @@
             max-width: 450px;
         }
 
-        .app-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-        }
-
-        .user-profile {
+        /* USER PROFILE HEADER */
+        .user-header-box {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            margin-bottom: 20px;
         }
-
         .user-avatar {
-            width: 38px;
-            height: 38px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
-            background-color: #25283d;
-            border: 2px solid var(--primary-blue);
+            background: #252a41;
+            border: 2px solid var(--accent-purple);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 18px;
-            background-size: cover;
-            background-position: center;
+            font-size: 20px;
         }
 
-        .wallet-section {
-            background: linear-gradient(135deg, #1e3a8a, var(--primary-blue));
-            border: 1px solid rgba(255,255,255,0.1);
-            padding: 6px 14px;
-            border-radius: 20px;
-            text-align: right;
-            cursor: pointer;
-        }
-        .balance-box { font-size: 13px; color: #ffcc00; font-weight: bold; }
-
-        .deposit-bank-box {
-            display: none;
-            background: #151929;
-            border: 1px dashed var(--primary-blue);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .qr-bank-img { width: 100%; max-width: 220px; border-radius: 12px; margin: 10px 0; }
-
-        .stats-grid {
+        /* COUNTER GRID */
+        .counter-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 12px;
             text-align: center;
             margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--border-color);
         }
-        .stat-item .num { font-size: 18px; font-weight: 700; }
-        .stat-item .label { font-size: 11px; color: var(--text-gray); }
+        .counter-item { display: flex; flex-direction: column; gap: 4px; }
+        .counter-item:not(:last-child) { border-right: 1px solid var(--border-color); }
+        .counter-num { font-size: 18px; font-weight: 800; }
+        .counter-label { font-size: 11px; color: var(--text-gray); }
 
-        .section-box {
+        /* SECTION MAIN */
+        .section-panel {
             background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
             border-radius: 16px;
             padding: 16px;
             margin-bottom: 20px;
-            border: 1px solid var(--border-color);
         }
+        .panel-title { font-size: 14px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
 
-        .box-title { font-size: 12px; color: var(--text-gray); margin-bottom: 8px; font-weight: 600; display: block; }
-
-        .select-game-btn {
+        /* CUSTOM GAME DROPDOWN - KHU VỰC ĐÃ FIX TRIỆT ĐỂ */
+        .custom-dropdown {
             position: relative;
-            background-color: var(--card-sub);
+            margin-bottom: 16px;
+            user-select: none;
+        }
+        .dropdown-trigger {
+            background: var(--card-sub);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 14px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 16px;
-        }
-        .native-select {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            opacity: 0; cursor: pointer; z-index: 5;
-        }
-        .game-meta { display: flex; align-items: center; gap: 12px; }
-        .game-icon { width: 36px; height: 36px; background: #2a314d; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-
-        .packages-wrap { display: none; }
-        .package-row {
-            display: flex; justify-content: space-between; align-items: center;
-            background-color: var(--card-sub); padding: 14px; border-radius: 10px;
-            margin-bottom: 8px; font-size: 13px; cursor: pointer;
-        }
-        .package-row input { margin-right: 12px; width: 18px; height: 18px; }
-
-        .status-badge {
-            background-color: rgba(16, 185, 129, 0.1);
-            border: 1px dashed var(--accent-green);
-            color: var(--accent-green);
-            padding: 10px; border-radius: 10px; text-align: center;
-            font-size: 11px; font-weight: bold; margin-bottom: 15px;
-        }
-
-        .btn-buy-now {
-            width: 100%; height: 46px; background-color: #282d42; color: var(--text-gray);
-            border: none; border-radius: 23px; font-size: 14px; font-weight: 600;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
             cursor: pointer;
         }
-        .btn-buy-now.active { background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; }
+        .dropdown-menu {
+            display: none;
+            position: absolute;
+            top: 105%; left: 0; width: 100%;
+            background: #1b1e2e;
+            border: 1px solid var(--accent-purple);
+            border-radius: 12px;
+            z-index: 999;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            overflow: hidden;
+        }
+        .dropdown-item {
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .dropdown-item:last-child { border-bottom: none; }
+        .dropdown-item:hover { background: #24293f; }
 
-        .filter-tabs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin-bottom: 12px; }
-        .tab-btn { background-color: var(--card-sub); border: none; color: var(--text-gray); padding: 8px 0; border-radius: 8px; font-size: 11px; text-align: center; }
-        .tab-btn.active { background-color: #4f46e5; color: white; }
-        .search-box-input { width: 100%; padding: 10px 12px; background-color: #0b0d14; border: 1px solid var(--border-color); border-radius: 10px; color: white; font-size: 12px; margin-bottom: 12px; outline: none; }
-        .history-card { background-color: var(--card-sub); border: 1px solid var(--border-color); border-radius: 10px; padding: 12px; margin-bottom: 8px; font-size: 12px; }
+        .game-info-flex { display: flex; align-items: center; gap: 12px; }
+        .game-img-box { width: 40px; height: 40px; background: #2d334d; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
+        .game-title { font-size: 14px; font-weight: 700; color: #fff; }
+        .game-pkg { font-size: 11px; color: var(--text-gray); }
+
+        /* DANH SÁCH GÓI GIÁ */
+        #priceSectionWrapper { display: none; margin-bottom: 16px; }
+        .package-title-lbl { font-size: 11px; color: var(--text-gray); margin-bottom: 8px; font-weight: 600; }
+        .package-list { display: flex; flex-direction: column; gap: 10px; }
+        .package-card {
+            background: var(--card-sub);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .package-card.selected {
+            border-color: var(--accent-purple);
+            background: rgba(139, 92, 246, 0.08);
+        }
+        .pkg-name { font-size: 14px; font-weight: 700; color: #fff; }
+        .pkg-sub { font-size: 11px; color: var(--text-gray); margin-top: 2px; }
+        .pkg-price { font-size: 14px; font-weight: 800; color: #fff; }
+
+        /* BOTTOM BAR ACTION */
+        .action-row { display: flex; gap: 10px; align-items: center; margin-top: 10px; }
+        .circle-action-btn { width: 46px; height: 46px; border-radius: 50%; background: var(--card-sub); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+        
+        .btn-main-submit {
+            flex: 1; height: 46px; border-radius: 23px; border: none;
+            background: #222638; color: var(--text-gray);
+            font-size: 14px; font-weight: 700; cursor: pointer;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        .btn-main-submit.ready {
+            background: linear-gradient(135deg, #00b4db, #0083b0);
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(0, 131, 176, 0.3);
+        }
+
+        /* POPUP MODAL THANH TOÁN QR BANK */
+        .payment-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); z-index: 9999;
+            display: none; justify-content: center; align-items: center; padding: 20px;
+        }
+        .payment-modal-content {
+            background: #161926; border: 1px solid var(--border-color);
+            width: 100%; max-width: 380px; border-radius: 20px; padding: 20px;
+            text-align: center; position: relative;
+        }
+        .close-modal-btn { position: absolute; top: 14px; right: 16px; font-size: 20px; color: var(--text-gray); cursor: pointer; }
+        .modal-title { font-size: 18px; font-weight: bold; margin-bottom: 2px; }
+        .modal-price { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 15px; }
+        
+        .qr-image-container {
+            background: white; padding: 10px; border-radius: 14px;
+            display: inline-block; margin-bottom: 15px; width: 220px; height: 220px;
+        }
+        .qr-img { width: 100%; height: 100%; object-fit: contain; }
+
+        .bank-details-box { background: #0b0d14; border-radius: 10px; padding: 12px; text-align: left; font-size: 13px; margin-bottom: 15px; }
+        .bank-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
+        .bank-label { color: var(--text-gray); }
+        .bank-val { font-weight: bold; color: #fff; display: flex; align-items: center; gap: 4px; }
+        .copy-badge { font-size: 10px; background: #23293d; color: #0088cc; padding: 2px 6px; border-radius: 4px; cursor: pointer; }
+
+        .warning-box { background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); color: #f59e0b; padding: 10px; border-radius: 8px; font-size: 11px; line-height: 1.4; text-align: left; margin-bottom: 15px; }
+        
+        /* LỊCH SỬ CARD */
+        .history-card { background: var(--card-sub); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; margin-bottom: 8px; font-size: 12px; }
     </style>
 </head>
 <body>
 
     <div class="mini-app-container">
 
-        <div class="app-header">
-            <div class="user-profile">
-                <div id="userAvatar" class="user-avatar">👤</div>
-                <div>
-                    <div style="font-size: 14px; font-weight: bold;" id="txtUserTelegram">OVISITKING Guest</div>
-                    <div style="font-size: 11px; color: var(--text-gray);">Xin chào, Khách Hàng</div>
-                </div>
-            </div>
-            <div class="wallet-section" onclick="toggleDeposit()">
-                <span style="font-size: 9px; color: #93c5fd; display: block;">Ví: <span id="vBalance">0</span>đ</span>
-                <span class="balance-box">+ Nạp Tiền</span>
+        <div class="user-header-box">
+            <div id="userAvatar" class="user-avatar">👑</div>
+            <div>
+                <div class="user-name" id="txtUserTelegram">Admin Lâm Cường</div>
+                <div class="user-tag" id="txtUserHandle">@Lamcuonghuhu</div>
             </div>
         </div>
 
-        <div id="depositBox" class="deposit-bank-box">
-            <h4 style="font-size: 13px; margin-bottom: 4px;">NẠP TIỀN TỰ ĐỘNG KHÔNG GIAN</h4>
-            <img class="qr-bank-img" src="https://i.imgur.com/bY309Xl.jpeg" alt="QR">
-            <div style="background:#0b0d14; padding:8px; border-radius:8px; font-size:11px; text-align:left; margin-bottom: 8px;">
-                📌 Cú pháp: <b style="color:var(--accent-yellow);" id="depositSyntax">OVS NAP</b>
-            </div>
-            <button onclick="mockDeposit()" style="width:100%; padding:8px; background:var(--accent-green); border:none; border-radius:6px; color:white; font-weight:bold; cursor:pointer;">
-                [Test] Cộng nhanh +200.000đ vào ví
-            </button>
+        <div class="counter-grid">
+            <div class="counter-item"><span class="counter-num" id="statTotal" style="color:#fff;">0</span><span class="counter-label">Tổng key</span></div>
+            <div class="counter-item"><span class="counter-num" style="color:var(--accent-green);">0</span><span class="counter-label">Hoạt động</span></div>
+            <div class="counter-item"><span class="counter-num" style="color:#ef4444;">0</span><span class="counter-label">Hết hạn</span></div>
         </div>
 
-        <div class="stats-grid">
-            <div class="stat-item"><div class="num" id="statTotal">0</div><div class="label">Tổng key</div></div>
-            <div class="stat-item"><div class="num" style="color: var(--accent-green);">0</div><div class="label">Hoạt động</div></div>
-            <div class="stat-item"><div class="num" style="color: #ef4444;">0</div><div class="label">Hết hạn</div></div>
-        </div>
-
-        <div class="section-box">
-            <span class="box-title">🛒 Mua Key mới</span>
+        <div class="section-panel">
+            <div class="panel-title">🛒 Mua Key mới</div>
             
-            <div class="select-game-btn">
-                <select class="native-select" id="gameSelector" onchange="changeGameTrigger(this)">
-                    <option value="" disabled selected>-- Nhấn chọn game của bạn --</option>
-                    <option value="Free Fire Thường|com.dts.freefireth|🔥">Free Fire Thường (com.dts.freefireth)</option>
-                    <option value="Free Fire Max|com.dts.freefiremax|⚡">Free Fire Max (com.dts.freefiremax)</option>
-                    <option value="Blood Strike: Vây Hãm|com.netease.newspikevn|💀">Blood Strike: Vây Hãm (com.netease.newspikevn)</option>
-                </select>
-                <div class="game-meta">
-                    <div class="game-icon" id="currentIcon">🎮</div>
-                    <div>
-                        <div style="font-size:14px; font-weight:600;" id="currentTitle">Nhấn chọn game</div>
-                        <div style="font-size:11px; color:var(--text-gray);" id="currentSub">Chưa chọn game nào</div>
+            <div style="font-size: 11px; color: var(--text-gray); margin-bottom: 6px; font-weight: 600;">📦 Chọn ứng dụng</div>
+            <div class="custom-dropdown">
+                <div class="dropdown-trigger" onclick="toggleDropdown(event)">
+                    <div class="game-info-flex">
+                        <div class="game-img-box" id="currentIcon">🎮</div>
+                        <div>
+                            <div class="game-title" id="currentTitle">Nhấn chọn game</div>
+                            <div class="game-pkg" id="currentSub">Chưa chọn ứng dụng</div>
+                        </div>
+                    </div>
+                    <div style="color: var(--text-gray); font-size: 12px;" id="arrowDrop">❯</div>
+                </div>
+                
+                <div class="dropdown-menu" id="dropMenuOptions">
+                    <div class="dropdown-item" onclick="selectGame('Free Fire Thường', 'com.dts.freefireth', '🔥', event)">
+                        <div class="game-img-box">🔥</div>
+                        <div style="pointer-events:none;"><div class="game-title">Free Fire Thường</div><div class="game-pkg">com.dts.freefireth</div></div>
+                    </div>
+                    <div class="dropdown-item" onclick="selectGame('Free Fire Max', 'com.dts.freefiremax', '⚡', event)">
+                        <div class="game-img-box">⚡</div>
+                        <div style="pointer-events:none;"><div class="game-title">Free Fire Max</div><div class="game-pkg">com.dts.freefiremax</div></div>
+                    </div>
+                    <div class="dropdown-item" onclick="selectGame('Blood Strike: Vây Hãm', 'com.netease.newspikevn', '💀', event)">
+                        <div class="game-img-box">💀</div>
+                        <div style="pointer-events:none;"><div class="game-title">Blood Strike: Vây Hãm</div><div class="game-pkg">com.netease.newspikevn</div></div>
                     </div>
                 </div>
-                <div style="color: var(--text-gray); font-size: 11px;">▼</div>
             </div>
 
-            <div class="status-badge">🛡️ TRẠNG THÁI KHÔNG GIAN: NO ROOT (AN TOÀN HỆ THỐNG)</div>
+            <div id="priceSectionWrapper">
+                <div class="package-title-lbl">💎 Chọn gói thời gian</div>
+                <div class="package-list">
+                    <div class="package-card" onclick="selectPackage(this, 20000, 'Gói 1 ngày', '1 Ngày')">
+                        <div><div class="pkg-name">Gói 1 ngày</div><div class="pkg-sub">Chế độ Normal key</div></div>
+                        <div class="pkg-price">20.000đ</div>
+                    </div>
+                    <div class="package-card" onclick="selectPackage(this, 40000, 'Gói 3 ngày', '3 Ngày')">
+                        <div><div class="pkg-name">Gói 3 ngày</div><div class="pkg-sub">Chế độ Normal key</div></div>
+                        <div class="pkg-price">40.000đ</div>
+                    </div>
+                    <div class="package-card" onclick="selectPackage(this, 80000, 'Gói 7 ngày', '7 Ngày')">
+                        <div><div class="pkg-name">Gói 7 ngày</div><div class="pkg-sub">Chế độ Normal key</div></div>
+                        <div class="pkg-price">80.000đ</div>
+                    </div>
+                    <div class="package-card" onclick="selectPackage(this, 140000, 'Gói 30 ngày', '30 Ngày')">
+                        <div><div class="pkg-name">Gói 30 ngày</div><div class="pkg-sub">Chế độ Normal key</div></div>
+                        <div class="pkg-price">140.000đ</div>
+                    </div>
+                </div>
+            </div>
 
-            <span class="box-title">💎 Chọn gói thời gian</span>
-            <div id="emptyPkgText" style="text-align:center; color: var(--text-gray); font-size:13px; padding:10px 0;">Vui lòng chọn ứng dụng ở trên trước</div>
+            <div class="action-row">
+                <div class="circle-action-btn">📥</div>
+                <div class="circle-action-btn">▶️</div>
+                <button id="btnBuySubmit" class="btn-main-submit" onclick="openPaymentModal()">
+                    <span id="txtBtnMain">Mua ngay</span>
+                    <span id="txtBtnSub" style="font-size:10px; opacity:0.7;">Chưa chọn game</span>
+                </button>
+            </div>
+        </div>
 
-            <div id="packagesList" class="packages-wrap">
-                <label class="package-row">
-                    <span><input type="radio" name="priceRadio" value="0" data-label="Gói dùng thử (1 IP Free)" checked> Gói dùng thử (1 IP Free)</span>
-                    <span style="color:var(--accent-green); font-weight:bold;">0đ</span>
-                </label>
+        <div class="section-panel">
+            <div class="panel-title">🔑 Lịch sử Key</div>
+            <div id="historyDisplayArea"></div>
+        </div>
+    </div>
+
+    <div id="paymentModal" class="payment-modal-overlay">
+        <div class="payment-modal-content">
+            <span class="close-modal-btn" onclick="closePaymentModal()">×</span>
+            <div class="modal-title" id="mdPkgTitle">30 ngày</div>
+            <div class="modal-price" id="mdPkgPrice">140.000đ</div>
+
+            <div class="qr-image-container">
+                <img class="qr-img" id="imgVietQR" src="" alt="VietQR">
+            </div>
+
+            <div class="bank-details-box">
+                <div class="bank-row"><span class="bank-label">Ngân hàng</span><span class="bank-val">MBBANK</span></div>
+                <div class="bank-row"><span class="bank-label">Số tài khoản</span><span class="bank-val">0933208498 <span class="copy-badge" onclick="navigator.clipboard.writeText('0933208498')">📋</span></span></div>
+                <div class="bank-row"><span class="bank-label">Chủ tài khoản</span><span class="bank-val">NGUYEN TIEN DAT</span></div>
+                <div class="bank-row"><span class="bank-label">Nội dung CK</span><span class="bank-val" style="color:#ef4444;" id="mdOrderCode">ORD... <span class="copy-badge" id="btnCopyCode">📋</span></span></div>
+            </div>
+
+            <div class="warning-box">
+                ⚠️ <b>Lưu ý:</b> Vui lòng chuyển đúng số tiền và nội dung chuyển khoản. Key sẽ được cấp tự động sau khi hệ thống nhận được tiền thành công.
+            </div>
+
+            <button onclick="simulateSuccessPayment()" style="width:100%; padding:12px; background:var(--accent-green); border:none; border-radius:10px; color:#111; font-weight:bold; cursor:pointer;">
+                🔄 [Test] Xác nhận đã chuyển khoản thành công
+            </button>
+            <div style="font-size:11px; color:var(--text-gray); margin-top:8px;">⏳ Đang chờ thanh toán tự động...</div>
+        </div>
+    </div>
+
+    <script>
+        const BOT_TOKEN = "8744886860:AAHFEbCm_FVdttOdc2ZK318vR-t6wOcpJ7k"; 
+        
+        let userChatID = "88888888"; 
+        let chosenGameTitle = "";
+        let chosenGamePkg = "";
+        let selectedPrice = 0;
+        let selectedDurationLabel = "";
+        let currentOrderCode = "";
+        let savedKeysList = [];
+
+        window.onload = function() {
+            if (window.Telegram && window.Telegram.WebApp) {
+                const tg = window.Telegram.WebApp;
+                tg.ready();
+                tg.expand();
+                if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+                    userChatID = tg.initDataUnsafe.user.id.toString();
+                    document.getElementById('txtUserHandle').innerText = "@" + (tg.initDataUnsafe.user.username || "Khách hàng");
+                }
+            }
+
+            if(localStorage.getItem('ovs_keys_' + userChatID)) {
+                savedKeysList = JSON.parse(localStorage.getItem('ovs_keys_' + userChatID));
+            }
+            renderHistoryUI();
+        };
+
+        function renderHistoryUI() {
+            document.getElementById('statTotal').innerText = savedKeysList.length;
+            let html = "";
+            if(savedKeysList.length > 0) {
+                savedKeysList.forEach(k => {
+                    html += `<div class="history-card">
+                        <div style="display:flex; justify-content:space-between; font-weight:bold; color:var(--accent-green); margin-bottom:4px;">
+                            <span style="flex:1;">${k.title}</span><span style="color:var(--text-gray); font-size:10px;">${k.time}</span>
+                        </div>
+                        <div style="color:var(--text-gray); font-size:11px; margin-bottom:4px;">Package: ${k.pkg}</div>
+                        <div style="background:#0b0d14; padding:8px; border-radius:6px; color:#34d399; font-family:monospace; font-weight:bold; word-break:break-all;">${k.key}</div>
+                        <div style="font-size:11px; color:#f59e0b; margin-top:4px;">Thời hạn: ${k.dur}</div>
+                    </div>`;
+                });
+            } else {
+                html = `<div style="text-align:center; padding:15px 0; color:var(--text-gray); font-size:12px;">🔒 Chưa mua Key nào công khai</div>`;
+            }
+            document.getElementById('historyDisplayArea').innerHTML = html;
+        }
+
+        // BẬT TẮT DROPDOWN
+        function toggleDropdown(e) {
+            if(e) e.stopPropagation();
+            let menu = document.getElementById('dropMenuOptions');
+            let arrow = document.getElementById('arrowDrop');
+            if (menu.style.display === "block") {
+                menu.style.display = "none";
+                arrow.style.transform = "rotate(0deg)";
+            } else {
+                menu.style.display = "block";
+                arrow.style.transform = "rotate(90deg)";
+            }
+        }
+
+        // HÀM CHỌN GAME ĐƯỢC GỌI TRỰC TIẾP TỪ THẺ HTML - CHẮC CHẮN HIỆN BẢNG GIÁ
+        function selectGame(name, pkg, icon, e) {
+            if(e) e.stopPropagation();
+            
+            chosenGameTitle = name;
+            chosenGamePkg = pkg;
+
+            document.getElementById('currentTitle').innerText = name;
+            document.getElementById('currentSub').innerText = pkg;
+            document.getElementById('currentIcon').innerText = icon;
+
+            // Đóng menu thả
+            document.getElementById('dropMenuOptions').style.display = "none";
+            document.getElementById('arrowDrop').style.transform = "rotate(0deg)";
+
+            // HIỆN KHỐI CHỌN GIÁ NGAY LẬP TỨC
+            document.getElementById('priceSectionWrapper').style.display = "block";
+
+            // Reset trạng thái gói cũ
+            selectedPrice = 0;
+            selectedDurationLabel = "";
+            document.querySelectorAll('.package-card').forEach(c => c.classList.remove('selected'));
+            
+            updateConfirmButton();
+        }
+
+        function selectPackage(element, price, name, durationLabel) {
+            document.querySelectorAll('.package-card').forEach(c => c.classList.remove('selected'));
+            element.classList.add('selected');
+            
+            selectedPrice = price;
+            selectedDurationLabel = durationLabel;
+            updateConfirmButton();
+        }
+
+        function updateConfirmButton() {
+            let btn = document.getElementById('btnBuySubmit');
+            if(chosenGameTitle && selectedPrice > 0) {
+                btn.classList.add('ready');
+                document.getElementById('txtBtnMain').innerText = "Mua ngay";
+                document.getElementById('txtBtnSub').innerText =>
                 <label class="package-row">
                     <span><input type="radio" name="priceRadio" value="20000" data-label="Gói 1 Ngày (VIP Premium)"> Gói 1 Ngày (VIP Premium)</span>
                     <span style="color:#ef4444; font-weight:bold;">20.000đ</span>
