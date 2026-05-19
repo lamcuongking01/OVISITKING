@@ -2,39 +2,511 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SHOP KEY PREMIUM</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OVISITKING SHOP</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        /* Giao diện tối phong cách gaming cyber */
+        :root {
+            --bg-dark: #090a0f;
+            --card-bg: #141622;
+            --card-sub: #1b1e2e;
+            --primary-blue: #5856d6;
+            --text-white: #ffffff;
+            --text-gray: #7e8494;
+            --border-color: #242838;
+            --accent-green: #00ff66;
+            --accent-orange: #ff6600;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
         body {
-            background: radial-gradient(circle, #1a1a2e 0%, #0f0f1a 100%);
+            background-color: var(--bg-dark);
+            color: var(--text-white);
+            padding: 15px;
+            display: flex;
+            justify-content: center;
+            background-image: radial-gradient(circle at top, #1c1836 0%, var(--bg-dark) 70%);
+            min-height: 100vh;
+        }
+
+        .mini-app-container {
+            width: 100%;
+            max-width: 450px;
+            padding-bottom: 40px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* THÔNG TIN KHÁCH HÀNG & SỐ DƯ */
+        .app-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0 20px 0;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 15px;
+        }
+        
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 2px solid var(--primary-blue);
+            background: #25283d;
+            object-fit: cover;
+        }
+
+        .user-info-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .user-name {
+            font-size: 14px;
+            font-weight: bold;
             color: #ffffff;
-            font-family: 'Segoe UI', Arial, sans-serif;
+        }
+
+        .wallet-section {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 6px;
+        }
+        .balance-box {
+            font-size: 13px;
+            color: #ffcc00;
+            font-weight: bold;
+            background: rgba(255, 204, 0, 0.1);
+            padding: 4px 10px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 204, 0, 0.2);
+        }
+        .btn-deposit-trigger {
+            background: linear-gradient(135deg, #007bff, var(--primary-blue));
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            font-size: 12px;
+            font-weight: bold;
+            border-radius: 20px;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(88, 86, 214, 0.4);
+        }
+
+        /* Thống kê số lượng Key */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+        }
+        .stat-item .num { font-size: 18px; font-weight: bold; }
+        .stat-item .label { font-size: 12px; color: var(--text-gray); margin-top: 4px; }
+
+        /* Khung nội dung chính */
+        .section-card {
+            background: var(--card-bg);
+            border-radius: 14px;
+            padding: 16px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+        .section-title {
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        /* Nút Kích Hoạt Chọn Game */
+        .select-game-trigger {
+            width: 100%;
+            background: var(--card-sub);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+        }
+        .select-game-trigger * {
+            pointer-events: none; 
+        }
+        .game-icon-placeholder {
+            width: 36px;
+            height: 36px;
+            background: #22c55e;
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
+            font-weight: bold;
+        }
+        .trigger-title { font-size: 15px; font-weight: bold; color: white; }
+        .trigger-sub { font-size: 12px; color: var(--text-gray); margin-top: 2px; }
+
+        .noroot-banner {
+            background: rgba(0, 255, 102, 0.08);
+            border: 1px dashed var(--accent-green);
+            color: var(--accent-green);
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: bold;
+            text-align: center;
+            margin: 12px 0;
         }
 
-        .shop-card {
-            background-color: #161623;
-            border: 1px solid #2d2d44;
+        /* Vùng bảng giá dịch vụ */
+        .packages-container {
+            display: none;
+            margin-top: 15px;
+        }
+        .package-option {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-sub);
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        .package-option input { margin-right: 10px; accent-color: var(--primary-blue); }
+
+        .btn-buy-now {
             width: 100%;
-            max-width: 440px;
-            border-radius: 16px;
-            padding: 25px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-            position: relative;
-            box-sizing: border-box;
+            background: #2a2d3d;
+            color: var(--text-gray);
+            border: none;
+            padding: 14px;
+            font-size: 15px;
+            font-weight: bold;
+            border-radius: 25px;
+            margin-top: 15px;
+            cursor: not-allowed;
+        }
+        .btn-buy-now.ready {
+            background: linear-gradient(135deg, var(--primary-blue), #7b79ff);
+            color: white;
+            cursor: pointer;
         }
 
-        /* Thanh màu nổi bật trên đỉnh */
-        .shop-card::before {
-            content: "";
-            position: absolute;
+        /* LỚP PHỦ POPUP SỬ DỤNG VISIBILITY TRÁNH LỖI ĐƠ ĐÈ CLICK */
+        .popup-overlay, .deposit-overlay {
+            opacity: 0;
+            visibility: hidden;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            z-index: -1;
+            transition: opacity 0.2s ease, visibility 0.2s ease;
+            display: flex;
+        }
+        
+        .popup-overlay.active, .deposit-overlay.active {
+            opacity: 1;
+            visibility: visible;
+            z-index: 99999;
+        }
+
+        .popup-overlay { align-items: flex-end; }
+        .deposit-overlay { justify-content: center; align-items: center; }
+
+        .popup-content {
+            width: 100%;
+            background: #161826;
+            border-radius: 20px 20px 0 0;
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+        .deposit-modal {
+            width: 85%; max-width: 360px;
+            background: #1c1f30;
+            border-radius: 16px;
+            padding: 20px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .popup-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+            color: var(--text-gray);
+        }
+        
+        .game-list-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--card-sub);
+            padding: 14px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+        .game-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            background: #333;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .badge-normal {
+            background: #2d3142;
+            color: #949ab1;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .qr-img { width: 100%; max-width: 180px; border-radius: 10px; margin: 10px 0; }
+        .deposit-note {
+            background: #11131f;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            color: #ffcc00;
+            text-align: left;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+
+        /* Ô NHẬP TIỀN GIẢ LẬP ĐỂ TEST ĐƯỢC CỘNG TIỀN */
+        .mock-deposit-input {
+            width: 100%;
+            padding: 10px;
+            background: #090a0f;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: #ffcc00;
+            text-align: center;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 12px;
+        }
+
+        /* KẾT QUẢ XUẤT KEY */
+        .result-section {
+            display: none;
+            background: #0d0e15;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .key-box {
+            background: #1a1c29;
+            padding: 12px;
+            text-align: center;
+            font-family: monospace;
+            font-size: 15px;
+            color: #ffcc00;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-weight: bold;
+        }
+        .btn-secondary {
+            width: 100%; background: #2d3142; color: white; border: none;
+            padding: 12px; border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 13px;
+        }
+        .server-input {
+            width: 100%; padding: 10px; background: #000; border: 1px solid #333;
+            color: var(--accent-green); border-radius: 6px; margin: 8px 0;
+        }
+
+        /* POPUP TIN NHẮN GIẢ LẬP TELEGRAM BOT */
+        .telegram-notify-popup {
+            display: none;
+            position: fixed;
+            top: 20px; left: 50%; transform: translateX(-50%);
+            width: 90%; max-width: 380px;
+            background: #17212b;
+            border-radius: 10px; padding: 14px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5); z-index: 100001;
+            border-left: 3px solid #5288c1;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="telegramNotify" class="telegram-notify-popup">
+        <div style="font-weight: bold; color: #5288c1; font-size: 13px; margin-bottom: 5px;">🤖 OVISITKING Bot (@OVISITKINGkeybot)</div>
+        <div id="botMsgContent" style="font-size: 12px; color: #f5f5f5; line-height: 1.5; white-space: pre-line;"></div>
+    </div>
+
+    <div id="depositOverlay" class="deposit-overlay" onclick="closeDeposit()">
+        <div class="deposit-modal" onclick="event.stopPropagation()">
+            <h3 style="font-size: 15px;">NẠP TIỀN HỆ THỐNG</h3>
+            <img class="qr-img" src="https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=OVISITKING_BANK" alt="Mã Quét QR">
+            <div class="deposit-note">
+                📌 <b>Nội dung chuyển khoản bắt buộc:</b><br>
+                <span style="color: #ff3333; font-weight:bold; font-size:13px;">NAPTIEN OVISITKING</span>
+            </div>
+            
+            <div style="font-size: 11px; color: var(--text-gray); margin-bottom: 5px; text-align: left;">Nhập số tiền test muốn nạp:</div>
+            <input type="number" id="mockAmount" class="mock-deposit-input" value="50000" step="10000">
+
+            <button class="btn-secondary" style="background: var(--primary-blue); margin-bottom: 8px;" onclick="simulateDepositSuccess()">XÁC NHẬN ĐÃ CHUYỂN KHOẢN</button>
+            <button class="btn-secondary" style="background: #242838;" onclick="closeDeposit()">Đóng Cửa Sổ</button>
+        </div>
+    </div>
+
+    <div class="mini-app-container">
+        
+        <div class="app-header">
+            <div class="user-profile">
+                <img id="userAvatarImg" class="user-avatar" src="https://i.imgur.com/8K0pG9g.png" alt="Avatar">
+                <div class="user-info-text">
+                    <span style="font-size: 11px; color: var(--text-gray);">Xin chào,</span>
+                    <span id="userTelegramName" class="user-name">Khách Hàng</span>
+                </div>
+            </div>
+            <div class="wallet-section">
+                <div class="balance-box">Ví: <span id="userBalance">0</span>đ</div>
+                <button class="btn-deposit-trigger" onclick="openDeposit()">+ Nạp Tiền</button>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-item"><div class="num" id="totalKeys">0</div><div class="label">Tổng key</div></div>
+            <div class="stat-item"><div class="num" style="color:#22c55e;">0</div><div class="label">Hoạt động</div></div>
+            <div class="stat-item"><div class="num" style="color:#ef4444;">0</div><div class="label">Hết hạn</div></div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-title">🛒 Mua Key mới</div>
+            
+            <div class="select-game-trigger" onclick="openGamePopup()">
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <div class="game-icon-placeholder" id="mainGameIcon">🎮</div>
+                    <div>
+                        <div class="trigger-title" id="mainGameTitle" style="color: #ffffff;">Nhấn chọn game</div>
+                        <div class="trigger-sub" id="mainGameSub">Chưa chọn game nào</div>
+                    </div>
+                </div>
+                <div style="color: var(--text-gray); font-weight: bold;">❯</div>
+            </div>
+
+            <div class="noroot-banner">🛡️ TRẠNG THÁI KHÔNG GIAN: NO ROOT (AN TOÀN HỆ THỐNG)</div>
+
+            <div class="packages-container" id="packagesContainer">
+                <div style="font-size:13px; color:var(--text-gray); margin-bottom:10px;">💎 Chọn gói thời gian:</div>
+                <label class="package-option"><span><input type="radio" name="keyPrice" value="FREE_1" data-price="0" checked> FREE 1 Ngày (Gắn IP)</span><span style="color:#22c55e; font-weight:bold;">0đ</span></label>
+                <label class="package-option"><span><input type="radio" name="keyPrice" value="1_DAY" data-price="20000"> Gói 1 Ngày</span><span style="color:#ffcc00; font-weight:bold;">20k</span></label>
+                <label class="package-option"><span><input type="radio" name="keyPrice" value="3_DAYS" data-price="40000"> Gói 3 Ngày</span><span style="color:#ffcc00; font-weight:bold;">40k</span></label>
+                <label class="package-option"><span><input type="radio" name="keyPrice" value="7_DAYS" data-price="75000"> Gói 7 Ngày</span><span style="color:#ffcc00; font-weight:bold;">75k</span></label>
+                <label class="package-option"><span><input type="radio" name="keyPrice" value="30_DAYS" data-price="135000"> Gói 1 Tháng</span><span style="color:#ffcc00; font-weight:bold;">135k</span></label>
+            </div>
+
+            <button id="btnBuyNow" class="btn-buy-now" onclick="executePurchase()" disabled>Mua ngay (Chưa chọn gói)</button>
+
+            <div class="result-section" id="resultSection">
+                <div style="font-size: 13px; color: var(--accent-green); font-weight: bold;">✓ Giao dịch thành công! Mã Key của bạn:</div>
+                <div class="key-box" id="keyOutput">OVISITKING_XXXX</div>
+                <button class="btn-secondary" onclick="copyKey()">📋 Sao Chép Mã Key</button>
+                <div style="font-size: 11px; color: var(--text-gray); text-align: center; margin-top:8px;" id="timeOutput">Thời gian: --</div>
+
+                <div style="margin-top: 15px; border-top: 1px solid var(--border-color); padding-top: 12px;">
+                    <div style="font-size:12px; color:var(--accent-orange); font-weight:bold;">Đồng bộ dữ liệu Hack Server:</div>
+                    <input type="text" id="serverInput" class="server-input">
+                    <button class="btn-secondary" style="background: var(--accent-orange);" onclick="sendKeyToServer()">KÍCH HOẠT LÊN SERVER HACK</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <div class="section-title">🔑 Lịch sử Key</div>
+            <div style="text-align: center; padding: 15px 0; color: var(--text-gray);" id="historyStatus">
+                🔒 Chưa mua Key nào công khai
+            </div>
+        </div>
+    </div>
+
+    <div id="gamePopup" class="popup-overlay" onclick="closeGamePopup()">
+        <div class="popup-content" onclick="event.stopPropagation()">
+            <div class="popup-title">DANH SÁCH GAME HỖ TRỢ</div>
+            
+            <div class="game-list-item" onclick="selectGame('Free Fire Max', 'com.dts.freefiremax')">
+                <div style="display:flex; align-items:center; gap:12px; pointer-events:none;">
+                    <div class="game-avatar" style="background:#ff3333;">🔥</div>
+                    <div>
+                        <div style="font-size:14px; font-weight:bold; color: white;">Free Fire Max</div>
+                        <div style="font-size:11px; color:var(--text-gray);">com.dts.freefiremax</div>
+                    </div>
+                </div>
+                <div class="badge-normal">NORMAL</div>
+            </div>
+
+            <div class="game-list-item" onclick="selectGame('Free Fire Thường', 'com.dts.freefireth')">
+                <div style="display:flex; align-items:center; gap:12px; pointer-events:none;">
+                    <div class="game-avatar" style="background:#ff6600;">🔫</div>
+                    <div>
+                        <div style="font-size:14px; font-weight:bold; color: white;">Free Fire Thường</div>
+                        <div style="font-size:11px; color:var(--text-gray);">com.dts.freefireth</div>
+                    </div>
+                </div>
+                <div class="badge-normal">NORMAL</div>
+            </div>
+
+            <div class="game-list-item" onclick="selectGame('Blood Strike: Vây Hãm', 'com.netease.newspikevn')">
+                <div style="display:flex; align-items:center; gap:12px; pointer-events:none;">
+                    <div class="game-avatar" style="background:#333;">💀</div>
+                    <div>
+                        <div style="font-size:14px; font-weight:bold; color: white;">Blood Strike: Vây Hãm</div>
+                        <div style="font-size:11px; color:var(--text-gray);">com.netease.newspikevn</div>
+                    </div>
+                </div>
+                <div class="badge-normal">NORMAL</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // THAY ĐỔI: MẶC ĐỊNH BAN ĐẦU LÀ 0K
+        let currentBalance = 0;
+        let selectedGameName = "";
+        let selectedPkgName = "";
+
+        // TỰ ĐỘNG ĐỒNG BỘ TELEGRAM API LẤY TÊN VÀ ẢNH ĐẠI DIỆN THẬT
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.Telegram && window.Telegram.WebApp) {
+                const webapp = window.Telegram.WebApp;
+                webapp.ready();
+                webapp.expand();
+                
+                const user = webapp.initDataUnsafe?.user;
+                if (user) {
+                    let fullName = user.first_name + (user.last_name ? " " + user.last_name : "");
+                    document.getElementById('userTelegramName').innerText = fullName;
+                    if (user.photo_url) {
+                        document.getElementById('userAvatarImg').src = user.photo_url;
+                    }
+                position: absolute;
             top: 0; left: 0; right: 0; height: 3px;
             background: linear-gradient(90deg, #00e676, #00b0ff, #ff3d00);
             border-top-left-radius: 16px; border-top-right-radius: 16px;
