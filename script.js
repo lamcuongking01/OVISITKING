@@ -116,37 +116,59 @@ let state = {
 
 // Initialize
 document.addEventListener('DOMContentLoaded', function() {
-    setupEventListeners();
+    console.log('DOM loaded, initializing...');
     loadUserData();
+    setupEventListeners();
     updateUI();
+    console.log('Initialization complete');
 });
 
 // Setup Event Listeners
 function setupEventListeners() {
-    // Game Selection
-    document.querySelectorAll('.game-item').forEach(item => {
-        item.addEventListener('click', selectGame);
-    });
+    console.log('Setting up event listeners...');
+
+    // Game Selection - Click on game items in modal
+    const gameModal = document.getElementById('gameModal');
+    
+    if (gameModal) {
+        gameModal.addEventListener('click', function(e) {
+            const gameItem = e.target.closest('.game-item');
+            if (gameItem) {
+                console.log('Game item clicked:', gameItem.dataset.game);
+                selectGame(gameItem);
+            }
+        });
+    }
+
+    // Select game button
+    const selectGameBtn = document.querySelector('.btn-select-game');
+    if (selectGameBtn) {
+        selectGameBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Select game button clicked');
+            gameModal.classList.add('active');
+        });
+    }
 
     // Package Selection
     document.addEventListener('click', function(e) {
         if (e.target.classList.contains('package-btn')) {
+            console.log('Package button clicked:', e.target.dataset.days);
             selectPackage(e.target);
         }
     });
 
-    // Modal
-    const gameModal = document.getElementById('gameModal');
     const bankModal = document.getElementById('bankModal');
     const cardModal = document.getElementById('cardModal');
 
-    document.querySelector('.btn-select-game').addEventListener('click', () => {
-        gameModal.classList.add('active');
-    });
-
+    // Select payment buttons
     document.querySelectorAll('.btn-select-payment').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             const method = this.closest('.payment-method-card').dataset.method;
+            console.log('Payment method selected:', method);
             if (method === 'bank') {
                 bankModal.classList.add('active');
                 updateTransferContent();
@@ -158,7 +180,9 @@ function setupEventListeners() {
 
     // Close Modals
     document.querySelectorAll('.close-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             this.closest('.modal').classList.remove('active');
         });
     });
@@ -174,7 +198,9 @@ function setupEventListeners() {
 
     // Payment Methods
     document.querySelectorAll('.bank-option').forEach(option => {
-        option.addEventListener('click', function() {
+        option.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             document.querySelectorAll('.bank-option').forEach(o => o.classList.remove('active'));
             this.classList.add('active');
             state.selectedBank = this.dataset.bank;
@@ -182,7 +208,8 @@ function setupEventListeners() {
 
         const radio = option.querySelector('input[type="radio"]');
         if (radio) {
-            radio.addEventListener('change', function() {
+            radio.addEventListener('change', function(e) {
+                e.stopPropagation();
                 document.querySelectorAll('.bank-option').forEach(o => o.classList.remove('active'));
                 option.classList.add('active');
             });
@@ -190,7 +217,9 @@ function setupEventListeners() {
     });
 
     document.querySelectorAll('.provider-option').forEach(option => {
-        option.addEventListener('click', function() {
+        option.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             document.querySelectorAll('.provider-option').forEach(o => o.classList.remove('active'));
             this.classList.add('active');
             state.selectedProvider = this.dataset.provider;
@@ -198,7 +227,8 @@ function setupEventListeners() {
 
         const radio = option.querySelector('input[type="radio"]');
         if (radio) {
-            radio.addEventListener('change', function() {
+            radio.addEventListener('change', function(e) {
+                e.stopPropagation();
                 document.querySelectorAll('.provider-option').forEach(o => o.classList.remove('active'));
                 option.classList.add('active');
             });
@@ -206,47 +236,69 @@ function setupEventListeners() {
     });
 
     // Copy Buttons
-    document.querySelectorAll('.btn-copy').forEach(btn => {
-        btn.addEventListener('click', function(e) {
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('btn-copy')) {
             e.preventDefault();
-            const input = this.previousElementSibling;
+            e.stopPropagation();
+            const input = e.target.previousElementSibling;
             if (input && input.value) {
                 navigator.clipboard.writeText(input.value).then(() => {
                     showToast('Đã sao chép!', 'success');
                 });
             }
-        });
+        }
     });
 
     // Denomination Selection
     document.querySelectorAll('.denom-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             document.querySelectorAll('.denom-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
         });
     });
 
     // Buy Button
-    document.getElementById('buyBtn').addEventListener('click', purchaseKey);
+    const buyBtn = document.getElementById('buyBtn');
+    if (buyBtn) {
+        buyBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            purchaseKey();
+        });
+    }
 
     // Card Submit
-    document.querySelector('.btn-submit-card').addEventListener('click', submitCard);
+    const submitCardBtn = document.querySelector('.btn-submit-card');
+    if (submitCardBtn) {
+        submitCardBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            submitCard();
+        });
+    }
 
     // Tab Buttons
     document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             const tab = this.dataset.tab;
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             this.classList.add('active');
             updateKeysList(tab);
         });
     });
+
+    console.log('Event listeners setup complete');
 }
 
 // Game Selection
-function selectGame(e) {
-    const gameElement = e.currentTarget;
+function selectGame(gameElement) {
     const gameId = gameElement.dataset.game;
+    
+    console.log('Selecting game:', gameId);
     
     state.selectedGame = gameId;
     state.selectedPackage = null;
@@ -255,11 +307,21 @@ function selectGame(e) {
     updatePackageList();
     updateGameDisplay();
     updateUI();
+    
+    showToast(`Đã chọn: ${games[gameId].name}`, 'success');
 }
 
 // Update Game Display
 function updateGameDisplay() {
-    if (!state.selectedGame) return;
+    if (!state.selectedGame) {
+        const subsectionContent = document.querySelector('.subsection-content');
+        subsectionContent.innerHTML = `
+            <h3>Nhân chọn game</h3>
+            <p>Chưa chọn game</p>
+            <button class="btn-select-game">Chọn game →</button>
+        `;
+        return;
+    }
     
     const game = games[state.selectedGame];
     const subsection = document.querySelector('.subsection');
@@ -273,13 +335,16 @@ function updateGameDisplay() {
 
 // Update Package List
 function updatePackageList() {
-    if (!state.selectedGame) return;
+    if (!state.selectedGame) {
+        document.getElementById('packageList').innerHTML = '';
+        return;
+    }
     
     const game = games[state.selectedGame];
     const packageList = document.getElementById('packageList');
     const packageDescription = document.getElementById('packageDescription');
     
-    packageDescription.textContent = `Danh sách gói ${game.name}`;
+    packageDescription.textContent = `Gói ${game.name}`;
     
     packageList.innerHTML = game.packages.map(pkg => `
         <button class="package-btn" data-price="${pkg.price}" data-days="${pkg.days}">
@@ -288,7 +353,8 @@ function updatePackageList() {
     `).join('');
 
     document.querySelectorAll('.package-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
             selectPackage(this);
         });
     });
@@ -304,6 +370,9 @@ function selectPackage(btn) {
     document.querySelectorAll('.package-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     updateUI();
+    
+    const game = games[state.selectedGame];
+    showToast(`Chọn ${game.name} - ${state.selectedPackage.days} ngày`, 'success');
 }
 
 // Purchase Key
@@ -340,6 +409,182 @@ function purchaseKey() {
     state.keys.push(newKey);
     state.accountBalance -= price;
     state.totalSpent += price;
+
+    saveUserData();
+    updateUI();
+    showToast(`✅ Mua key ${game.name} thành công!`, 'success');
+    
+    // Reset selection
+    state.selectedGame = null;
+    state.selectedPackage = null;
+    updatePackageList();
+    updateGameDisplay();
+    updateUI();
+}
+
+// Submit Card
+function submitCard() {
+    const cardCode = document.getElementById('cardCode').value;
+    const cardSerial = document.getElementById('cardSerial').value;
+    const activeDenom = document.querySelector('.denom-btn.active');
+
+    if (!cardCode || !cardSerial) {
+        showToast('Vui lòng nhập mã thẻ và serial!', 'error');
+        return;
+    }
+
+    if (!activeDenom) {
+        showToast('Vui lòng chọn mệnh giá!', 'error');
+        return;
+    }
+
+    const nominalAmount = parseInt(activeDenom.dataset.amount);
+    const actualAmount = marketDiscounts[nominalAmount] || nominalAmount;
+
+    state.accountBalance += actualAmount;
+    saveUserData();
+    updateUI();
+
+    const discountAmount = nominalAmount - actualAmount;
+    const discountPercent = ((discountAmount / nominalAmount) * 100).toFixed(1);
+
+    showToast(`✅ Nạp ${nominalAmount.toLocaleString()}đ → Nhận ${actualAmount.toLocaleString()}đ (chiết khấu ${discountPercent}%)`, 'success');
+    
+    // Clear inputs
+    document.getElementById('cardCode').value = '';
+    document.getElementById('cardSerial').value = '';
+    document.querySelectorAll('.denom-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('cardModal').classList.remove('active');
+}
+
+// Update Keys List
+function updateKeysList(tab) {
+    const keysList = document.getElementById('keysList');
+    let filteredKeys = state.keys;
+
+    if (tab === 'active') {
+        filteredKeys = state.keys.filter(k => {
+            const expire = new Date(k.expireDate);
+            return expire > new Date() && k.status === 'active';
+        });
+    } else if (tab === 'expired') {
+        filteredKeys = state.keys.filter(k => {
+            const expire = new Date(k.expireDate);
+            return expire < new Date();
+        });
+    } else if (tab === 'banned') {
+        filteredKeys = state.keys.filter(k => k.status === 'banned');
+    }
+
+    if (filteredKeys.length === 0) {
+        keysList.innerHTML = '<p class="empty-state">Chưa có key nào</p>';
+        return;
+    }
+
+    keysList.innerHTML = filteredKeys.map(key => `
+        <div class="key-item">
+            <div class="key-info">
+                <p><strong>Key ID:</strong> ${key.id}</p>
+                <p><strong>Game:</strong> ${key.game} (${key.type === 'vip' ? 'VIP' : 'Thường'})</p>
+                <p><strong>Gói:</strong> ${key.package}</p>
+                <p><strong>Hết hạn:</strong> ${key.expireDate}</p>
+            </div>
+            <button class="btn-copy">📋 Copy</button>
+        </div>
+    `).join('');
+
+    // Re-attach copy listeners
+    document.querySelectorAll('.key-item .btn-copy').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const keyId = this.parentElement.querySelector('.key-info p').textContent.replace('Key ID: ', '').trim();
+            navigator.clipboard.writeText(keyId).then(() => {
+                showToast('Đã sao chép key!', 'success');
+            });
+        });
+    });
+}
+
+// Update Transfer Content
+function updateTransferContent() {
+    const transferContent = document.getElementById('transferContent');
+    if (transferContent) {
+        transferContent.value = `OVISIT ${state.userId}`;
+    }
+}
+
+// Update UI
+function updateUI() {
+    console.log('Updating UI...');
+    
+    // Update balance
+    const userBalance = document.getElementById('userBalance');
+    const currentBalance = document.getElementById('currentBalance');
+    const totalSpent = document.getElementById('totalSpent');
+    
+    if (userBalance) userBalance.textContent = `Số dư: ${state.accountBalance.toLocaleString()}₫`;
+    if (currentBalance) currentBalance.textContent = state.accountBalance.toLocaleString() + '₫';
+    if (totalSpent) totalSpent.textContent = state.totalSpent.toLocaleString() + '₫';
+
+    // Update stats
+    const activeKeys = state.keys.filter(k => {
+        const expire = new Date(k.expireDate);
+        return expire > new Date() && k.status === 'active';
+    }).length;
+    const expiredKeys = state.keys.filter(k => {
+        const expire = new Date(k.expireDate);
+        return expire < new Date();
+    }).length;
+
+    const statNumbers = document.querySelectorAll('.stat-number');
+    if (statNumbers.length >= 3) {
+        statNumbers[0].textContent = state.keys.length;
+        statNumbers[1].textContent = activeKeys;
+        statNumbers[2].textContent = expiredKeys;
+    }
+
+    // Update game display
+    if (state.selectedGame) {
+        updateGameDisplay();
+        updatePackageList();
+    }
+}
+
+// Show Toast
+function showToast(message, type = 'success') {
+    const toast = document.getElementById('toast');
+    if (!toast) return;
+    
+    toast.textContent = message;
+    toast.className = `toast show ${type}`;
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+    }, 3000);
+}
+
+// Save/Load User Data
+function saveUserData() {
+    localStorage.setItem('ovisit_state', JSON.stringify(state));
+}
+
+function loadUserData() {
+    const saved = localStorage.getItem('ovisit_state');
+    if (saved) {
+        try {
+            const savedState = JSON.parse(saved);
+            state = {
+                ...state,
+                accountBalance: savedState.accountBalance || 0,
+                totalSpent: savedState.totalSpent || 0,
+                keys: savedState.keys || []
+            };
+        } catch (e) {
+            console.log('Error loading state:', e);
+        }
+    }
+}
+  state.totalSpent += price;
 
     saveUserData();
     updateUI();
