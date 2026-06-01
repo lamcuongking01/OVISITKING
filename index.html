@@ -14,13 +14,10 @@
                 <div class="avatar">👤</div>
                 <div class="user-info">
                     <h2>Faker x Seller</h2>
-                    <span class="dropdown">⋁</span>
                 </div>
             </div>
             <div class="phone-status">
-                <span>583</span>
-                <span>📶</span>
-                <span>🔋 42</span>
+                <span>🔋42</span>
             </div>
         </div>
 
@@ -31,14 +28,13 @@
                 <p>7481059775 📋</p>
             </div>
         </div>
+    </div>
 
-        <div class="profile-section">
-            <div class="logo-circle">
-                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%234a9eff'/%3E%3Ctext x='50' y='50' font-size='24' fill='white' text-anchor='middle' dy='.3em'%3EOVISIT%3C/text%3E%3C/svg%3E" alt="Logo">
-            </div>
-            <h1>OVISITKING</h1>
-            <p class="username">@OVISITKING</p>
-        </div>
+    <!-- Profile Section -->
+    <div class="profile-card">
+        <div class="logo-circle">OVISIT</div>
+        <h1>OVISITKING</h1>
+        <p class="username">@OVISITKING</p>
 
         <div class="stats-container">
             <div class="stat">
@@ -64,13 +60,216 @@
                 <span class="icon">🛒</span>
                 <div>
                     <h2>Mua Key mới</h2>
-                    <p>Chọn ứng dụng và gói ngày</p>
+                    <p>Chọn game và gói</p>
                 </div>
             </div>
 
             <div class="section-content">
-                <!-- Chọn Ứng Dụng -->
+                <!-- Chọn Game -->
+                <div class="subsection" id="gameSelector">
+                    <div class="subsection-icon">🎮</div>
+                    <div class="subsection-content">
+                        <h3 id="selectedGameName">Chọn game</h3>
+                        <p id="selectedGameType">Chưa chọn</p>
+                        <button class="btn-select-game">Chọn →</button>
+                    </div>
+                </div>
+
+                <!-- Game Modal -->
+                <div id="gameModal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Chọn game</h3>
+                            <span class="close-btn">&times;</span>
+                        </div>
+                        <div class="games-list"></div>
+                    </div>
+                </div>
+
+                <!-- Chọn Gói -->
                 <div class="subsection">
+                    <div class="subsection-icon">💎</div>
+                    <div class="subsection-content">
+                        <h3>Chọn gói</h3>
+                        <div class="package-list" id="packageList"></div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn-buy" id="buyBtn">Mua ngay</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key của bạn -->
+        <section class="section">
+            <div class="section-header">
+                <span class="icon">🔑</span>
+                <h2>Key của bạn</h2>
+            </div>
+
+            <div class="keys-tabs">
+                <button class="tab-btn active" data-tab="all">Tất cả</button>
+                <button class="tab-btn" data-tab="active">Hoạt động</button>
+                <button class="tab-btn" data-tab="expired">Hết hạn</button>
+                <button class="tab-btn" data-tab="banned">Bị khoá</button>
+            </div>
+
+            <div class="keys-list" id="keysList">
+                <p class="empty-state">Chưa có key nào</p>
+            </div>
+        </section>
+
+        <!-- Nạp Tiền -->
+        <section class="section">
+            <div class="section-header">
+                <span class="icon">💳</span>
+                <h2>Nạp Tiền</h2>
+            </div>
+
+            <div class="payment-methods">
+                <div class="payment-method-card" data-method="bank">
+                    <div class="method-icon">🏦</div>
+                    <h3>Chuyển Khoản</h3>
+                    <button class="btn-select-payment">Chọn →</button>
+                </div>
+
+                <div class="payment-method-card" data-method="card">
+                    <div class="method-icon">💳</div>
+                    <h3>Thẻ Cào</h3>
+                    <button class="btn-select-payment">Chọn →</button>
+                </div>
+            </div>
+
+            <!-- Bank Transfer Modal -->
+            <div id="bankModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Chuyển Khoản</h3>
+                        <span class="close-btn">&times;</span>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="bank-selection">
+                            <label class="bank-option active" data-bank="vietqr">
+                                <input type="radio" name="bank" value="vietqr" checked>
+                                <span>VietQR</span>
+                            </label>
+                            <label class="bank-option" data-bank="mb">
+                                <input type="radio" name="bank" value="mb">
+                                <span>MB Bank</span>
+                            </label>
+                        </div>
+
+                        <div class="qr-container">
+                            <img id="qrImage" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect fill='white' width='200' height='200'/%3E%3Crect fill='%23333' x='20' y='20' width='160' height='160'/%3E%3C/svg%3E" alt="QR Code" class="qr-code">
+                            <p class="qr-label">Quét mã QR</p>
+                        </div>
+
+                        <div class="info-box">
+                            <div class="info-row">
+                                <label>Tên:</label>
+                                <div class="info-input-group">
+                                    <input type="text" value="LAM CHI CUONG" readonly>
+                                    <button class="btn-copy">📋</button>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <label>Số TK:</label>
+                                <div class="info-input-group">
+                                    <input type="text" value="0394628916" readonly>
+                                    <button class="btn-copy">📋</button>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <label>Nội dung:</label>
+                                <div class="info-input-group">
+                                    <input type="text" id="transferContent" value="OVISIT" readonly>
+                                    <button class="btn-copy">📋</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Payment Modal -->
+            <div id="cardModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Nạp Thẻ Cào</h3>
+                        <span class="close-btn">&times;</span>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="card-providers">
+                            <label class="provider-option active" data-provider="viettel">
+                                <input type="radio" name="provider" value="viettel" checked>
+                                <span>Viettel</span>
+                            </label>
+                            <label class="provider-option" data-provider="vina">
+                                <input type="radio" name="provider" value="vina">
+                                <span>Vina</span>
+                            </label>
+                            <label class="provider-option" data-provider="garena">
+                                <input type="radio" name="provider" value="garena">
+                                <span>Garena</span>
+                            </label>
+                        </div>
+
+                        <div class="denomination-section">
+                            <h4>Mệnh giá:</h4>
+                            <div class="denomination-grid">
+                                <button class="denom-btn" data-amount="20000">20K</button>
+                                <button class="denom-btn" data-amount="50000">50K</button>
+                                <button class="denom-btn" data-amount="100000">100K</button>
+                                <button class="denom-btn" data-amount="200000">200K</button>
+                            </div>
+                        </div>
+
+                        <div class="card-input-section">
+                            <input type="text" id="cardCode" placeholder="Mã thẻ" maxlength="20">
+                            <input type="text" id="cardSerial" placeholder="Serial" maxlength="20">
+                        </div>
+
+                        <button class="btn-submit-card">Nạp Thẻ</button>
+
+                        <div class="discount-info">
+                            <p><strong>💰 Chiết khấu:</strong></p>
+                            <p>20K→19K | 50K→47.5K | 100K→95K | 200K→190K</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Thông Tin Tài Khoản -->
+        <section class="section">
+            <div class="section-header">
+                <span class="icon">👤</span>
+                <h2>Tài Khoản</h2>
+            </div>
+
+            <div class="account-info">
+                <div class="info-card">
+                    <span class="label">Số dư:</span>
+                    <span class="value" id="currentBalance">0₫</span>
+                </div>
+                <div class="info-card">
+                    <span class="label">Chi tiêu:</span>
+                    <span class="value" id="totalSpent">0₫</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
                     <div class="subsection-icon">📦</div>
                     <div class="subsection-content">
                         <h3>Nhân chọn game</h3>
