@@ -2,236 +2,670 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>OVISITKING KEY SHOP</title>
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <style>
-        :root {
-            --bg-dark: #0f111a;
-            --card-bg: #151824;
-            --card-sub: #1e2235;
-            --border-color: #262b42;
-            --text-white: #ffffff;
-            --text-gray: #7882a1;
-            --primary-blue: #0088cc;
-            --accent-green: #34d399;
-            --accent-purple: #8b5cf6;
-        }
-
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            -webkit-tap-highlight-color: rgba(0,0,0,0);
-        }
-
-        body {
-            background-color: var(--bg-dark);
-            color: var(--text-white);
-            padding: 16px;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-        }
-
-        .mini-app-container {
-            width: 100%;
-            max-width: 450px;
-        }
-
-        /* USER PROFILE HEADER */
-        .user-header-box {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-        .user-avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: #252a41;
-            border: 2px solid var(--accent-purple);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-
-        /* COUNTER GRID */
-        .counter-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 12px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .counter-item { display: flex; flex-direction: column; gap: 4px; }
-        .counter-item:not(:last-child) { border-right: 1px solid var(--border-color); }
-        .counter-num { font-size: 18px; font-weight: 800; }
-        .counter-label { font-size: 11px; color: var(--text-gray); }
-
-        /* SECTION MAIN */
-        .section-panel {
-            background-color: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 16px;
-            margin-bottom: 20px;
-        }
-        .panel-title { font-size: 14px; font-weight: 600; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
-
-        /* CUSTOM GAME DROPDOWN - KHU VỰC ĐÃ FIX TRIỆT ĐỂ */
-        .custom-dropdown {
-            position: relative;
-            margin-bottom: 16px;
-            user-select: none;
-        }
-        .dropdown-trigger {
-            background: var(--card-sub);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            cursor: pointer;
-        }
-        .dropdown-menu {
-            display: none;
-            position: absolute;
-            top: 105%; left: 0; width: 100%;
-            background: #1b1e2e;
-            border: 1px solid var(--accent-purple);
-            border-radius: 12px;
-            z-index: 999;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            overflow: hidden;
-        }
-        .dropdown-item {
-            padding: 12px 14px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            cursor: pointer;
-            border-bottom: 1px solid var(--border-color);
-        }
-        .dropdown-item:last-child { border-bottom: none; }
-        .dropdown-item:hover { background: #24293f; }
-
-        .game-info-flex { display: flex; align-items: center; gap: 12px; }
-        .game-img-box { width: 40px; height: 40px; background: #2d334d; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
-        .game-title { font-size: 14px; font-weight: 700; color: #fff; }
-        .game-pkg { font-size: 11px; color: var(--text-gray); }
-
-        /* DANH SÁCH GÓI GIÁ */
-        #priceSectionWrapper { display: none; margin-bottom: 16px; }
-        .package-title-lbl { font-size: 11px; color: var(--text-gray); margin-bottom: 8px; font-weight: 600; }
-        .package-list { display: flex; flex-direction: column; gap: 10px; }
-        .package-card {
-            background: var(--card-sub);
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 14px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        .package-card.selected {
-            border-color: var(--accent-purple);
-            background: rgba(139, 92, 246, 0.08);
-        }
-        .pkg-name { font-size: 14px; font-weight: 700; color: #fff; }
-        .pkg-sub { font-size: 11px; color: var(--text-gray); margin-top: 2px; }
-        .pkg-price { font-size: 14px; font-weight: 800; color: #fff; }
-
-        /* BOTTOM BAR ACTION */
-        .action-row { display: flex; gap: 10px; align-items: center; margin-top: 10px; }
-        .circle-action-btn { width: 46px; height: 46px; border-radius: 50%; background: var(--card-sub); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-size: 18px; }
-        
-        .btn-main-submit {
-            flex: 1; height: 46px; border-radius: 23px; border: none;
-            background: #222638; color: var(--text-gray);
-            font-size: 14px; font-weight: 700; cursor: pointer;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-        }
-        .btn-main-submit.ready {
-            background: linear-gradient(135deg, #00b4db, #0083b0);
-            color: #fff;
-            box-shadow: 0 4px 15px rgba(0, 131, 176, 0.3);
-        }
-
-        /* POPUP MODAL THANH TOÁN QR BANK */
-        .payment-modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); z-index: 9999;
-            display: none; justify-content: center; align-items: center; padding: 20px;
-        }
-        .payment-modal-content {
-            background: #161926; border: 1px solid var(--border-color);
-            width: 100%; max-width: 380px; border-radius: 20px; padding: 20px;
-            text-align: center; position: relative;
-        }
-        .close-modal-btn { position: absolute; top: 14px; right: 16px; font-size: 20px; color: var(--text-gray); cursor: pointer; }
-        .modal-title { font-size: 18px; font-weight: bold; margin-bottom: 2px; }
-        .modal-price { font-size: 22px; font-weight: 800; color: #fff; margin-bottom: 15px; }
-        
-        .qr-image-container {
-            background: white; padding: 10px; border-radius: 14px;
-            display: inline-block; margin-bottom: 15px; width: 220px; height: 220px;
-        }
-        .qr-img { width: 100%; height: 100%; object-fit: contain; }
-
-        .bank-details-box { background: #0b0d14; border-radius: 10px; padding: 12px; text-align: left; font-size: 13px; margin-bottom: 15px; }
-        .bank-row { display: flex; justify-content: space-between; margin-bottom: 6px; }
-        .bank-label { color: var(--text-gray); }
-        .bank-val { font-weight: bold; color: #fff; display: flex; align-items: center; gap: 4px; }
-        .copy-badge { font-size: 10px; background: #23293d; color: #0088cc; padding: 2px 6px; border-radius: 4px; cursor: pointer; }
-
-        .warning-box { background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.2); color: #f59e0b; padding: 10px; border-radius: 8px; font-size: 11px; line-height: 1.4; text-align: left; margin-bottom: 15px; }
-        
-        /* LỊCH SỬ CARD */
-        .history-card { background: var(--card-sub); border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; margin-bottom: 8px; font-size: 12px; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OVISIT KEY - Bán Key Tự Động</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <div class="mini-app-container">
-
-        <div class="user-header-box">
-            <div id="userAvatar" class="user-avatar">👑</div>
-            <div>
-                <div class="user-name" id="txtUserTelegram">Admin Lâm Cường</div>
-                <div class="user-tag" id="txtUserHandle">@Lamcuonghuhu</div>
+    <!-- Header -->
+    <div class="header">
+        <div class="header-top">
+            <div class="logo-section">
+                <div class="avatar">👤</div>
+                <div class="user-info">
+                    <h2>Faker x Seller</h2>
+                    <span class="dropdown">⋁</span>
+                </div>
+            </div>
+            <div class="phone-status">
+                <span>583</span>
+                <span>📶</span>
+                <span>🔋 42</span>
             </div>
         </div>
 
-        <div class="counter-grid">
-            <div class="counter-item"><span class="counter-num" id="statTotal" style="color:#fff;">0</span><span class="counter-label">Tổng key</span></div>
-            <div class="counter-item"><span class="counter-num" style="color:var(--accent-green);">0</span><span class="counter-label">Hoạt động</span></div>
-            <div class="counter-item"><span class="counter-num" style="color:#ef4444;">0</span><span class="counter-label">Hết hạn</span></div>
+        <div class="banner">
+            <div class="banner-icon">🔥</div>
+            <div class="banner-text">
+                <h3>KHUYẾN MÃI HOT!</h3>
+                <p>7481059775 📋</p>
+            </div>
         </div>
 
-        <div class="section-panel">
-            <div class="panel-title">🛒 Mua Key mới</div>
-            
-            <div style="font-size: 11px; color: var(--text-gray); margin-bottom: 6px; font-weight: 600;">📦 Chọn ứng dụng</div>
-            <div class="custom-dropdown">
-                <div class="dropdown-trigger" onclick="toggleDropdown(event)">
-                    <div class="game-info-flex">
-                        <div class="game-img-box" id="currentIcon">🎮</div>
-                        <div>
-                            <div class="game-title" id="currentTitle">Nhấn chọn game</div>
-                            <div class="game-pkg" id="currentSub">Chưa chọn ứng dụng</div>
+        <div class="profile-section">
+            <div class="logo-circle">
+                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='50' fill='%234a9eff'/%3E%3Ctext x='50' y='50' font-size='24' fill='white' text-anchor='middle' dy='.3em'%3EOVISIT%3C/text%3E%3C/svg%3E" alt="Logo">
+            </div>
+            <h1>OVISITKING</h1>
+            <p class="username">@OVISITKING</p>
+        </div>
+
+        <div class="stats-container">
+            <div class="stat">
+                <span class="stat-number">0</span>
+                <span class="stat-label">Tổng key</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number" style="color: #00d65a;">0</span>
+                <span class="stat-label">Hoạt động</span>
+            </div>
+            <div class="stat">
+                <span class="stat-number" style="color: #ffc107;">0</span>
+                <span class="stat-label">Hết hạn</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <!-- Mua Key Mới -->
+        <section class="section">
+            <div class="section-header">
+                <span class="icon">🛒</span>
+                <div>
+                    <h2>Mua Key mới</h2>
+                    <p>Chọn ứng dụng và gói ngày</p>
+                </div>
+            </div>
+
+            <div class="section-content">
+                <!-- Chọn Ứng Dụng -->
+                <div class="subsection">
+                    <div class="subsection-icon">📦</div>
+                    <div class="subsection-content">
+                        <h3>Nhân chọn game</h3>
+                        <p>Chưa chọn game</p>
+                        <button class="btn-select-game">Chọn game →</button>
+                    </div>
+                </div>
+
+                <!-- Game Modal -->
+                <div id="gameModal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Chọn game</h3>
+                            <span class="close-btn">&times;</span>
+                        </div>
+                        <div class="games-list">
+                            <div class="game-item vip" data-game="lien-quan-mobile" data-type="vip">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%23ff6b6b' width='64' height='64' rx='8'/%3E%3Ctext x='32' y='32' font-size='32' fill='white' text-anchor='middle' dy='.3em'%3E5v5%3C/text%3E%3C/svg%3E" alt="Liên Quân Mobile">
+                                <div class="game-info">
+                                    <h4>Liên Quân Mobile</h4>
+                                    <p>com.garena.game.kgvn</p>
+                                    <small>Only Root</small>
+                                </div>
+                                <span class="vip-badge">VIP</span>
+                            </div>
+
+                            <div class="game-item vip" data-game="garena-rov" data-type="vip">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%23ff6b6b' width='64' height='64' rx='8'/%3E%3Ctext x='32' y='32' font-size='32' fill='white' text-anchor='middle' dy='.3em'%3E⚔️%3C/text%3E%3C/svg%3E" alt="Garena RoV">
+                                <div class="game-info">
+                                    <h4>Garena RoV</h4>
+                                    <p>com.garena.game.kgth</p>
+                                    <small>Only Root</small>
+                                </div>
+                                <span class="vip-badge">VIP</span>
+                            </div>
+
+                            <div class="game-item normal" data-game="free-fire" data-type="normal">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%23ff4757' width='64' height='64' rx='8'/%3E%3Ctext x='32' y='32' font-size='32' fill='white' text-anchor='middle' dy='.3em'%3E🔥%3C/text%3E%3C/svg%3E" alt="Free Fire">
+                                <div class="game-info">
+                                    <h4>Free Fire</h4>
+                                    <p>com.dts.freefireth</p>
+                                    <small>Root & NoRoot</small>
+                                </div>
+                                <span class="normal-badge">NORMAL</span>
+                            </div>
+
+                            <div class="game-item normal" data-game="free-fire-max" data-type="normal">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%23ffa502' width='64' height='64' rx='8'/%3E%3Ctext x='32' y='32' font-size='32' fill='white' text-anchor='middle' dy='.3em'%3E✨%3C/text%3E%3C/svg%3E" alt="Free Fire Max">
+                                <div class="game-info">
+                                    <h4>Free Fire Max</h4>
+                                    <p>com.dts.freefiremaxth</p>
+                                    <small>Root & NoRoot</small>
+                                </div>
+                                <span class="normal-badge">NORMAL</span>
+                            </div>
+
+                            <div class="game-item normal" data-game="blood-strike" data-type="normal">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%23e74c3c' width='64' height='64' rx='8'/%3E%3Ctext x='32' y='32' font-size='32' fill='white' text-anchor='middle' dy='.3em'%3E🗡️%3C/text%3E%3C/svg%3E" alt="Blood Strike">
+                                <div class="game-info">
+                                    <h4>Blood Strike</h4>
+                                    <p>com.lilithgames.bloodstrike</p>
+                                    <small>Root & NoRoot</small>
+                                </div>
+                                <span class="normal-badge">NORMAL</span>
+                            </div>
+
+                            <div class="game-item normal" data-game="delta-force" data-type="vip">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%239b59b6' width='64' height='64' rx='8'/%3E%3Ctext x='32' y='32' font-size='32' fill='white' text-anchor='middle' dy='.3em'%3E👑%3C/text%3E%3C/svg%3E" alt="Delta Force">
+                                <div class="game-info">
+                                    <h4>Delta Force</h4>
+                                    <p>com.tencent.df.lf</p>
+                                    <small>Root & NoRoot</small>
+                                </div>
+                                <span class="vip-badge">VIP</span>
+                            </div>
+
+                            <div class="game-item normal" data-game="wild-rift" data-type="normal">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%234169e1' width='64' height='64' rx='8'/%3E%3Ctext x='32' y='32' font-size='32' fill='white' text-anchor='middle' dy='.3em'%3E🎮%3C/text%3E%3C/svg%3E" alt="Wild Rift">
+                                <div class="game-info">
+                                    <h4>Wild Rift - Global</h4>
+                                    <p>com.riotgames.league.wildrift</p>
+                                    <small>Only Root</small>
+                                </div>
+                                <span class="normal-badge">NORMAL</span>
+                            </div>
+
+                            <div class="game-item normal" data-game="lmht-toc-chien" data-type="normal">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%235851db' width='64' height='64' rx='8'/%3E%3Ctext x='32' y='32' font-size='32' fill='white' text-anchor='middle' dy='.3em'%3E🏆%3C/text%3E%3C/svg%3E" alt="LMHT Tốc Chiến">
+                                <div class="game-info">
+                                    <h4>LMHT: Tốc Chiến</h4>
+                                    <p>com.riotgames.league.wildriftvn</p>
+                                    <small>Only Root</small>
+                                </div>
+                                <span class="normal-badge">NORMAL</span>
+                            </div>
+
+                            <div class="game-item normal" data-game="gunny-origin" data-type="normal">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%23ffd700' width='64' height='64' rx='8'/%3E%3Ctext x='32' y='32' font-size='32' fill='white' text-anchor='middle' dy='.3em'%3E🎯%3C/text%3E%3C/svg%3E" alt="Gunny Origin">
+                                <div class="game-info">
+                                    <h4>Gunny Origin</h4>
+                                    <p>vng.game.gunny.mobi.classic.original</p>
+                                    <small>Root & NoRoot</small>
+                                </div>
+                                <span class="normal-badge">NORMAL</span>
+                            </div>
+
+                            <div class="game-item normal" data-game="sniper-3d" data-type="normal">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%23666' width='64' height='64' rx='8'/%3E%3Ctext x='32' y='32' font-size='32' fill='white' text-anchor='middle' dy='.3em'%3E🎲%3C/text%3E%3C/svg%3E" alt="Sniper 3D">
+                                <div class="game-info">
+                                    <h4>Sniper 3D</h4>
+                                    <p>com.fungames.sniper3d</p>
+                                    <small>Root & NoRoot</small>
+                                </div>
+                                <span class="normal-badge">NORMAL</span>
+                            </div>
                         </div>
                     </div>
-                    <div style="color: var(--text-gray); font-size: 12px;" id="arrowDrop">❯</div>
+                </div>
+
+                <!-- Chọn Gói -->
+                <div class="subsection">
+                    <div class="subsection-icon">💎</div>
+                    <div class="subsection-content">
+                        <h3>Chọn gói</h3>
+                        <p id="packageDescription">Danh sách trống</p>
+                        <div class="package-list" id="packageList">
+                            <!-- Được điền bởi JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chú ý -->
+                <div class="note-box">
+                    <p>⚠️ Không nhân card: Nếu không có tài khoản ngân hàng vui lòng tạo mã qr và nhớ người khác quét hộ để được nhận key ở đây</p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn-download">⬇️</button>
+                    <button class="btn-play">▶️</button>
+                    <button class="btn-buy" id="buyBtn">Mua ngay</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key của bạn -->
+        <section class="section">
+            <div class="section-header">
+                <span class="icon">🔑</span>
+                <h2>Key của bạn</h2>
+            </div>
+
+            <div class="keys-tabs">
+                <button class="tab-btn active" data-tab="all">Tất cả</button>
+                <button class="tab-btn" data-tab="active">Hoạt động</button>
+                <button class="tab-btn" data-tab="expired">Hết hạn</button>
+                <button class="tab-btn" data-tab="banned">Bị khoá</button>
+            </div>
+
+            <div class="keys-search">
+                <input type="text" placeholder="🔍 Tìm kiếm GKey...">
+            </div>
+
+            <div class="keys-list" id="keysList">
+                <p class="empty-state">Chưa có key nào. Hãy mua key để bắt đầu!</p>
+            </div>
+        </section>
+
+        <!-- Nạp Tiền -->
+        <section class="section">
+            <div class="section-header">
+                <span class="icon">💳</span>
+                <div>
+                    <h2>Nạp Tiền</h2>
+                    <p>Chọn phương thức nạp tiền</p>
+                </div>
+            </div>
+
+            <div class="payment-methods">
+                <!-- Chuyển Khoản Ngân Hàng -->
+                <div class="payment-method-card" data-method="bank">
+                    <div class="method-icon">🏦</div>
+                    <h3>Chuyển Khoản</h3>
+                    <p>Nạp qua ngân hàng</p>
+                    <button class="btn-select-payment">Chọn →</button>
+                </div>
+
+                <!-- Thẻ Cào -->
+                <div class="payment-method-card" data-method="card">
+                    <div class="method-icon">💳</div>
+                    <h3>Thẻ Cào</h3>
+                    <p>Viettel, Vina, Garena</p>
+                    <button class="btn-select-payment">Chọn →</button>
+                </div>
+            </div>
+
+            <!-- Bank Transfer Modal -->
+            <div id="bankModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Chuyển Khoản Ngân Hàng</h3>
+                        <span class="close-btn">&times;</span>
+                    </div>
+
+                    <div class="modal-body">
+                        <!-- Bank Selection -->
+                        <div class="bank-selection">
+                            <label class="bank-option active" data-bank="vietqr">
+                                <input type="radio" name="bank" value="vietqr" checked>
+                                <span>Vietcombank (VietQR)</span>
+                            </label>
+                            <label class="bank-option" data-bank="mb">
+                                <input type="radio" name="bank" value="mb">
+                                <span>MB Bank</span>
+                            </label>
+                        </div>
+
+                        <!-- QR Code -->
+                        <div class="qr-container">
+                            <img id="qrImage" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect fill='white' width='200' height='200'/%3E%3Crect fill='%23333' x='20' y='20' width='160' height='160'/%3E%3C/svg%3E" alt="QR Code" class="qr-code">
+                            <p class="qr-label">Quét mã QR hoặc nhập thông tin dưới</p>
+                        </div>
+
+                        <!-- Bank Info -->
+                        <div class="info-box">
+                            <div class="info-row">
+                                <label>Tên Chủ Tài Khoản:</label>
+                                <div class="info-input-group">
+                                    <input type="text" value="LAM CHI CUONG" readonly>
+                                    <button class="btn-copy">📋</button>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <label>Số Tài Khoản:</label>
+                                <div class="info-input-group">
+                                    <input type="text" value="0394628916" readonly>
+                                    <button class="btn-copy">📋</button>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <label>Nội Dung Chuyển Khoản:</label>
+                                <div class="info-input-group">
+                                    <input type="text" id="transferContent" value="OVISIT user_id" readonly>
+                                    <button class="btn-copy">📋</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bank Logos -->
+                        <div class="bank-logos">
+                            <div class="logo-item">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%2300a651' width='100' height='100' rx='10'/%3E%3Ctext x='50' y='50' font-size='20' fill='white' text-anchor='middle' dy='.3em'%3EVietQR%3C/text%3E%3C/svg%3E" alt="VietQR">
+                            </div>
+                            <div class="logo-item">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%234a90e2' width='100' height='100' rx='10'/%3E%3Ctext x='50' y='50' font-size='20' fill='white' text-anchor='middle' dy='.3em'%3EMB%3C/text%3E%3C/svg%3E" alt="MB Bank">
+                            </div>
+                            <div class="logo-item">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23ff6b35' width='100' height='100' rx='10'/%3E%3Ctext x='50' y='50' font-size='14' fill='white' text-anchor='middle' dy='.3em'%3Enapas24/7%3C/text%3E%3C/svg%3E" alt="Napas 24/7">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Payment Modal -->
+            <div id="cardModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Nạp Thẻ Cào</h3>
+                        <span class="close-btn">&times;</span>
+                    </div>
+
+                    <div class="modal-body">
+                        <!-- Card Provider Selection -->
+                        <div class="card-providers">
+                            <label class="provider-option active" data-provider="viettel">
+                                <input type="radio" name="provider" value="viettel" checked>
+                                <span>Viettel</span>
+                            </label>
+                            <label class="provider-option" data-provider="vina">
+                                <input type="radio" name="provider" value="vina">
+                                <span>Vina</span>
+                            </label>
+                            <label class="provider-option" data-provider="garena">
+                                <input type="radio" name="provider" value="garena">
+                                <span>Garena</span>
+                            </label>
+                        </div>
+
+                        <!-- De                    <p>Chọn ứng dụng và gói ngày</p>
+                </div>
+            </div>
+
+            <div class="section-content">
+                <!-- Chọn Ứng Dụng -->
+                <div class="subsection">
+                    <div class="subsection-icon">📦</div>
+                    <div class="subsection-content">
+                        <h3>Nhân chọn game</h3>
+                        <p>Chưa chọn game</p>
+                        <button class="btn-select-game">Chọn game →</button>
+                    </div>
+                </div>
+
+                <!-- Game Modal -->
+                <div id="gameModal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Chọn game</h3>
+                            <span class="close-btn">&times;</span>
+                        </div>
+                        <div class="games-list">
+                            <div class="game-item vip" data-game="lien-quan-mobile" data-type="vip">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%23ff6b6b' width='64' height='64' rx='8'/%3E%3Ctext x='32' y='32' font-size='32' fill='white' text-anchor='middle' dy='.3em'%3E5v5%3C/text%3E%3C/svg%3E" alt="Liên Quân Mobile">
+                                <div class="game-info">
+                                    <h4>Liên Quân Mobile</h4>
+                                    <p>com.garena.game.kgvn</p>
+                                    <small>Only Root</small>
+                                </div>
+                                <span class="vip-badge">VIP</span>
+                            </div>
+
+                            <div class="game-item vip" data-game="garena-rov" data-type="vip">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%23ff6b6b' width='64' height='64' rx='8'/%3E%3Ctext x='32' y='32' font-size='32' fill='white' text-anchor='middle' dy='.3em'%3E⚔️%3C/text%3E%3C/svg%3E" alt="Garena RoV">
+                                <div class="game-info">
+                                    <h4>Garena RoV</h4>
+                                    <p>com.garena.game.kgth</p>
+                                    <small>Only Root</small>
+                                </div>
+                                <span class="vip-badge">VIP</span>
+                            </div>
+
+                            <div class="game-item normal" data-game="free-fire" data-type="normal">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%23ff4757' width='64' height='64' rx='8'/%3E%3Ctext x='32' y='32' font-size='32' fill='white' text-anchor='middle' dy='.3em'%3E🔥%3C/text%3E%3C/svg%3E" alt="Free Fire">
+                                <div class="game-info">
+                                    <h4>Free Fire</h4>
+                                    <p>com.dts.freefireth</p>
+                                    <small>Root & NoRoot</small>
+                                </div>
+                                <span class="normal-badge">NORMAL</span>
+                            </div>
+
+                            <div class="game-item normal" data-game="free-fire-max" data-type="normal">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%23ffa502' width='64' height='64' rx='8'/%3E%3Ctext x='32' y='32' font-size='32' fill='white' text-anchor='middle' dy='.3em'%3E✨%3C/text%3E%3C/svg%3E" alt="Free Fire Max">
+                                <div class="game-info">
+                                    <h4>Free Fire Max</h4>
+                                    <p>com.dts.freefiremaxth</p>
+                                    <small>Root & NoRoot</small>
+                                </div>
+                                <span class="normal-badge">NORMAL</span>
+                            </div>
+
+                            <div class="game-item normal" data-game="wild-rift" data-type="normal">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%234169e1' width='64' height='64' rx='8'/%3E%3Ctext x='32' y='32' font-size='32' fill='white' text-anchor='middle' dy='.3em'%3E🎮%3C/text%3E%3C/svg%3E" alt="Wild Rift">
+                                <div class="game-info">
+                                    <h4>Wild Rift - Global</h4>
+                                    <p>com.riotgames.league.wildrift</p>
+                                    <small>Only Root</small>
+                                </div>
+                                <span class="normal-badge">NORMAL</span>
+                            </div>
+
+                            <div class="game-item normal" data-game="lmht-toc-chien" data-type="normal">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%235851db' width='64' height='64' rx='8'/%3E%3Ctext x='32' y='32' font-size='32' fill='white' text-anchor='middle' dy='.3em'%3E🏆%3C/text%3E%3C/svg%3E" alt="LMHT Tốc Chiến">
+                                <div class="game-info">
+                                    <h4>LMHT: Tốc Chiến</h4>
+                                    <p>com.riotgames.league.wildriftvn</p>
+                                    <small>Only Root</small>
+                                </div>
+                                <span class="normal-badge">NORMAL</span>
+                            </div>
+
+                            <div class="game-item normal" data-game="gunny-origin" data-type="normal">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%23ffd700' width='64' height='64' rx='8'/%3E%3Ctext x='32' y='32' font-size='32' fill='white' text-anchor='middle' dy='.3em'%3E🎯%3C/text%3E%3C/svg%3E" alt="Gunny Origin">
+                                <div class="game-info">
+                                    <h4>Gunny Origin</h4>
+                                    <p>vng.game.gunny.mobi.classic.original</p>
+                                    <small>Root & NoRoot</small>
+                                </div>
+                                <span class="normal-badge">NORMAL</span>
+                            </div>
+
+                            <div class="game-item normal" data-game="sniper-3d" data-type="normal">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect fill='%23666' width='64' height='64' rx='8'/%3E%3Ctext x='32' y='32' font-size='32' fill='white' text-anchor='middle' dy='.3em'%3E🎲%3C/text%3E%3C/svg%3E" alt="Sniper 3D">
+                                <div class="game-info">
+                                    <h4>Sniper 3D</h4>
+                                    <p>com.fungames.sniper3d</p>
+                                    <small>Root & NoRoot</small>
+                                </div>
+                                <span class="normal-badge">NORMAL</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chọn Gói -->
+                <div class="subsection">
+                    <div class="subsection-icon">💎</div>
+                    <div class="subsection-content">
+                        <h3>Chọn gói</h3>
+                        <p id="packageDescription">Danh sách trống</p>
+                        <div class="package-list" id="packageList">
+                            <!-- Được điền bởi JavaScript -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chú ý -->
+                <div class="note-box">
+                    <p>⚠️ Không nhân card: Nếu không có tài khoản ngân hàng vui lòng tạo mã qr và nhớ người khác quét hộ để được nhận key ở đây</p>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="btn-download">⬇️</button>
+                    <button class="btn-play">▶️</button>
+                    <button class="btn-buy" id="buyBtn">Mua ngay</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key của bạn -->
+        <section class="section">
+            <div class="section-header">
+                <span class="icon">🔑</span>
+                <h2>Key của bạn</h2>
+            </div>
+
+            <div class="keys-tabs">
+                <button class="tab-btn active" data-tab="all">Tất cả</button>
+                <button class="tab-btn" data-tab="active">Hoạt động</button>
+                <button class="tab-btn" data-tab="expired">Hết hạn</button>
+                <button class="tab-btn" data-tab="banned">Bị khoá</button>
+            </div>
+
+            <div class="keys-search">
+                <input type="text" placeholder="🔍 Tìm kiếm GKey...">
+            </div>
+
+            <div class="keys-list" id="keysList">
+                <p class="empty-state">Chưa có key nào. Hãy mua key để bắt đầu!</p>
+            </div>
+        </section>
+
+        <!-- Nạp Tiền -->
+        <section class="section">
+            <div class="section-header">
+                <span class="icon">💳</span>
+                <div>
+                    <h2>Nạp Tiền</h2>
+                    <p>Chọn phương thức nạp tiền</p>
+                </div>
+            </div>
+
+            <div class="payment-methods">
+                <!-- Chuyển Khoản Ngân Hàng -->
+                <div class="payment-method-card" data-method="bank">
+                    <div class="method-icon">🏦</div>
+                    <h3>Chuyển Khoản</h3>
+                    <p>Nạp qua ngân hàng</p>
+                    <button class="btn-select-payment">Chọn →</button>
+                </div>
+
+                <!-- Thẻ Cào -->
+                <div class="payment-method-card" data-method="card">
+                    <div class="method-icon">💳</div>
+                    <h3>Thẻ Cào</h3>
+                    <p>Viettel, Vina, Garena</p>
+                    <button class="btn-select-payment">Chọn →</button>
+                </div>
+            </div>
+
+            <!-- Bank Transfer Modal -->
+            <div id="bankModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Chuyển Khoản Ngân Hàng</h3>
+                        <span class="close-btn">&times;</span>
+                    </div>
+
+                    <div class="modal-body">
+                        <!-- Bank Selection -->
+                        <div class="bank-selection">
+                            <label class="bank-option active" data-bank="vietqr">
+                                <input type="radio" name="bank" value="vietqr" checked>
+                                <span>Vietcombank (VietQR)</span>
+                            </label>
+                            <label class="bank-option" data-bank="mb">
+                                <input type="radio" name="bank" value="mb">
+                                <span>MB Bank</span>
+                            </label>
+                        </div>
+
+                        <!-- QR Code -->
+                        <div class="qr-container">
+                            <img id="qrImage" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 200'%3E%3Crect fill='white' width='200' height='200'/%3E%3Crect fill='%23333' x='20' y='20' width='160' height='160'/%3E%3C/svg%3E" alt="QR Code" class="qr-code">
+                            <p class="qr-label">Quét mã QR hoặc nhập thông tin dưới</p>
+                        </div>
+
+                        <!-- Bank Info -->
+                        <div class="info-box">
+                            <div class="info-row">
+                                <label>Tên Chủ Tài Khoản:</label>
+                                <div class="info-input-group">
+                                    <input type="text" value="LAM CHI CUONG" readonly>
+                                    <button class="btn-copy">📋</button>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <label>Số Tài Khoản:</label>
+                                <div class="info-input-group">
+                                    <input type="text" value="0394628916" readonly>
+                                    <button class="btn-copy">📋</button>
+                                </div>
+                            </div>
+                            <div class="info-row">
+                                <label>Nội Dung Chuyển Khoản:</label>
+                                <div class="info-input-group">
+                                    <input type="text" id="transferContent" value="OVISIT user_id" readonly>
+                                    <button class="btn-copy">📋</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bank Logos -->
+                        <div class="bank-logos">
+                            <div class="logo-item">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%2300a651' width='100' height='100' rx='10'/%3E%3Ctext x='50' y='50' font-size='20' fill='white' text-anchor='middle' dy='.3em'%3EVietQR%3C/text%3E%3C/svg%3E" alt="VietQR">
+                            </div>
+                            <div class="logo-item">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%234a90e2' width='100' height='100' rx='10'/%3E%3Ctext x='50' y='50' font-size='20' fill='white' text-anchor='middle' dy='.3em'%3EMB%3C/text%3E%3C/svg%3E" alt="MB Bank">
+                            </div>
+                            <div class="logo-item">
+                                <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect fill='%23ff6b35' width='100' height='100' rx='10'/%3E%3Ctext x='50' y='50' font-size='14' fill='white' text-anchor='middle' dy='.3em'%3Enapas24/7%3C/text%3E%3C/svg%3E" alt="Napas 24/7">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Payment Modal -->
+            <div id="cardModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Nạp Thẻ Cào</h3>
+                        <span class="close-btn">&times;</span>
+                    </div>
+
+                    <div class="modal-body">
+                        <!-- Card Provider Selection -->
+                        <div class="card-providers">
+                            <label class="provider-option active" data-provider="viettel">
+                                <input type="radio" name="provider" value="viettel" checked>
+                                <span>Viettel</span>
+                            </label>
+                            <label class="provider-option" data-provider="vina">
+                                <input type="radio" name="provider" value="vina">
+                                <span>Vina</span>
+                            </label>
+                            <label class="provider-option" data-provider="garena">
+                                <input type="radio" name="provider" value="garena">
+                                <span>Garena</span>
+                            </label>
+                        </div>
+
+                        <!-- Denomination Selection -->
+                        <div class="denomination-section">
+                            <h4>Chọn mệnh giá:</h4>
+                            <div class="denomination-grid">
+                                <button class="denom-btn" data-amount="20000">20K</button>
+                                <button class="denom-btn" data-amount="50000">50K</button>
+                                <button class="denom-btn" data-amount="100000">100K</button>
+                                <button class="denom-btn" data-amount="200000">200K</button>
+                            </div>
+                        </div>
+
+                        <!-- Card Input -->
+                        <div class="card-input-section">
+                            <div class="input-group">
+                                <label>Mã Thẻ:</label>
+                                <input type="text" id="cardCode" placeholder="Nhập mã thẻ" maxlength="20">
+                            </div>
+                            <div class="input-group">
+                                <label>Serial:</label>
+                                <input type="text" id="cardSerial" placeholder="Nhập serial" maxlength="20">
+                            </div>
+                        </div>
+
+                        <button class="btn-submit-card">Nạp Thẻ</button>
+
+                        <!-- Discount Info -->
+                        <div class="discount-info">
+                            <p>💰 <strong>Khuyến mãi nạp thẻ:</strong></p>
+                            <ul>
+                                <li>50K+: +2% tiền thư         <div style="color: var(--text-gray); font-size: 12px;" id="arrowDrop">❯</div>
                 </div>
                 
                 <div class="dropdown-menu" id="dropMenuOptions">
