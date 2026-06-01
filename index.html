@@ -128,17 +128,31 @@
                 <h2>Nạp Tiền</h2>
             </div>
 
-            <div class="payment-methods">
-                <div class="payment-method-card" data-method="bank">
-                    <div class="method-icon">🏦</div>
-                    <h3>Chuyển Khoản</h3>
-                    <button class="btn-select-payment">Chọn →</button>
-                </div>
+            <div class="section-content">
+                <button class="btn-open-payment">Chọn phương thức nạp →</button>
+            </div>
 
-                <div class="payment-method-card" data-method="card">
-                    <div class="method-icon">💳</div>
-                    <h3>Thẻ Cào</h3>
-                    <button class="btn-select-payment">Chọn →</button>
+            <!-- Payment Method Modal -->
+            <div id="paymentModal" class="modal">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>Chọn phương thức nạp tiền</h3>
+                        <span class="close-btn">&times;</span>
+                    </div>
+
+                    <div class="payment-methods-list">
+                        <div class="payment-method-item" data-method="bank">
+                            <div class="method-icon">🏦</div>
+                            <h3>Chuyển Khoản</h3>
+                            <p>Nạp qua ngân hàng</p>
+                        </div>
+
+                        <div class="payment-method-item" data-method="card">
+                            <div class="method-icon">💳</div>
+                            <h3>Thẻ Cào</h3>
+                            <p>Viettel, Vina, Garena</p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -237,6 +251,40 @@
 
                         <div class="discount-info">
                             <p><strong>💰 Chiết khấu:</strong></p>
+                            <p>20K→19K | 50K→47.5K | 100K→95K | 200K→190K</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Thông Tin Tài Khoản -->
+        <section class="section">
+            <div class="section-header">
+                <span class="icon">👤</span>
+                <h2>Tài Khoản</h2>
+            </div>
+
+            <div class="account-info">
+                <div class="info-card">
+                    <span class="label">Số dư:</span>
+                    <span class="value" id="currentBalance">0₫</span>
+                </div>
+                <div class="info-card">
+                    <span class="label">Chi tiêu:</span>
+                    <span class="value" id="totalSpent">0₫</span>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+                    <p><strong>💰 Chiết khấu:</strong></p>
                             <p>20K→19K | 50K→47.5K | 100K→95K | 200K→190K</p>
                         </div>
                     </div>
