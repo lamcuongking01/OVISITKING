@@ -2,8 +2,6 @@
 const games = {
     'free-fire': {
         name: 'Free Fire',
-        type: 'normal',
-        icon: '🔥',
         packages: [
             { days: 1, price: 15000 },
             { days: 3, price: 45000 },
@@ -13,8 +11,6 @@ const games = {
     },
     'free-fire-max': {
         name: 'Free Fire Max',
-        type: 'normal',
-        icon: '✨',
         packages: [
             { days: 1, price: 15000 },
             { days: 3, price: 45000 },
@@ -24,8 +20,6 @@ const games = {
     },
     'blood-strike': {
         name: 'Blood Strike',
-        type: 'normal',
-        icon: '🗡️',
         packages: [
             { days: 1, price: 15000 },
             { days: 3, price: 45000 },
@@ -34,9 +28,7 @@ const games = {
         ]
     },
     'delta-force': {
-        name: 'Delta Force',
-        type: 'vip',
-        icon: '👑',
+        name: 'Delta Force (VIP)',
         packages: [
             { days: 1, price: 25000 },
             { days: 7, price: 110000 },
@@ -45,141 +37,77 @@ const games = {
     }
 };
 
-// Market Discount Rates (5%)
-const marketDiscounts = {
+const discounts = {
     20000: 19000,
     50000: 47500,
     100000: 95000,
     200000: 190000
 };
 
-// Current state
 let state = {
+    balance: 0,
+    keys: [],
     selectedGame: null,
     selectedPackage: null,
-    accountBalance: 0,
-    totalSpent: 0,
-    keys: [],
-    userId: Math.random().toString(36).substring(2, 10).toUpperCase()
+    selectedCardAmount: null,
+    userId: 'USER' + Date.now()
 };
 
-// Initialize
+// Init
 document.addEventListener('DOMContentLoaded', function() {
-    loadUserData();
-    buildGamesList();
-    setupEventListeners();
-    updateUI();
+    loadData();
+    setupEvents();
+    updateBalance();
+    updateGamePackages();
+    
+    if (window.Telegram?.WebApp) {
+        window.Telegram.WebApp.ready();
+        window.Telegram.WebApp.MainButton.hide();
+    }
 });
 
-// Build Games List in Modal
-function buildGamesList() {
-    const gamesList = document.querySelector('.games-list');
-    gamesList.innerHTML = Object.entries(games).map(([id, game]) => `
-        <div class="game-item" data-game="${id}">
-            <div style="width: 40px; height: 40px; border-radius: 4px; background: linear-gradient(135deg, #4a9eff, #2e7dd1); display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; font-size: 12px; flex-shrink: 0;">
-                ${game.icon}
-            </div>
-            <div class="game-info">
-                <h4>${game.name}</h4>
-                <small>${game.type === 'vip' ? 'Loại VIP' : 'Loại Thường'}</small>
-            </div>
-            <span class="${game.type === 'vip' ? 'vip-badge' : 'normal-badge'}">${game.type === 'vip' ? 'VIP' : 'NORMAL'}</span>
-        </div>
-    `).join('');
-
-    // Add click listeners
-    document.querySelectorAll('.game-item').forEach(item => {
-        item.addEventListener('click', function() {
-            selectGame(this.dataset.game);
-        });
-    });
-}
-
-// Setup Event Listeners
-function setupEventListeners() {
-    const gameModal = document.getElementById('gameModal');
-    const paymentModal = document.getElementById('paymentModal');
-    const bankModal = document.getElementById('bankModal');
-    const cardModal = document.getElementById('cardModal');
-
-    // Game Modal
-    document.querySelector('.btn-select-game').addEventListener('click', () => {
-        gameModal.classList.add('active');
+function setupEvents() {
+    // Game Select
+    document.getElementById('gameSelect').addEventListener('change', function() {
+        state.selectedGame = this.value;
+        state.selectedPackage = null;
+        updateGamePackages();
     });
 
-    // Payment Modal
-    document.querySelector('.btn-open-payment').addEventListener('click', () => {
-        paymentModal.classList.add('active');
-    });
-
-    // Payment Method Selection
-    document.querySelectorAll('.payment-method-item').forEach(item => {
-        item.addEventListener('click', function() {
-            const method = this.dataset.method;
-            paymentModal.classList.remove('active');
-            
-            if (method === 'bank') {
-                bankModal.classList.add('active');
-                updateTransferContent();
-            } else {
-                cardModal.classList.add('active');
-            }
-        });
-    });
-
-    // Close Modals
-    document.querySelectorAll('.close-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            btn.closest('.modal').classList.remove('active');
-        });
-    });
-
-    document.querySelectorAll('.modal').forEach(modal => {
-        modal.addEventListener('click', function(e) {
-            if (e.target === this) this.classList.remove('active');
-        });
-    });
-
-    // Bank Selection
-    document.querySelectorAll('.bank-option').forEach(option => {
-        option.addEventListener('click', function() {
-            document.querySelectorAll('.bank-option').forEach(o => o.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
-
-    // Provider Selection
-    document.querySelectorAll('.provider-option').forEach(option => {
-        option.addEventListener('click', function() {
-            document.querySelectorAll('.provider-option').forEach(o => o.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
-
-    // Copy Buttons
+    // Package Select
     document.addEventListener('click', function(e) {
-        if (e.target.classList.contains('btn-copy')) {
-            const input = e.target.previousElementSibling;
-            if (input) {
-                navigator.clipboard.writeText(input.value);
-                showToast('✅ Đã sao chép!', 'success');
-            }
+        if (e.target.classList.contains('option-btn') && e.target.dataset.days) {
+            document.querySelectorAll('.option-btn[data-days]').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            state.selectedPackage = {
+                days: parseInt(e.target.dataset.days),
+                price: parseInt(e.target.dataset.price)
+            };
+            updatePrice();
         }
     });
 
-    // Denomination Selection
-    document.querySelectorAll('.denom-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            document.querySelectorAll('.denom-btn').forEach(b => b.classList.remove('active'));
-            this.classList.add('active');
-        });
+    // Card Amount Select
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('option-btn') && e.target.dataset.amount) {
+            document.querySelectorAll('.option-btn[data-amount]').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            state.selectedCardAmount = parseInt(e.target.dataset.amount);
+        }
     });
 
     // Buy Button
-    document.getElementById('buyBtn').addEventListener('click', purchaseKey);
+    document.getElementById('buyBtn').addEventListener('click', buyKey);
 
-    // Card Submit
-    document.querySelector('.btn-submit-card').addEventListener('click', submitCard);
+    // Payment Buttons
+    document.getElementById('bankBtn').addEventListener('click', function() {
+        openModal('bankModal');
+        updateBankContent();
+    });
+
+    document.getElementById('cardBtn').addEventListener('click', function() {
+        openModal('cardModal');
+    });
 
     // Tab Buttons
     document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -191,135 +119,169 @@ function setupEventListeners() {
     });
 }
 
-// Select Game
-function selectGame(gameId) {
-    state.selectedGame = gameId;
-    state.selectedPackage = null;
-    
-    const game = games[gameId];
-    document.getElementById('selectedGameName').textContent = game.name;
-    document.getElementById('selectedGameType').textContent = game.type === 'vip' ? 'VIP' : 'Thường';
-    
-    updatePackageList();
-    updateUI();
-    
-    document.getElementById('gameModal').classList.remove('active');
-    showToast(`✅ Đã chọn: ${game.name}`, 'success');
-}
-
-// Update Package List
-function updatePackageList() {
-    const packageList = document.getElementById('packageList');
+function updateGamePackages() {
+    const container = document.getElementById('packageOptions');
     
     if (!state.selectedGame) {
-        packageList.innerHTML = '';
+        container.innerHTML = '';
+        document.getElementById('selectedPrice').textContent = '0₫';
         return;
     }
-    
+
     const game = games[state.selectedGame];
-    packageList.innerHTML = game.packages.map(pkg => `
-        <button class="package-btn" data-price="${pkg.price}" data-days="${pkg.days}">
-            ${pkg.days}d<br><small>${pkg.price.toLocaleString()}đ</small>
+    container.innerHTML = game.packages.map((pkg, idx) => `
+        <button class="option-btn" data-days="${pkg.days}" data-price="${pkg.price}">
+            ${pkg.days} ngày<br><small>${pkg.price.toLocaleString()}đ</small>
         </button>
     `).join('');
 
-    document.querySelectorAll('.package-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-            selectPackage(this);
-        });
-    });
+    document.getElementById('selectedPrice').textContent = '0₫';
 }
 
-// Select Package
-function selectPackage(btn) {
-    state.selectedPackage = {
-        days: parseInt(btn.dataset.days),
-        price: parseInt(btn.dataset.price)
-    };
-    
-    document.querySelectorAll('.package-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    updateUI();
+function updatePrice() {
+    if (state.selectedPackage) {
+        document.getElementById('selectedPrice').textContent = state.selectedPackage.price.toLocaleString() + '₫';
+    }
 }
 
-// Purchase Key
-function purchaseKey() {
+function buyKey() {
     if (!state.selectedGame || !state.selectedPackage) {
-        showToast('❌ Chọn game và gói!', 'error');
+        showToast('❌ Chọn game và gói');
+        return;
+    }
+
+    if (state.balance < state.selectedPackage.price) {
+        showToast('❌ Số dư không đủ');
         return;
     }
 
     const game = games[state.selectedGame];
     const price = state.selectedPackage.price;
 
-    if (state.accountBalance < price) {
-        showToast('❌ Số dư không đủ!', 'error');
-        return;
-    }
-
     const expireDate = new Date();
     expireDate.setDate(expireDate.getDate() + state.selectedPackage.days);
 
     state.keys.push({
-        id: `${state.selectedGame.toUpperCase()}-${Date.now()}`,
+        id: state.selectedGame.toUpperCase() + '-' + Date.now(),
         game: game.name,
-        type: game.type,
-        package: `${state.selectedPackage.days}d`,
-        price: price,
-        purchaseDate: new Date().toLocaleDateString('vi-VN'),
-        expireDate: expireDate.toLocaleDateString('vi-VN'),
-        status: 'active'
+        days: state.selectedPackage.days,
+        expire: expireDate.toLocaleDateString('vi-VN'),
+        price: price
     });
 
-    state.accountBalance -= price;
-    state.totalSpent += price;
+    state.balance -= price;
+    saveData();
+    updateBalance();
+    updateKeysList('all');
 
-    saveUserData();
-    updateUI();
-    showToast(`✅ Mua ${game.name} thành công!`, 'success');
-    
     state.selectedGame = null;
     state.selectedPackage = null;
-    updatePackageList();
-    document.getElementById('selectedGameName').textContent = 'Chọn game';
-    document.getElementById('selectedGameType').textContent = 'Chưa chọn';
+    document.getElementById('gameSelect').value = '';
+    updateGamePackages();
+
+    showToast('✅ Mua key thành công');
 }
 
-// Submit Card
 function submitCard() {
-    const cardCode = document.getElementById('cardCode').value;
-    const cardSerial = document.getElementById('cardSerial').value;
-    const activeDenom = document.querySelector('.denom-btn.active');
+    const code = document.getElementById('cardCode').value;
+    const serial = document.getElementById('cardSerial').value;
 
-    if (!cardCode || !cardSerial) {
-        showToast('❌ Nhập mã thẻ và serial!', 'error');
+    if (!code || !serial) {
+        showToast('❌ Nhập mã thẻ và serial');
         return;
     }
 
-    if (!activeDenom) {
-        showToast('❌ Chọn mệnh giá!', 'error');
+    if (!state.selectedCardAmount) {
+        showToast('❌ Chọn mệnh giá');
         return;
     }
 
-    const nominal = parseInt(activeDenom.dataset.amount);
-    const actual = marketDiscounts[nominal] || nominal;
+    const amount = discounts[state.selectedCardAmount] || state.selectedCardAmount;
+    state.balance += amount;
+    saveData();
+    updateBalance();
 
-    state.accountBalance += actual;
-    saveUserData();
-    updateUI();
+    const discount = ((state.selectedCardAmount - amount) / state.selectedCardAmount * 100).toFixed(0);
+    showToast(`✅ Nạp ${state.selectedCardAmount.toLocaleString()}đ (-${discount}%)`);
 
-    const discount = ((nominal - actual) / nominal * 100).toFixed(0);
-    showToast(`✅ Nạp ${nominal.toLocaleString()}đ → ${actual.toLocaleString()}đ (-${discount}%)`, 'success');
-    
     document.getElementById('cardCode').value = '';
     document.getElementById('cardSerial').value = '';
-    document.querySelectorAll('.denom-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('cardModal').classList.remove('active');
+    state.selectedCardAmount = null;
+    document.querySelectorAll('.option-btn[data-amount]').forEach(b => b.classList.remove('active'));
+    closeModal('cardModal');
 }
 
-// Update Keys List
 function updateKeysList(tab) {
-    const keysList = document.getElementById('keysList');
+    const list = document.getElementById('keysList');
+    let keys = state.keys;
+
+    if (tab === 'active') {
+        keys = state.keys.filter(k => new Date(k.expire) > new Date());
+    } else if (tab === 'expired') {
+        keys = state.keys.filter(k => new Date(k.expire) <= new Date());
+    }
+
+    if (keys.length === 0) {
+        list.innerHTML = '<p class="empty">Chưa có key</p>';
+        return;
+    }
+
+    list.innerHTML = keys.map(k => `
+        <div class="key-item">
+            <div class="key-info">
+                <strong>${k.id}</strong>
+                <p>${k.game} - ${k.days} ngày</p>
+                <p>Hết: ${k.expire}</p>
+            </div>
+            <button class="copy-btn" onclick="copyToClipboard('${k.id}')">📋</button>
+        </div>
+    `).join('');
+}
+
+function updateBankContent() {
+    document.getElementById('bankContent').textContent = 'OVISIT ' + state.userId;
+}
+
+function updateBalance() {
+    document.getElementById('balance').textContent = state.balance.toLocaleString() + '₫';
+}
+
+function openModal(id) {
+    document.getElementById(id).classList.add('active');
+}
+
+function closeModal(id) {
+    document.getElementById(id).classList.remove('active');
+}
+
+function showToast(msg) {
+    const toast = document.getElementById('toast');
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+function copyToClipboard(text) {
+    navigator.clipboard.writeText(text);
+    showToast('✅ Đã sao chép');
+}
+
+function copy(text) {
+    navigator.clipboard.writeText(text);
+    showToast('✅ Đã sao chép');
+}
+
+function saveData() {
+    localStorage.setItem('ovisit_data', JSON.stringify(state));
+}
+
+function loadData() {
+    const saved = localStorage.getItem('ovisit_data');
+    if (saved) {
+        state = { ...state, ...JSON.parse(saved) };
+    }
+}
+nst keysList = document.getElementById('keysList');
     let filtered = state.keys;
 
     if (tab === 'active') {
