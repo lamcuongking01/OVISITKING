@@ -3,38 +3,405 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OVISIT - Mini App Bán & Quản Lý Key</title>
+    <title>OVISIT - Hệ Thống Key Toàn Diện</title>
     <style>
         * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
-        body { background-color: #1a1a2e; color: #fff; padding: 15px; display: flex; justify-content: center; min-height: 100vh; }
+        body { background-color: #1a1a2e; color: #fff; padding: 15px; display: flex; justify-content: center; min-height: 100vh; align-items: center; }
         .wrapper { width: 100%; max-width: 600px; }
         
-        /* Chuyển đổi giữa chế độ Người mua và Admin */
-        .nav-tabs { display: flex; margin-bottom: 15px; border-radius: 8px; overflow: hidden; background: #16213e; border: 1px solid #00fff0; }
+        /* Giao diện Đăng nhập / Đăng ký */
+        .auth-container { background-color: #16213e; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .auth-tabs { display: flex; margin-bottom: 20px; border-bottom: 2px solid #533483; }
+        .auth-tab-btn { flex: 1; padding: 10px; background: none; border: none; color: #aaa; font-weight: bold; cursor: pointer; font-size: 16px; }
+        .auth-tab-btn.active { color: #00fff0; border-bottom: 2px solid #00fff0; }
+
+        /* Chuyển đổi tab Client / Admin chính */
+        .nav-tabs { display: none; margin-bottom: 15px; border-radius: 8px; overflow: hidden; background: #16213e; border: 1px solid #00fff0; }
         .tab-btn { flex: 1; padding: 12px; border: none; background: #16213e; color: #aaa; font-weight: bold; cursor: pointer; transition: 0.3s; }
         .tab-btn.active { background: #00fff0; color: #1a1a2e; }
 
         .container { background-color: #16213e; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); position: relative; display: none; }
         .container.active { display: block; }
 
-        /* Góc nạp tiền tự động OVISIT */
-        .nap-tien-box { position: absolute; top: 15px; right: 15px; background: linear-gradient(135deg, #00fff0, #00ff87); color: #1a1a2e; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: bold; }
+        /* Góc thông tin user */
+        .user-info-box { position: absolute; top: 15px; right: 15px; text-align: right; font-size: 12px; }
+        .nap-tien-box { background: linear-gradient(135deg, #00fff0, #00ff87); color: #1a1a2e; padding: 4px 10px; border-radius: 6px; font-weight: bold; margin-bottom: 5px; }
+        .btn-logout { color: #ff416c; cursor: pointer; text-decoration: underline; font-weight: bold; }
         
         /* Logo OVISIT */
-        .logo-brand { text-align: center; font-size: 26px; font-weight: 900; color: #00fff0; letter-spacing: 2px; margin-bottom: 5px; text-shadow: 0 0 10px rgba(0,255,240,0.5); }
+        .logo-brand { text-align: center; font-size: 28px; font-weight: 900; color: #00fff0; letter-spacing: 2px; margin-bottom: 5px; text-shadow: 0 0 10px rgba(0,255,240,0.5); }
         .sub-title { text-align: center; font-size: 13px; color: #aaa; margin-bottom: 20px; text-transform: uppercase; }
 
-        /* Form & Select chung */
+        /* Form tương tác */
         .btn-toggle { width: 100%; padding: 12px; background-color: #0f3460; color: white; border: 2px solid #00fff0; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-bottom: 15px; }
         .menu-chon-game { display: none; animation: fadeIn 0.4s ease; }
         label { display: block; margin: 10px 0 5px; font-weight: 600; color: #e94560; font-size: 14px; }
         select, input { width: 100%; padding: 10px; background-color: #0f3460; color: white; border: 1px solid #533483; border-radius: 6px; font-size: 14px; outline: none; margin-bottom: 12px; }
         
+        /* Submit chung */
+        .btn-submit { width: 100%; padding: 12px; background: linear-gradient(135deg, #00fff0, #00ff87); color: #1a1a2e; border: none; border-radius: 6px; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 10px; }
+
         /* Hiển thị giá và thanh toán */
         .gia-box { background-color: #533483; padding: 12px; border-radius: 8px; text-align: center; font-size: 16px; font-weight: bold; margin-top: 15px; display: none; border-left: 5px solid #00fff0; }
         .gia-tien { color: #00fff0; font-size: 20px; }
         .btn-thanh-toan { width: 100%; padding: 12px; background: linear-gradient(135deg, #00ff87, #60efff); color: #1a1a2e; border: none; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 15px; display: none; }
 
+        /* Kết quả trả Key */
+        .thong-bao-key { margin-top: 20px; background-color: #22252a; border: 2px dashed #00ff87; padding: 12px; border-radius: 6px; font-size: 13px; line-height: 1.6; display: none; }
+        .highlight { color: #00ff87; font-weight: bold; font-size: 15px; }
+
+        /* Admin Section */
+        .admin-section { border-top: 1px solid #533483; padding-top: 15px; margin-top: 15px; }
+        .btn-admin { background-color: #e94560; color: white; border: none; font-weight: bold; cursor: pointer; padding: 10px; border-radius: 6px; width: 100%; margin-top: 5px; }
+        .table-container { margin-top: 15px; overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 12px; text-align: left; }
+        th, td { padding: 8px; border: 1px solid #533483; }
+        th { background-color: #0f3460; color: #00fff0; }
+        .status-on { color: #00ff87; }
+        .status-off { color: #ff416c; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+    <div id="authBox" class="auth-container">
+        <div class="logo-brand">OVISIT</div>
+        <div class="auth-tabs">
+            <button class="auth-tab-btn active" id="tabLogin" onclick="switchAuthMode('login')">ĐĂNG NHẬP</button>
+            <button class="auth-tab-btn" id="tabRegister" onclick="switchAuthMode('register')">ĐĂNG KÝ</button>
+        </div>
+
+        <div id="loginForm">
+            <label>Tài Khoản (Tên hoặc Email):</label>
+            <input type="text" id="loginUser" placeholder="Nhập tài khoản...">
+            <label>Mật Khẩu:</label>
+            <input type="password" id="loginPass" placeholder="Nhập mật khẩu...">
+            <button class="btn-submit" onclick="xuLyDangNhap()">ĐĂNG NHẬP HỆ THỐNG</button>
+        </div>
+
+        <div id="registerForm" style="display: none;">
+            <label>Tên tài khoản (*):</label>
+            <input type="text" id="regUser" placeholder="Tên đăng nhập viết liền không dấu...">
+            <label>Địa chỉ Email (*):</label>
+            <input type="email" id="regEmail" placeholder="ví dụ: ovisit@gmail.com">
+            <label>Số điện thoại (Nếu có):</label>
+            <input type="text" id="regPhone" placeholder="Nhập số điện thoại của bạn...">
+            <label>Mật khẩu (*):</label>
+            <input type="password" id="regPass" placeholder="Nhập mật khẩu an toàn...">
+            <label>Nhập lại mật khẩu (*):</label>
+            <input type="password" id="regPassConfirm" placeholder="Xác nhận lại mật khẩu...">
+            <button class="btn-submit" onclick="xuLyDangKy()">TẠO TÀI KHOẢN MỚI</button>
+        </div>
+    </div>
+
+    <div class="nav-tabs" id="mainNavigation">
+        <button class="tab-btn active" id="navShopBtn" onclick="switchTab('client')">🛒 OVISIT SHOP KEY</button>
+        <button class="tab-btn" id="navAdminBtn" style="display: none;" onclick="switchTab('admin')">⚙️ OVISIT ADMIN</button>
+    </div>
+
+    <div id="clientTab" class="container">
+        <div class="user-info-box">
+            <div class="nap-tien-box">Số Dư: <span id="so-du">500.000đ</span></div>
+            <span style="color:#aaa">Chào, <b id="txtUsername" style="color:#00fff0">Khách</b></span> | <span class="btn-logout" onclick="dangXuat()">Đăng xuất</span>
+        </div>
+        <div class="logo-brand" style="margin-top: 15px;">OVISIT</div>
+        <div class="sub-title">Hệ thống phân phối key auto số 1</div>
+
+        <button class="btn-toggle" id="btnToggle" onclick="toggleMenu()">BẤM ĐỂ CHỌN GAME</button>
+
+        <div class="menu-chon-game" id="menuGame">
+            <label>1. Chọn Game:</label>
+            <select id="gameSelect" onchange="updateDurationOptions(); checkSelection()">
+                <option value="">-- Chọn loại game --</option>
+                <option value="ff_thuong">Free Fire Thường</option>
+                <option value="ff_max">Free Fire Max</option>
+                <option value="blood_strike">Blood Strike</option>
+                <option value="delta_force">Delta Force</option>
+            </select>
+
+            <label>2. Chọn Thời Gian:</label>
+            <select id="durationSelect" onchange="checkSelection()" disabled>
+                <option value="">-- Vui lòng chọn game trước --</option>
+            </select>
+        </div>
+
+        <div class="gia-box" id="giaBox">Thành tiền: <span class="gia-tien" id="ketQuaGia">0đ</span></div>
+        <button class="btn-thanh-toan" id="btnThanhToan" onclick="xuLyThanhToan()">ẤN MUA THANH TOÁN</button>
+
+        <div class="thong-bao-key" id="thongBaoKeyBox">
+            <strong style="color: #00ff87;">[OVISIT - THANH TOÁN THÀNH CÔNG]</strong><br>
+            • Mã Key của bạn: <span class="highlight" id="keyRandom">--</span><br>
+            • Thời gian mua: <span id="thoiGianHienTai">--</span>
+        </div>
+    </div>
+
+    <div id="adminTab" class="container">
+        <div class="user-info-box">
+            <span class="btn-logout" onclick="dangXuat()">Đăng xuất Admin</span>
+        </div>
+        <div class="logo-brand" style="margin-top: 15px;">OVISIT ADMIN</div>
+        <div class="sub-title">Bảng điều khiển kho dữ liệu hệ thống</div>
+        
+        <div class="admin-section">
+            <label>Thêm Key Cho Game:</label>
+            <select id="adminGameSelect">
+                <option value="ff_thuong">Free Fire Thường</option>
+                <option value="ff_max">Free Fire Max</option>
+                <option value="blood_strike">Blood Strike</option>
+                <option value="delta_force">Delta Force</option>
+            </select>
+
+            <label>Chọn Loại Gói Ngày:</label>
+            <select id="adminDurationSelect">
+                <option value="1d">1 Ngày</option>
+                <option value="7d">7 Ngày</option>
+                <option value="15d">15 Ngày</option>
+                <option value="30d">30 Ngày</option>
+            </select>
+
+            <label>Nhập Mã Key (Hoặc bỏ trống để OVISIT tự tạo):</label>
+            <input type="text" id="adminKeyInput" placeholder="Ví dụ: OVISIT_FF_VIP99K">
+
+            <button class="btn-admin" onclick="addKeyAdmin()">➕ THÊM / TẠO KEY VÀO KHO</button>
+        </div>
+
+        <div class="admin-section">
+            <h3>Danh Sách Key Trong Kho OVISIT</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Game</th>
+                            <th>Gói</th>
+                            <th>Mã Key</th>
+                            <th>Trạng Thái</th>
+                            <th>Hành Động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminKeyTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Cài đặt kho Key và Danh sách User cục bộ (Sử dụng localStorage)
+    if (!localStorage.getItem('kho_key_game')) {
+        var danhSachMau = [
+            { id: 1, game: "ff_thuong", duration: "1d", key: "OVISIT_FF_1D_DEMO", status: "Chưa bán" },
+            { id: 2, game: "delta_force", duration: "7d", key: "OVISIT_DELTA_7D_DEMO", status: "Chưa bán" }
+        ];
+        localStorage.setItem('kho_key_game', JSON.stringify(danhSachMau));
+    }
+    if (!localStorage.getItem('ovisit_users')) {
+        localStorage.setItem('ovisit_users', JSON.stringify([]));
+    }
+
+    var soDuHienTai = 500000; 
+    var giaTriGiaSo = 0;
+    var currentLoggedUser = "";
+
+    /* --- CHỨC NĂNG ĐĂNG NHẬP / ĐĂNG KÝ --- */
+    function switchAuthMode(mode) {
+        document.getElementById('tabLogin').classList.remove('active');
+        document.getElementById('tabRegister').classList.remove('active');
+        if(mode === 'login') {
+            document.getElementById('tabLogin').classList.add('active');
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+        } else {
+            document.getElementById('tabRegister').classList.add('active');
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+        }
+    }
+
+    function xuLyDangKy() {
+        var u = document.getElementById('regUser').value.trim();
+        var e = document.getElementById('regEmail').value.trim();
+        var p = document.getElementById('regPhone').value.trim();
+        var pass = document.getElementById('regPass').value;
+        var passConf = document.getElementById('regPassConfirm').value;
+
+        if(!u || !e || !pass || !passConf) {
+            alert("Vui lòng điền đầy đủ các thông tin bắt buộc (*)");
+            return;
+        }
+        if(pass !== passConf) {
+            alert("Hai mật khẩu nhập lại không trùng khớp nhau!");
+            return;
+        }
+
+        var users = JSON.parse(localStorage.getItem('ovisit_users'));
+        if(users.some(user => user.username === u || user.email === e) || u.toUpperCase() === "OVISITKING") {
+            alert("Tên tài khoản hoặc Email này đã tồn tại trên hệ thống OVISIT!");
+            return;
+        }
+
+        // Lưu user mới vào cơ sở dữ liệu
+        users.push({ username: u, email: e, phone: p, password: pass });
+        localStorage.setItem('ovisit_users', JSON.stringify(users));
+        alert("Đăng ký tài khoản OVISIT thành công! Tiến hành đăng nhập.");
+        switchAuthMode('login');
+        document.getElementById('loginUser').value = u;
+    }
+
+    function xuLyDangNhap() {
+        var u = document.getElementById('loginUser').value.trim();
+        var p = document.getElementById('loginPass').value;
+
+        if(!u || !p) {
+            alert("Vui lòng nhập đầy đủ tài khoản và mật khẩu.");
+            return;
+        }
+
+        // Kiểm tra tài khoản Admin Tối Cao theo yêu cầu riêng biệt
+        if (u === "OVISITKING" && p === "lamcuonghuhu1@") {
+            alert("Xin chào Admin tối cao OVISITKING! Đang chuyển hướng vào bảng quản lý...");
+            vaoHeThong("ADMIN_ROOT");
+            return;
+        }
+
+        // Kiểm tra tài khoản User thường trong cơ sở dữ liệu
+        var users = JSON.parse(localStorage.getItem('ovisit_users'));
+        var userHopLe = users.find(user => (user.username === u || user.email === u) && user.password === p);
+
+        if (userHopLe) {
+            alert("Đăng nhập thành công!");
+            vaoHeThong(userHopLe.username);
+        } else {
+            alert("Sai tài khoản hoặc mật khẩu! Vui lòng kiểm tra lại.");
+        }
+    }
+
+    function vaoHeThong(user) {
+        currentLoggedUser = user;
+        document.getElementById('authBox').style.display = 'none';
+        document.getElementById('mainNavigation').style.display = 'flex';
+        
+        if (user === "ADMIN_ROOT") {
+            document.getElementById('navAdminBtn').style.display = 'block';
+            switchTab('admin');
+        } else {
+            document.getElementById('navAdminBtn').style.display = 'none';
+            document.getElementById('txtUsername').innerText = user;
+            switchTab('client');
+        }
+    }
+
+    function dangXuat() {
+        currentLoggedUser = "";
+        document.getElementById('authBox').style.display = 'block';
+        document.getElementById('mainNavigation').style.display = 'none';
+        document.getElementById('clientTab').classList.remove('active');
+        document.getElementById('adminTab').classList.remove('active');
+        document.getElementById('loginPass').value = "";
+    }
+
+    /* --- CHUYỂN TAB CLIENT / ADMIN --- */
+    function switchTab(tab) {
+        document.getElementById('clientTab').classList.remove('active');
+        document.getElementById('adminTab').classList.remove('active');
+        document.getElementById('navShopBtn').classList.remove('active');
+        document.getElementById('navAdminBtn').classList.remove('active');
+
+        if(tab === 'client') {
+            document.getElementById('clientTab').classList.add('active');
+            document.getElementById('navShopBtn').classList.add('active');
+        } else {
+            document.getElementById('adminTab').classList.add('active');
+            document.getElementById('navAdminBtn').classList.add('active');
+            renderAdminTable(); 
+        }
+    }
+
+    /* --- LOGIC CLIENT (MUA HÀNG) --- */
+    function toggleMenu() {
+        var menu = document.getElementById("menuGame");
+        var btn = document.getElementById("btnToggle");
+        menu.style.display = (menu.style.display === "block") ? "none" : "block";
+        btn.innerText = (menu.style.display === "block") ? "ĐÓNG MENU CHỌN GAME" : "BẤM ĐỂ CHỌN GAME";
+    }
+
+    function updateDurationOptions() {
+        var game = document.getElementById("gameSelect").value;
+        var durationSelect = document.getElementById("durationSelect");
+        durationSelect.innerHTML = "";
+        document.getElementById("thongBaoKeyBox").style.display = "none";
+
+        if (game === "") {
+            durationSelect.disabled = true;
+            durationSelect.innerHTML = '<option value="">-- Vui lòng chọn game trước --</option>';
+            return;
+        }
+
+        durationSelect.disabled = false;
+        if (game === "ff_thuong" || game === "ff_max" || game === "blood_strike") {
+            durationSelect.innerHTML = `
+                <option value="">-- Chọn thời gian --</option>
+                <option value="1d">1 Ngày (20k)</option>
+                <option value="7d">7 Ngày (65k)</option>
+                <option value="30d">30 Ngày (135k)</option>`;
+        } else if (game === "delta_force") {
+            durationSelect.innerHTML = `
+                <option value="">-- Chọn thời gian --</option>
+                <option value="1d">1 Ngày (40k)</option>
+                <option value="7d">7 Ngày (90k)</option>
+                <option value="15d">15 Ngày (150k)</option>
+                <option value="30d">30 Ngày (220k)</option>`;
+        }
+    }
+
+    function checkSelection() {
+        var game = document.getElementById("gameSelect").value;
+        var duration = document.getElementById("durationSelect").value;
+        var giaBox = document.getElementById("giaBox");
+        var btnThanhToan = document.getElementById("btnThanhToan");
+        var ketQuaGia = document.getElementById("ketQuaGia");
+        
+        document.getElementById("thongBaoKeyBox").style.display = "none";
+
+        if (game === "" || duration === "") {
+            giaBox.style.display = "none";
+            btnThanhToan.style.display = "none";
+            return;
+        }
+
+        if (game === "ff_thuong" || game === "ff_max" || game === "blood_strike") {
+            if (duration === "1d") { giaTriGiaSo = 20000; ketQuaGia.innerText = "20.000đ"; }
+            if (duration === "7d") { giaTriGiaSo = 65000; ketQuaGia.innerText = "65.000đ"; }
+            if (duration === "30d") { giaTriGiaSo = 135000; ketQuaGia.innerText = "135.000đ"; }
+        } else if (game === "delta_force") {
+            if (duration === "1d") { giaTriGiaSo = 40000; ketQuaGia.innerText = "40.000đ"; }
+            if (duration === "7d") { giaTriGiaSo = 90000; ketQuaGia.innerText = "90.000đ"; }
+            if (duration === "15d") { giaTriGiaSo = 150000; ketQuaGia.innerText = "150.000đ"; }
+            if (duration === "30d") { giaTriGiaSo = 220000; ketQuaGia.innerText = "220.000đ"; }
+        }
+
+        giaBox.style.display = "block";
+        btnThanhToan.style.display = "block";
+    }
+
+    function xuLyThanhToan() {
+        var game = document.getElementById("gameSelect").value;
+        var duration = document.getElementById("durationSelect").value;
+
+        if (soDuHienTai < giaTriGiaSo) {
+            alert("Số dư tài khoản trên OVISIT không đủ!");
+            return;
+        }
+
+        var khoKey = JSON.parse(localStorage.getItem('kho_key_game'));
+        var keyPhuHop = khoKey.find(k => k.game === game && k.duration === duration && k.status === "Chưa bán");
+
+        if (!keyPhuHop) {
+            alert("HẾT KEY! Gói game này trong kho OVISIT hiện đã hết.");
+            return;
+        
         /* Kết quả trả Key */
         .thong-bao-key { margin-top: 20px; background-color: #22252a; border: 2px dashed #00ff87; padding: 12px; border-radius: 6px; font-size: 13px; line-height: 1.6; display: none; }
         .highlight { color: #00ff87; font-weight: bold; font-size: 15px; }
