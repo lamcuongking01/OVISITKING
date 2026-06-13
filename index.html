@@ -3,37 +3,431 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OVISIT - Hệ Thống Key Toàn Diện</title>
+    <title>OVISIT - HỆ THỐNG KEY</title>
     <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 0; }
+        * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; }
         body { background-color: #1a1a2e; color: #fff; padding: 15px; display: flex; justify-content: center; min-height: 100vh; align-items: center; }
-        .wrapper { width: 100%; max-width: 600px; }
+        .wrapper { width: 100%; max-width: 550px; }
         
-        /* Giao diện Đăng nhập / Đăng ký */
-        .auth-container { background-color: #16213e; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        /* Giao diện Đăng nhập / Đăng ký dạng Tab */
+        .auth-container { background-color: #16213e; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 1px solid #533483; }
         .auth-tabs { display: flex; margin-bottom: 20px; border-bottom: 2px solid #533483; }
-        .auth-tab-btn { flex: 1; padding: 10px; background: none; border: none; color: #aaa; font-weight: bold; cursor: pointer; font-size: 16px; }
+        .auth-tab-btn { flex: 1; padding: 12px; background: none; border: none; color: #aaa; font-weight: bold; cursor: pointer; font-size: 16px; text-align: center; }
         .auth-tab-btn.active { color: #00fff0; border-bottom: 2px solid #00fff0; }
 
-        /* Chuyển đổi tab Client / Admin chính */
-        .nav-tabs { display: none; margin-bottom: 15px; border-radius: 8px; overflow: hidden; background: #16213e; border: 1px solid #00fff0; }
-        .tab-btn { flex: 1; padding: 12px; border: none; background: #16213e; color: #aaa; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .tab-btn.active { background: #00fff0; color: #1a1a2e; }
+        /* Chữ chuyển hướng ở dưới ô mật khẩu bên phải */
+        .link-chuyen-huong { display: block; text-align: right; font-size: 12px; color: #00ff87; cursor: pointer; text-decoration: underline; margin-top: -5px; margin-bottom: 15px; font-weight: 500; }
+        .link-chuyen-huong:hover { color: #00fff0; }
 
-        .container { background-color: #16213e; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); position: relative; display: none; }
-        .container.active { display: block; }
-
-        /* Góc thông tin user */
-        .user-info-box { position: absolute; top: 15px; right: 15px; text-align: right; font-size: 12px; }
-        .nap-tien-box { background: linear-gradient(135deg, #00fff0, #00ff87); color: #1a1a2e; padding: 4px 10px; border-radius: 6px; font-weight: bold; margin-bottom: 5px; }
-        .btn-logout { color: #ff416c; cursor: pointer; text-decoration: underline; font-weight: bold; }
+        /* Giao diện chính sau khi vào Game */
+        .main-container { background-color: #16213e; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; position: relative; }
         
-        /* Logo OVISIT */
-        .logo-brand { text-align: center; font-size: 28px; font-weight: 900; color: #00fff0; letter-spacing: 2px; margin-bottom: 5px; text-shadow: 0 0 10px rgba(0,255,240,0.5); }
-        .sub-title { text-align: center; font-size: 13px; color: #aaa; margin-bottom: 20px; text-transform: uppercase; }
+        /* Thanh điều hướng Admin / Shop */
+        .nav-tabs { display: none; margin-bottom: 15px; background: #1a1a2e; border: 1px solid #00fff0; border-radius: 6px; overflow: hidden; }
+        .nav-btn { flex: 1; padding: 12px; border: none; background: none; color: #aaa; font-weight: bold; cursor: pointer; }
+        .nav-btn.active { background: #00fff0; color: #1a1a2e; }
 
-        /* Form tương tác */
-        .btn-toggle { width: 100%; padding: 12px; background-color: #0f3460; color: white; border: 2px solid #00fff0; border-radius: 8px; font-size: 15px; font-weight: bold; cursor: pointer; margin-bottom: 15px; }
+        /* Tiêu đề & Thông tin */
+        .logo-main { text-align: center; font-size: 32px; font-weight: 900; color: #00fff0; letter-spacing: 2px; margin-bottom: 5px; text-shadow: 0 0 10px rgba(0,255,240,0.5); }
+        .user-status { background: #0f3460; padding: 10px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .btn-logout { color: #ff416c; font-weight: bold; cursor: pointer; text-decoration: underline; }
+
+        /* Trường nhập liệu và nút bấm */
+        label { display: block; margin: 10px 0 5px; font-weight: bold; color: #e94560; font-size: 14px; }
+        input, select { width: 100%; padding: 11px; background-color: #0f3460; color: white; border: 1px solid #533483; border-radius: 6px; font-size: 14px; outline: none; margin-bottom: 10px; }
+        .btn-action { width: 100%; padding: 12px; background: linear-gradient(135deg, #00fff0, #00ff87); color: #1a1a2e; border: none; border-radius: 6px; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 5px; }
+        .btn-admin-add { background: #e94560; color: white; }
+
+        /* Hộp hiển thị giá & Kết quả */
+        .box-price { background-color: #533483; padding: 12px; border-radius: 6px; text-align: center; font-size: 16px; font-weight: bold; margin: 15px 0; display: none; }
+        .box-result { margin-top: 15px; background: #22252a; border: 2px dashed #00ff87; padding: 12px; border-radius: 6px; font-size: 13px; display: none; }
+
+        /* Bảng Admin */
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 12px; }
+        th, td { padding: 8px; border: 1px solid #533483; text-align: left; }
+        th { background: #0f3460; color: #00fff0; }
+    </style>
+</head>
+<body>
+
+<div class="wrapper">
+
+    <div id="authSection" class="auth-container">
+        <div class="logo-main">OVISIT</div>
+        
+        <div class="auth-tabs">
+            <button class="auth-tab-btn active" id="tabLogin" onclick="chuyenTabAuth('login')">ĐĂNG NHẬP</button>
+            <button class="auth-tab-btn" id="tabRegister" onclick="chuyenTabAuth('register')">ĐĂNG KÝ</button>
+        </div>
+
+        <div id="loginForm" style="display: block;">
+            <label>Tài khoản hoặc Email:</label>
+            <input type="text" id="loginUser" placeholder="Nhập tên tài khoản hoặc email...">
+            
+            <label>Mật khẩu:</label>
+            <input type="password" id="loginPass" placeholder="Nhập mật khẩu của bạn...">
+            
+            <span class="link-chuyen-huong" onclick="chuyenTabAuth('register')">Chưa có tài khoản? Đăng ký ngay</span>
+
+            <button class="btn-action" onclick="clDangNhap()">ĐĂNG NHẬP NGAY</button>
+        </div>
+
+        <div id="registerForm" style="display: none;">
+            <label>Tên tài khoản (*):</label>
+            <input type="text" id="regUser" placeholder="Tên viết liền không dấu...">
+            <label>Địa chỉ Email (*):</label>
+            <input type="email" id="regEmail" placeholder="Ví dụ: ovisit@gmail.com">
+            <label>Số điện thoại (Nếu có):</label>
+            <input type="text" id="regPhone" placeholder="Nhập số điện thoại...">
+            <label>Mật khẩu (*):</label>
+            <input type="password" id="regPass" placeholder="Nhập mật khẩu...">
+            <label>Nhập lại mật khẩu (*):</label>
+            <input type="password" id="regPassConfirm" placeholder="Xác nhận lại mật khẩu...">
+            <button class="btn-action" style="background: linear-gradient(135deg, #60efff, #00ff87);" onclick="clDangKy()">ĐĂNG KÝ TÀI KHOẢN</button>
+        </div>
+    </div>
+
+    <div class="nav-tabs" id="navBar">
+        <button class="nav-btn active" id="btnTabClient" onclick="chuyenGiaoDien('client')">🛒 SHOP MUA KEY</button>
+        <button class="nav-btn" id="btnTabAdmin" style="display: none;" onclick="chuyenGiaoDien('admin')">⚙️ QUẢN LÝ ADMIN</button>
+    </div>
+
+    <div id="panelClient" class="main-container">
+        <div class="user-status">
+            <div>Chào: <b id="lblUser" style="color: #00fff0;">Khách</b></div>
+            <div>Số dư: <b style="color: #00ff87;" id="lblVi">500.000đ</b></div>
+            <div class="btn-logout" onclick="clDangXuat()">[Đăng xuất]</div>
+        </div>
+
+        <label>Bước 1: Chọn Game Cần Mua Key</label>
+        <select id="selGame" onchange="capNhatGóiHạn()">
+            <option value="">-- Bấm vào đây để chọn loại game --</option>
+            <option value="ff_thuong">Free Fire Thường</option>
+            <option value="ff_max">Free Fire Max</option>
+            <option value="blood_strike">Blood Strike</option>
+            <option value="delta_force">Delta Force</option>
+        </select>
+
+        <label>Bước 2: Chọn Thời Hạn Gói</label>
+        <select id="selTime" onchange="tinhTien()" disabled>
+            <option value="">-- Vui lòng chọn game trước --</option>
+        </select>
+
+        <div class="box-price" id="khungGia">Số tiền thanh toán: <span id="txtGia" style="color: #00fff0;">0đ</span></div>
+        <button class="btn-action" id="btnBuy" style="display: none;" onclick="clMuaKey()">ẤN MUA & THANH TOÁN TỰ ĐỘNG</button>
+
+        <div class="box-result" id="khungKetQua">
+            <b style="color: #00ff87;">[THANH TOÁN THÀNH CÔNG]</b><br>
+            • Mã Key của bạn là: <span id="resKey" style="color:#00fff0; font-weight:bold; font-family: monospace; font-size:15px;">--</span><br>
+            • Thời gian nhận: <span id="resTime">--</span>
+        </div>
+    </div>
+
+    <div id="panelAdmin" class="main-container">
+        <div class="user-status">
+            <div style="color: #ff416c; font-weight: bold;">QUYỀN TỐI CAO: ADMIN ROOT</div>
+            <div class="btn-logout" onclick="clDangXuat()">[Thoát Admin]</div>
+        </div>
+
+        <label>Chọn loại Game nạp:</label>
+        <select id="adGame">
+            <option value="ff_thuong">Free Fire Thường</option>
+            <option value="ff_max">Free Fire Max</option>
+            <option value="blood_strike">Blood Strike</option>
+            <option value="delta_force">Delta Force</option>
+        </select>
+
+        <label>Chọn thời gian gói:</label>
+        <select id="adTime">
+            <option value="1d">1 Ngày</option>
+            <option value="7d">7 Ngày</option>
+            <option value="15d">15 Ngày</option>
+            <option value="30d">30 Ngày</option>
+        </select>
+
+        <label>Nhập mã Key (Nếu trống hệ thống sẽ tự sinh mã tự động):</label>
+        <input text="text" id="adKey" placeholder="Ví dụ: OVISIT_FREEFIRE_VIP_PRO">
+
+        <button class="btn-action btn-admin-add" onclick="adThemKey()">➕ NẠP KEY VÀO HỆ THỐNG</button>
+
+        <h3 style="margin-top: 20px; color: #00fff0; font-size: 15px;">Danh Sách Kho Key Hiện Tại</h3>
+        <div style="overflow-x: auto;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tên Game</th>
+                        <th>Hạn</th>
+                        <th>Mã Key</th>
+                        <th>Trạng Thái</th>
+                        <th>Xóa</th>
+                    </tr>
+                </thead>
+                <tbody id="adTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    var danhSachUser = [];
+    var khoKeyVip = [
+        { game: "ff_thuong", time: "1d", key: "OVISIT_FF_1DAY_GIFT888", status: "Chưa bán" },
+        { game: "delta_force", time: "7d", key: "OVISIT_DELTA_7DAY_PROVIP", status: "Chưa bán" }
+    ];
+    
+    var viTienUser = 500000;
+    var giaHienTai = 0;
+    var userDangNhapHienTai = "";
+
+    // HÀM CHUYỂN ĐỔI QUA LẠI GIỮA ĐĂNG NHẬP / ĐĂNG KÝ (ĐÃ FIX KHÔNG LỖI)
+    function chuyenTabAuth(loai) {
+        if(loai === 'login') {
+            document.getElementById('tabLogin').classList.add('active');
+            document.getElementById('tabRegister').classList.remove('active');
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('registerForm').style.display = 'none';
+        } else if (loai === 'register') {
+            document.getElementById('tabRegister').classList.add('active');
+            document.getElementById('tabLogin').classList.remove('active');
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('registerForm').style.display = 'block';
+        }
+    }
+
+    // HÀM XỬ LÝ ĐĂNG KÝ
+    function clDangKy() {
+        var u = document.getElementById('regUser').value.trim();
+        var e = document.getElementById('regEmail').value.trim();
+        var p = document.getElementById('regPhone').value.trim();
+        var pass = document.getElementById('regPass').value;
+        var passC = document.getElementById('regPassConfirm').value;
+
+        if (!u || !e || !pass || !passC) {
+            alert("Vui lòng nhập đầy đủ các trường thông tin có dấu (*)");
+            return;
+        }
+        if (pass !== passC) {
+            alert("Mật khẩu nhập lại không khớp!");
+            return;
+        }
+        if (u.toUpperCase() === "OVISITKING") {
+            alert("Tên tài khoản Admin tối cao không được phép đăng ký!");
+            return;
+        }
+
+        danhSachUser.push({ username: u, email: e, phone: p, password: pass });
+        alert("Đăng ký thành công tài khoản: " + u + "\nHệ thống tự động chuyển bạn về tab Đăng Nhập!");
+        
+        // Tự động nhảy về màn hình Đăng nhập để người dùng vào thẳng game
+        chuyenTabAuth('login');
+        document.getElementById('loginUser').value = u;
+    }
+
+    // HÀM XỬ LÝ ĐĂNG NHẬP
+    function clDangNhap() {
+        var u = document.getElementById('loginUser').value.trim();
+        var p = document.getElementById('loginPass').value;
+
+        if (!u || !p) {
+            alert("Vui lòng điền tài khoản và mật khẩu!");
+            return;
+        }
+
+        // TÀI KHOẢN ADMIN YÊU CẦU
+        if (u === "OVISITKING" && p === "lamcuonghuhu1@") {
+            alert("Đăng nhập thành công! Chào mừng Admin tối cao OVISITKING.");
+            userDangNhapHienTai = "ADMIN";
+            
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('navBar').style.display = 'flex';
+            document.getElementById('btnTabAdmin').style.display = 'block';
+            
+            chuyenGiaoDien('admin');
+            return;
+        }
+
+        var checkUser = danhSachUser.find(user => user.username === u || user.email === u);
+        if (checkUser && checkUser.password === p) {
+            alert("Đăng nhập thành công! Chúc bạn mua sắm vui vẻ.");
+            userDangNhapHienTai = checkUser.username;
+            
+            document.getElementById('authSection').style.display = 'none';
+            document.getElementById('navBar').style.display = 'flex';
+            document.getElementById('btnTabAdmin').style.display = 'none'; 
+            document.getElementById('lblUser').innerText = checkUser.username;
+            
+            chuyenGiaoDien('client');
+        } else {
+            alert("Sai tên tài khoản hoặc mật khẩu hệ thống! Vui lòng kiểm tra lại.");
+        }
+    }
+
+    // ĐĂNG XUẤT
+    function clDangXuat() {
+        userDangNhapHienTai = "";
+        document.getElementById('authSection').style.display = 'block';
+        document.getElementById('navBar').style.display = 'none';
+        document.getElementById('panelClient').style.display = 'none';
+        document.getElementById('panelAdmin').style.display = 'none';
+        document.getElementById('loginPass').value = "";
+        chuyenTabAuth('login');
+    }
+
+    // ĐỔI GIAO DIỆN SHOP / ADMIN
+    function chuyenGiaoDien(tab) {
+        document.getElementById('panelClient').style.display = 'none';
+        document.getElementById('panelAdmin').style.display = 'none';
+        document.getElementById('btnTabClient').classList.remove('active');
+        document.getElementById('btnTabAdmin').classList.remove('active');
+
+        if (tab === 'client') {
+            document.getElementById('panelClient').style.display = 'block';
+            document.getElementById('btnTabClient').classList.add('active');
+        } else {
+            document.getElementById('panelAdmin').style.display = 'block';
+            document.getElementById('btnTabAdmin').classList.add('active');
+            veBangAdmin();
+        }
+    }
+
+    // CẬP NHẬT GÓI HẠN THEO GAME
+    function capNhatGóiHạn() {
+        var g = document.getElementById('selGame').value;
+        var t = document.getElementById('selTime');
+        
+        document.getElementById('khungKetQua').style.display = "none";
+        document.getElementById('khungGia').style.display = "none";
+        document.getElementById('btnBuy').style.display = "none";
+
+        if (!g) {
+            t.disabled = true;
+            t.innerHTML = '<option value="">-- Vui lòng chọn game trước --</option>';
+            return;
+        }
+
+        t.disabled = false;
+        if (g === 'delta_force') {
+            t.innerHTML = `
+                <option value="">-- Chọn thời hạn --</option>
+                <option value="1d">1 Ngày (40.000đ)</option>
+                <option value="7d">7 Ngày (90.000đ)</option>
+                <option value="15d">15 Ngày (150.000đ)</option>
+                <option value="30d">30 Ngày (220.000đ)</option>`;
+        } else {
+            t.innerHTML = `
+                <option value="">-- Chọn thời hạn --</option>
+                <option value="1d">1 Ngày (20.000đ)</option>
+                <option value="7d">7 Ngày (65.000đ)</option>
+                <option value="30d">30 Ngày (135.000đ)</option>`;
+        }
+    }
+
+    // TÍNH TIỀN
+    function tinhTien() {
+        var g = document.getElementById('selGame').value;
+        var t = document.getElementById('selTime').value;
+        
+        if (!g || !t) {
+            document.getElementById('khungGia').style.display = "none";
+            document.getElementById('btnBuy').style.display = "none";
+            return;
+        }
+
+        if (g === 'delta_force') {
+            if(t==='1d') giaHienTai = 40000;
+            if(t==='7d') giaHienTai = 90000;
+            if(t==='15d') giaHienTai = 150000;
+            if(t==='30d') giaHienTai = 220000;
+        } else {
+            if(t==='1d') giaHienTai = 20000;
+            if(t==='7d') giaHienTai = 65000;
+            if(t==='30d') giaHienTai = 135000;
+        }
+
+        document.getElementById('txtGia').innerText = giaHienTai.toLocaleString('vi-VN') + "đ";
+        document.getElementById('khungGia').style.display = "block";
+        document.getElementById('btnBuy').style.display = "block";
+    }
+
+    // MUA KEY
+    function clMuaKey() {
+        var g = document.getElementById('selGame').value;
+        var t = document.getElementById('selTime').value;
+
+        if (viTienUser < giaHienTai) {
+            alert("Số dư tài khoản OVISIT của bạn không đủ!");
+            return;
+        }
+
+        var findKey = khoKeyVip.find(k => k.game === g && k.time === t && k.status === "Chưa bán");
+
+        if (!findKey) {
+            alert("HẾT KEY! Gói này hiện tại trong kho Admin đã hết sạch.");
+            return;
+        }
+
+        findKey.status = "Đã bán";
+        viTienUser -= giaHienTai;
+        document.getElementById('lblVi').innerText = viTienUser.toLocaleString('vi-VN') + "đ";
+
+        var d = new Date();
+        var timeStr = d.getHours() + ":" + d.getMinutes() + " - Ngày " + d.getDate() + "/" + (d.getMonth()+1) + "/" + d.getFullYear();
+
+        document.getElementById('resKey').innerText = findKey.key;
+        document.getElementById('resTime').innerText = timeStr;
+        document.getElementById('khungKetQua').style.display = "block";
+        alert("Mua key OVISIT thành công!");
+    }
+
+    // ADMIN: THÊM KEY
+    function adThemKey() {
+        var g = document.getElementById('adGame').value;
+        var t = document.getElementById('adTime').value;
+        var k = document.getElementById('adKey').value.trim();
+
+        if (!k) {
+            k = "OVISIT_" + g.toUpperCase() + "_" + Math.random().toString(36).substring(2,8).toUpperCase();
+        }
+
+        khoKeyVip.push({ game: g, time: t, key: k, status: "Chưa bán" });
+        document.getElementById('adKey').value = "";
+        alert("Đã thêm thành công key mới vào hệ thống kho!");
+        veBangAdmin();
+    }
+
+    // ADMIN: XÓA KEY
+    function adXoaKey(index) {
+        if(confirm("Bạn chắc chắn muốn xóa mã key này?")) {
+            khoKeyVip.splice(index, 1);
+            veBangAdmin();
+        }
+    }
+
+    // ADMIN: VẼ BẢNG KHO DỮ LIỆU
+    function veBangAdmin() {
+        var tbody = document.getElementById('adTableBody');
+        tbody.innerHTML = "";
+        
+        var nameMap = { ff_thuong: "FF Thường", ff_max: "FF Max", blood_strike: "Blood Strike", delta_force: "Delta Force" };
+
+        khoKeyVip.forEach((item, index) => {
+            var tr = document.createElement('tr');
+            var colorStat = item.status === "Chưa bán" ? "green" : "red";
+            tr.innerHTML = `
+                <td><b>${nameMap[item.game]}</b></td>
+                <td>${item.time}</td>
+                <td><code>${item.key}</code></td>
+                <td style="color: ${colorStat}; font-weight:bold;">${item.status}</td>
+                <td><button onclick="adXoaKey(${index})" style="background:red; color:white; border:none; padding:3px 6px; border-radius:4px; cursor:pointer;">Xóa</button></td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+</script>
+
+</body>
+</html>
         .menu-chon-game { display: none; animation: fadeIn 0.4s ease; }
         label { display: block; margin: 10px 0 5px; font-weight: 600; color: #e94560; font-size: 14px; }
         select, input { width: 100%; padding: 10px; background-color: #0f3460; color: white; border: 1px solid #533483; border-radius: 6px; font-size: 14px; outline: none; margin-bottom: 12px; }
