@@ -3,37 +3,416 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OVISIT - HỆ THỐNG KEY</title>
+    <title>Tra cứu điểm thi lớp 10 - Bắc Ninh</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        * { box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 0; }
-        body { background-color: #1a1a2e; color: #fff; padding: 15px; display: flex; justify-content: center; min-height: 100vh; align-items: center; }
-        .wrapper { width: 100%; max-width: 550px; }
-        
-        /* Giao diện Đăng nhập / Đăng ký dạng Tab */
-        .auth-container { background-color: #16213e; padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); border: 1px solid #533483; }
-        .auth-tabs { display: flex; margin-bottom: 20px; border-bottom: 2px solid #533483; }
-        .auth-tab-btn { flex: 1; padding: 12px; background: none; border: none; color: #aaa; font-weight: bold; cursor: pointer; font-size: 16px; text-align: center; }
-        .auth-tab-btn.active { color: #00fff0; border-bottom: 2px solid #00fff0; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
 
-        /* Chữ chuyển hướng ở dưới ô mật khẩu bên phải */
-        .link-chuyen-huong { display: block; text-align: right; font-size: 12px; color: #00ff87; cursor: pointer; text-decoration: underline; margin-top: -5px; margin-bottom: 15px; font-weight: 500; }
-        .link-chuyen-huong:hover { color: #00fff0; }
+        body {
+            background-color: #f0f4f8;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-        /* Giao diện chính sau khi vào Game */
-        .main-container { background-color: #16213e; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); display: none; position: relative; }
-        
-        /* Thanh điều hướng Admin / Shop */
-        .nav-tabs { display: none; margin-bottom: 15px; background: #1a1a2e; border: 1px solid #00fff0; border-radius: 6px; overflow: hidden; }
-        .nav-btn { flex: 1; padding: 12px; border: none; background: none; color: #aaa; font-weight: bold; cursor: pointer; }
-        .nav-btn.active { background: #00fff0; color: #1a1a2e; }
+        /* Header */
+        header {
+            background-color: #0b5299;
+            color: white;
+            padding: 20px 15px;
+            text-align: center;
+        }
 
-        /* Tiêu đề & Thông tin */
-        .logo-main { text-align: center; font-size: 32px; font-weight: 900; color: #00fff0; letter-spacing: 2px; margin-bottom: 5px; text-shadow: 0 0 10px rgba(0,255,240,0.5); }
-        .user-status { background: #0f3460; padding: 10px; border-radius: 8px; font-size: 13px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-logout { color: #ff416c; font-weight: bold; cursor: pointer; text-decoration: underline; }
+        .header-container {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
 
-        /* Trường nhập liệu và nút bấm */
-        label { display: block; margin: 10px 0 5px; font-weight: bold; color: #e94560; font-size: 14px; }
+        .header-title h1 {
+            font-size: 18px;
+            text-transform: uppercase;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .header-title p {
+            font-size: 13px;
+            opacity: 0.9;
+            margin-top: 3px;
+        }
+
+        .badge {
+            background-color: #2574c4;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            max-width: 500px;
+            width: 100%;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            color: #0b5299;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .card-subtitle {
+            color: #555;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 20px;
+            border-left: 3px solid #0b5299;
+            padding-left: 10px;
+        }
+
+        /* Form elements */
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-label {
+            display: block;
+            color: #0b5299;
+            font-weight: bold;
+            font-size: 14px;
+            margin-bottom: 8px;
+        }
+
+        .form-label i {
+            margin-right: 5px;
+        }
+
+        .input-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ccc;
+            border-radius: 12px;
+            font-size: 15px;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        .input-control:focus {
+            border-color: #0b5299;
+        }
+
+        /* Captcha Wrapper */
+        .captcha-wrapper {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .captcha-wrapper .input-control {
+            flex: 1;
+        }
+
+        .captcha-image {
+            background: linear-gradient(45deg, #f3e7e9 0%, #e3eeff 100%);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-family: 'Courier New', Courier, monospace;
+            font-weight: bold;
+            font-size: 18px;
+            letter-spacing: 4px;
+            color: #c83b7e;
+            user-select: none;
+            font-style: italic;
+            text-decoration: line-through;
+            border: 1px dashed #bbb;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .btn-refresh {
+            background-color: #eaf2fc;
+            color: #0b5299;
+            border: none;
+            padding: 10px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+            font-weight: 500;
+        }
+
+        .btn-refresh:hover {
+            background-color: #d4e5f9;
+        }
+
+        /* Search Button */
+        .btn-search {
+            width: 100%;
+            background-color: #0b5299;
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 25px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .btn-search:hover {
+            background-color: #083d73;
+        }
+
+        /* Result Section */
+        .result-card {
+            background: white;
+            border-radius: 24px;
+            padding: 30px 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            text-align: center;
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .result-empty {
+            color: #778293;
+        }
+
+        .result-empty i {
+            font-size: 40px;
+            color: #adc0d1;
+            margin-bottom: 15px;
+        }
+
+        /* Table Result style */
+        .result-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        .result-table th, .result-table td {
+            padding: 12px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .result-table th {
+            color: #0b5299;
+            font-weight: bold;
+        }
+
+        .score-highlight {
+            font-weight: bold;
+            color: #d32f2f;
+            font-size: 16px;
+        }
+
+        .error-msg {
+            color: #d32f2f;
+            font-size: 14px;
+            margin-top: 10px;
+            font-weight: 500;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #0b5299;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 12px;
+            line-height: 1.6;
+            margin-top: auto;
+        }
+
+        footer a {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-container">
+            <div class="header-title">
+                <h1>Sở Giáo dục và Đào tạo Bắc Ninh</h1>
+                <p>Cổng thông tin tuyển sinh</p>
+            </div>
+            <div class="badge">
+                <i class="fa-solid fa-file-lines"></i> KỲ THI VÀO LỚP 10 THPT NĂM HỌC 2026-2027
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="card">
+            <div class="card-title">Tra cứu điểm thi</div>
+            <div class="card-subtitle">
+                Nhập số báo danh và mã xác nhận để tra cứu kết quả tuyển sinh lớp 10
+            </div>
+
+            <form id="searchForm" onsubmit="handleSearch(event)">
+                <div class="form-group">
+                    <label class="form-label"><i class="fa-solid fa-hashtag"></i> Số báo danh</label>
+                    <input type="text" id="sbdInput" class="input-control" placeholder="Nhập số báo danh" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label"><i class="fa-solid fa-shield-halved"></i> Mã xác nhận (Captcha)</label>
+                    <div class="captcha-wrapper">
+                        <input type="text" id="captchaInput" class="input-control" placeholder="Nhập mã captcha" required>
+                        <div id="captchaImg" class="captcha-image">GYRKBU</div>
+                        <button type="button" class="btn-refresh" onclick="generateCaptcha()">
+                            <i class="fa-solid fa-arrows-rotate"></i> Đổi mã
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-search">
+                    <i class="fa-solid fa-magnifying-glass"></i> Tra cứu ngay
+                </button>
+                
+                <div id="errorBox" class="error-msg"></div>
+            </form>
+        </div>
+
+        <div class="result-card" id="resultCard">
+            <div class="result-empty" id="resultEmpty">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <p>Kết quả tra cứu sẽ hiển thị tại đây</p>
+            </div>
+            <div id="resultData" style="display: none; width: 100%;">
+                </div>
+        </div>
+    </main>
+
+    <footer>
+        <p><i class="fa-solid fa-database"></i> Cổng tra cứu điểm thi tuyển sinh lớp 10 tỉnh Bắc Ninh</p>
+        <p>© 2026 Sở Giáo dục và Đào tạo Bắc Ninh | <a href="#">Hotline hỗ trợ: 02043-854-...</a></p>
+    </footer>
+
+    <script>
+        // Hàm tạo mã Captcha ngẫu nhiên
+        function generateCaptcha() {
+            const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            let result = '';
+            for (let i = 0; i < 6; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            document.getElementById('captchaImg').innerText = result;
+            // Xóa dữ liệu cũ khi đổi mã cho sạch form
+            document.getElementById('captchaInput').value = '';
+        }
+
+        // Chạy tạo captcha ngay khi tải trang xong
+        window.onload = function() {
+            generateCaptcha();
+        };
+
+        // Xử lý sự kiện khi nhấn nút Tra cứu ngay
+        function handleSearch(event) {
+            event.preventDefault(); // Ngăn trang bị reload lại
+
+            const sbd = document.getElementById('sbdInput').value.trim();
+            const captchaInput = document.getElementById('captchaInput').value.trim().toUpperCase();
+            const captchaActual = document.getElementById('captchaImg').innerText;
+            const errorBox = document.getElementById('errorBox');
+            const resultEmpty = document.getElementById('resultEmpty');
+            const resultData = document.getElementById('resultData');
+
+            // Reset thông báo lỗi và kết quả trước đó
+            errorBox.innerText = '';
+            resultData.style.display = 'none';
+            resultEmpty.style.display = 'block';
+
+            // 1. Kiểm tra mã Captcha
+            if (captchaInput !== captchaActual) {
+                errorBox.innerText = 'Mã xác nhận (Captcha) không chính xác. Vui lòng thử lại!';
+                generateCaptcha(); // Đổi mã mới luôn nếu gõ sai
+                return;
+            }
+
+            // 2. Kiểm tra Số báo danh (Chuyển thành số để check từ 00000 đến 99999)
+            const sbdNumber = parseInt(sbd, 10);
+            
+            // Regex kiểm tra xem người dùng nhập có phải là chuỗi số hợp lệ không
+            if (isNaN(sbdNumber) || sbdNumber < 0 || sbdNumber > 99999 || !/^\d+$/.test(sbd)) {
+                errorBox.innerText = 'Số báo danh không hợp lệ! Vui lòng nhập số từ 00000 đến 99999.';
+                return;
+            }
+
+            // 3. Chuẩn hóa hiển thị định dạng số báo danh có 5 chữ số (Ví dụ nhập 123 -> thành 00123)
+            const formattedSBD = sbd.padStart(5, '0');
+
+            // 4. Nếu hợp lệ, hiển thị bảng điểm (mặc định Ngữ Văn: 9, Tiếng Anh: 9, Toán: 9)
+            resultEmpty.style.display = 'none';
+            resultData.style.display = 'block';
+            
+            resultData.innerHTML = `
+                <h3 style="color: #0b5299; margin-bottom: 15px; text-align: left;">SBD công bố: ${formattedSBD}</h3>
+                <table class="result-table">
+                    <thead>
+                        <tr>
+                            <th>Môn Thi</th>
+                            <th style="text-align: right;">Điểm Số</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ngữ Văn</td>
+                            <td style="text-align: right;" class="score-highlight">9.00</td>
+                        </tr>
+                        <tr>
+                            <td>Tiếng Anh</td>
+                            <td style="text-align: right;" class="score-highlight">9.00</td>
+                        </tr>
+                        <tr>
+                            <td>Toán</td>
+                            <td style="text-align: right;" class="score-highlight">9.00</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p style="color: green; font-size: 13px; text-align: left; margin-top: 15px;">
+                    * Tra cứu thành công. Chúc mừng thí sinh!
+                </p>
+            `;
+        }
+    </script>
+</body>
+</html>
         input, select { width: 100%; padding: 11px; background-color: #0f3460; color: white; border: 1px solid #533483; border-radius: 6px; font-size: 14px; outline: none; margin-bottom: 10px; }
         .btn-action { width: 100%; padding: 12px; background: linear-gradient(135deg, #00fff0, #00ff87); color: #1a1a2e; border: none; border-radius: 6px; font-weight: bold; font-size: 15px; cursor: pointer; margin-top: 5px; }
         .btn-admin-add { background: #e94560; color: white; }
