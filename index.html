@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hack Shop Mini App</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Arial, sans-serif; }
+        body { background: #0a0a0f; color: #c0c0c0; display: flex; justify-content: center; padding: 20px; }
+        #app { max-width: 420px; width: 100%; background: #12121a; border-radius: 24px; padding: 20px; box-shadow: 0 0 40px rgba(0,255,200,0.05); border: 1px solid #2a2a3a; }
+        .hidden { display: none; }
+        .tab-bar { display: flex; gap: 6px; margin-bottom: 20px; background: #1a1a26; border-radius: 40px; padding: 6px; }
+        .tab-bar button { flex: 1; background: transparent; border: none; color: #666; padding: 10px 0; border-radius: 30px; font-weight: 600; font-size: 14px; cursor: pointer; transition: 0.2s; }
+        .tab-bar button.active { background: #00c8a0; color: #0a0a0f; }
+        .product-card { background: #1a1a28; border-radius: 16px; padding: 16px; margin-bottom: 14px; border-left: 4px solid #00c8a0; }
+        .product-title { font-size: 18px; font-weight: 700; color: #fff; display: flex; justify-content: space-between; }
+        .product-title span { background: #00c8a0; color: #0a0a0f; padding: 2px 12px; border-radius: 20px; font-size: 12px; }
+        .price-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
+        .price-btn { background: #25253a; border: 1px solid #333; border-radius: 30px; padding: 8px 0; text-align: center; color: #aaa; font-size: 13px; cursor: pointer; transition: 0.15s; }
+        .price-btn:hover { background: #00c8a0; color: #000; border-color: #00c8a0; }
+        .price-btn .days { font-weight: 300; font-size: 10px; color: #888; }
+        .auth-box { background: #1a1a28; border-radius: 16px; padding: 20px; margin-top: 16px; }
+        .auth-box input { width: 100%; padding: 12px; margin-bottom: 10px; background: #0f0f18; border: 1px solid #2a2a3e; border-radius: 30px; color: #fff; outline: none; }
+        .auth-box button { width: 100%; padding: 12px; background: #00c8a0; border: none; border-radius: 30px; font-weight: 700; color: #0a0a0f; cursor: pointer; }
+        .admin-panel { background: #1a1a28; border-radius: 16px; padding: 16px; margin-top: 16px; border: 1px solid #ff4444; }
+        .admin-panel h3 { color: #ff6666; margin-bottom: 12px; }
+        .order-item { background: #0f0f18; padding: 10px; border-radius: 8px; margin-bottom: 8px; font-size: 13px; display: flex; justify-content: space-between; }
+        .order-item .status { color: #ffaa00; }
+        .flash { animation: flash 0.3s; }
+        @keyframes flash { 0% { background: #00c8a0; } 100% { background: transparent; } }
+    </style>
+</head>
+<body>
+<div id="app">
+    <!-- Tab navigation -->
+    <div class="tab-bar">
+        <button class="active" data-tab="shop">🏪 Shop</button>
+        <button data-tab="admin">🔧 Admin</button>
+        <button data-tab="account">👤 Account</button>
+    </div>
+
+    <!-- SHOP TAB -->
+    <div id="tab-shop" class="tab-content">
+        <!-- Free Fire Max -->
+        <div class="product-card">
+            <div class="product-title">🔥 Free Fire Max <span>hack</span></div>
+            <div class="price-grid">
+                <div class="price-btn" data-product="ff" data-days="1" data-price="20000">1d<br><span class="days">20.000đ</span></div>
+                <div class="price-btn" data-product="ff" data-days="7" data-price="65000">7d<br><span class="days">65.000đ</span></div>
+                <div class="price-btn" data-product="ff" data-days="30" data-price="135000">30d<br><span class="days">135.000đ</span></div>
+            </div>
+            <div style="margin-top:8px; font-size:12px; color:#666;">⚡ Aimbot + ESP + No Recoil</div>
+        </div>
+
+        <!-- Blood Strike -->
+        <div class="product-card">
+            <div class="product-title">🩸 Blood Strike <span>max</span></div>
+            <div class="price-grid">
+                <div class="price-btn" data-product="bs" data-days="1" data-price="20000">1d<br><span class="days">20.000đ</span></div>
+                <div class="price-btn" data-product="bs" data-days="7" data-price="65000">7d<br><span class="days">65.000đ</span></div>
+                <div class="price-btn" data-product="bs" data-days="30" data-price="135000">30d<br><span class="days">135.000đ</span></div>
+            </div>
+            <div style="margin-top:8px; font-size:12px; color:#666;">💀 Wallhack + Magic Bullet</div>
+        </div>
+
+        <!-- Delta Force -->
+        <div class="product-card">
+            <div class="product-title">🎯 Delta Force <span>pro</span></div>
+            <div class="price-grid">
+                <div class="price-btn" data-product="df" data-days="1" data-price="40000">1d<br><span class="days">40.000đ</span></div>
+                <div class="price-btn" data-product="df" data-days="7" data-price="120000">7d<br><span class="days">120.000đ</span></div>
+                <div class="price-btn" data-product="df" data-days="30" data-price="220000">30d<br><span class="days">220.000đ</span></div>
+            </div>
+            <div style="margin-top:8px; font-size:12px; color:#666;">📡 Radar + No Spread</div>
+        </div>
+
+        <div id="cart-message" style="margin-top:16px; padding:12px; background:#1a2a1a; border-radius:12px; text-align:center; color:#8f8; font-size:14px;"></div>
+    </div>
+
+    <!-- ADMIN TAB -->
+    <div id="tab-admin" class="tab-content hidden">
+        <div class="admin-panel">
+            <h3>🔐 Quản lý đơn hàng</h3>
+            <div id="order-list">
+                <div class="order-item"><span>Chưa có đơn hàng</span><span class="status">✅</span></div>
+            </div>
+            <hr style="border-color:#2a2a3e; margin:14px 0;">
+            <div style="display:flex; gap:8px;">
+                <input type="text" id="admin-user" placeholder="User" value="OVISITKING" style="flex:1;">
+                <input type="password" id="admin-pass" placeholder="Pass" value="lamcuonghuhu1@" style="flex:1;">
+            </div>
+            <button id="admin-login-btn" style="margin-top:10px; background:#ff4444;">Đăng nhập Admin</button>
+            <div id="admin-status" style="margin-top:8px; font-size:12px; color:#ff8844;"></div>
+        </div>
+    </div>
+
+    <!-- ACCOUNT TAB -->
+    <div id="tab-account" class="tab-content hidden">
+        <div class="auth-box">
+            <h3 style="color:#fff; margin-bottom:14px;">Đăng nhập / Đăng ký</h3>
+            <input type="text" id="login-user" placeholder="Tên đăng nhập">
+            <input type="password" id="login-pass" placeholder="Mật khẩu">
+            <button id="login-btn">Đăng nhập</button>
+            <button id="register-btn" style="margin-top:8px; background:#333;">Đăng ký</button>
+            <div id="auth-status" style="margin-top:10px; font-size:13px; color:#aaa;"></div>
+        </div>
+        <div id="user-info" class="hidden" style="background:#1a1a28; border-radius:16px; padding:16px; margin-top:12px; text-align:center;">
+            <div style="color:#00c8a0; font-size:20px;">✅ Đã đăng nhập</div>
+            <div id="display-user" style="color:#fff; margin:6px 0;"></div>
+            <button id="logout-btn" style="background:#555; border:none; padding:8px 30px; border-radius:30px; color:#fff;">Thoát</button>
+        </div>
+    </div>
+</div>
+
+<script>
+// ---- STATE ----
+const state = {
+    currentUser: null,
+    isAdmin: false,
+    orders: [],
+    cart: []
+};
+
+// ---- FAKE DB (localStorage) ----
+function loadDB() {
+    try {
+        const u = JSON.parse(localStorage.getItem('ff_users')) || {};
+        const o = JSON.parse(localStorage.getItem('ff_orders')) || [];
+        state.orders = o;
+        return u;
+    } catch { return {}; }
+}
+function saveUsers(users) { localStorage.setItem('ff_users', JSON.stringify(users)); }
+function saveOrders() { localStorage.setItem('ff_orders', JSON.stringify(state.orders)); }
+
+const users = loadDB();
+// seed admin
+if (!users['OVISITKING']) {
+    users['OVISITKING'] = { password: 'lamcuonghuhu1@', isAdmin: true };
+    saveUsers(users);
+}
+
+// ---- HELPERS ----
+function showMessage(el, msg, isGood = true) {
+    const m = document.getElementById(el);
+    m.textContent = msg;
+    m.style.color = isGood ? '#8f8' : '#f88';
+    m.classList.add('flash');
+    setTimeout(() => m.classList.remove('flash'), 300);
+}
+
+// ---- TAB SWITCH ----
+document.querySelectorAll('.tab-bar button').forEach(btn => {
+    btn.addEventListener('click', function() {
+        document.querySelectorAll('.tab-bar button').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        const tab = this.dataset.tab;
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        document.getElementById('tab-' + tab).classList.remove('hidden');
+        if (tab === 'admin') renderAdmin();
+    });
+});
+
+// ---- PRICE CLICK (hiện giá + thêm đơn) ----
+document.querySelectorAll('.price-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+        const product = this.dataset.product;
+        const days = this.dataset.days;
+        const price = parseInt(this.dataset.price);
+        const names = { ff: 'Free Fire Max', bs: 'Blood Strike', df: 'Delta Force' };
+        const msg = `📦 Đã chọn: ${names[product]} - ${days} ngày - ${price.toLocaleString()}đ`;
+        document.getElementById('cart-message').innerHTML = msg + ' <span style="color:#ffaa00;">(click lần nữa để xác nhận mua)</span>';
+        
+        // lưu order tạm
+        state.cart = { product, days, price, name: names[product] };
+        
+        // nếu đã đăng nhập thì lưu luôn
+        if (state.currentUser) {
+            state.orders.push({
+                user: state.currentUser,
+                product: names[product],
+                days: days,
+                price: price,
+                time: new Date().toLocaleString(),
+                status: 'pending'
+            });
+            saveOrders();
+            document.getElementById('cart-message').innerHTML = `✅ Đã mua ${names[product]} ${days} ngày - ${price.toLocaleString()}đ (chờ admin duyệt)`;
+            renderAdmin();
+        } else {
+            document.getElementById('cart-message').innerHTML += ' <br><span style="color:#f88;">⚠️ Đăng nhập để lưu đơn hàng</span>';
+        }
+    });
+});
+
+// ---- AUTH ----
+document.getElementById('login-btn').addEventListener('click', function() {
+    const u = document.getElementById('login-user').value.trim();
+    const p = document.getElementById('login-pass').value.trim();
+    if (!u || !p) { showMessage('auth-status', 'Nhập đầy đủ', false); return; }
+    if (users[u] && users[u].password === p) {
+        state.currentUser = u;
+        if (users[u].isAdmin) state.isAdmin = true;
+        document.getElementById('auth-status').textContent = '✅ Đăng nhập thành công!';
+        document.getElementById('display-user').textContent = '👤 ' + u + (users[u].isAdmin ? ' (Admin)' : '');
+        document.querySelector('.auth-box').classList.add('hidden');
+        document.getElementById('user-info').classList.remove('hidden');
+        // nếu admin thì chuyển tab
+        if (state.isAdmin) {
+            document.querySelector('.tab-bar button[data-tab="admin"]').click();
+        }
+        renderAdmin();
+    } else {
+        showMessage('auth-status', 'Sai tên hoặc mật khẩu', false);
+    }
+});
+
+document.getElementById('register-btn').addEventListener('click', function() {
+    const u = document.getElementById('login-user').value.trim();
+    const p = document.getElementById('login-pass').value.trim();
+    if (!u || !p) { showMessage('auth-status', 'Nhập đầy đủ', false); return; }
+    if (users[u]) { showMessage('auth-status', 'Tên đã tồn tại', false); return; }
+    users[u] = { password: p, isAdmin: false };
+    saveUsers(users);
+    showMessage('auth-status', '✅ Đăng ký thành công! Đăng nhập ngay.');
+});
+
+document.getElementById('logout-btn').addEventListener('click', function() {
+    state.currentUser = null;
+    state.isAdmin = false;
+    document.querySelector('.auth-box').classList.remove('hidden');
+    document.getElementById('user-info').classList.add('hidden');
+    document.getElementById('auth-status').textContent = '';
+    document.getElementById('login-user').value = '';
+    document.getElementById('login-pass').value = '';
+});
+
+// ---- ADMIN LOGIN (riêng) ----
+document.getElementById('admin-login-btn').addEventListener('click', function() {
+    const u = document.getElementById('admin-user').value.trim();
+    const p = document.getElementById('admin-pass').value.trim();
+    if (u === 'OVISITKING' && p === 'lamcuonghuhu1@') {
+        state.isAdmin = true;
+        state.currentUser = 'OVISITKING';
+        document.getElementById('admin-status').textContent = '✅ Admin đã đăng nhập';
+        renderAdmin();
+        // cập nhật account tab
+        document.getElementById('display-user').textContent = '👤 OVISITKING (Admin)';
+        document.querySelector('.auth-box').classList.add('hidden');
+        document.getElementById('user-info').classList.remove('hidden');
+    } else {
+        document.getElementById('admin-status').textContent = '❌ Sai tài khoản admin';
+    }
+});
+
+// ---- RENDER ADMIN ----
+function renderAdmin() {
+    const list = document.getElementById('order-list');
+    if (!state.isAdmin) {
+        list.innerHTML = `<div class="order-item"><span>🔒 Đăng nhập admin để quản lý</span><span class="status">🔑</span></div>`;
+        return;
+    }
+    if (state.orders.length === 0) {
+        list.innerHTML = `<div class="order-item"><span>📭 Chưa có đơn hàng</span><span class="status">✅</span></div>`;
+        return;
+    }
+    list.innerHTML = state.orders.map((o, i) => `
+        <div class="order-item">
+            <span>${o.user} - ${o.product} (${o.days}d) <br><small>${o.time}</small></span>
+            <span class="status">${o.status === 'pending' ? '⏳ chờ' : '✅ đã duyệt'}</span>
+            <button onclick="approveOrder(${i})" style="background:#00c8a0;border:none;border-radius:30px;padding:2px 12px;color:#000;cursor:pointer;">Duyệt</button>
+        </div>
+    `).join('');
+}
+
+window.approveOrder = function(idx) {
+    if (!state.isAdmin) return;
+    state.orders[idx].status = 'approved';
+    saveOrders();
+    renderAdmin();
+};
+
+// ---- AUTO CHECK ADMIN SESSION ----
+// khôi phục nếu đã login
+(function init() {
+    const saved = localStorage.getItem('ff_session');
+    if (saved) {
+        try {
+            const data = JSON.parse(saved);
+            if (users[data.user] && users[data.user].password === data.pass) {
+                state.currentUser = data.user;
+                if (users[data.user].isAdmin) state.isAdmin = true;
+                document.getElementById('display-user').textContent = '👤 ' + data.user + (users[data.user].isAdmin ? ' (Admin)' : '');
+                document.querySelector('.auth-box').classList.add('hidden');
+                document.getElementById('user-info').classList.remove('hidden');
+                if (state.isAdmin) renderAdmin();
+            }
+        } catch {}
+    }
+})();
+
+// lưu session khi login
+document.addEventListener('click', function() {
+    if (state.currentUser) {
+        localStorage.setItem('ff_session', JSON.stringify({ user: state.currentUser, pass: users[state.currentUser]?.password }));
+    }
+});
+
+console.log('🔧 Admin: OVISITKING / lamcuonghuhu1@');
+</script>
+</body>
+  </html>
