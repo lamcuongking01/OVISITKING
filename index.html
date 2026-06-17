@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shop Key OVISIT</title>
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;}
+        body{background:#0b0e14;color:#e8edf5;display:flex;justify-content:center;padding:20px;min-height:100vh;}
+        .container{max-width:420px;width:100%;background:#131a22;border-radius:24px;padding:20px 16px 30px;box-shadow:0 8px 32px rgba(0,0,0,0.7);border:1px solid #2a3340;}
+        .header{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+        .header h1{font-size:22px;font-weight:700;background:linear-gradient(135deg,#f7971e,#ffd200);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+        .balance-wrapper{display:flex;align-items:center;gap:6px;background:#1e2732;padding:4px 12px 4px 8px;border-radius:30px;cursor:pointer;border:1px solid #2a3340;font-size:14px;font-weight:600;color:#34c759;}
+        .balance-wrapper:hover{border-color:#f7971e;}
+        .admin-row{display:flex;align-items:center;gap:8px;background:#1e2732;padding:10px 14px;border-radius:40px;margin:10px 0 16px 0;border-left:4px solid #ffd700;}
+        .admin-row .name{font-weight:700;font-size:16px;color:#fff;}
+        .verified{background:#1d9bf0;color:#fff;font-size:11px;padding:2px 10px;border-radius:30px;font-weight:600;display:inline-block;margin-left:4px;}
+        .stats{display:flex;gap:10px;margin-bottom:18px;background:#10171f;padding:10px 12px;border-radius:40px;justify-content:space-around;}
+        .stats div{text-align:center;}
+        .stats .num{font-weight:700;font-size:18px;color:#fff;}
+        .stats .label{font-size:11px;color:#8899aa;}
+        .stats .num.active{color:#34c759;}
+        .stats .num.expired{color:#ff3b30;}
+        .section-title{font-size:16px;font-weight:600;margin:18px 0 10px 0;color:#ccd7e6;}
+        .selector-group{background:#10171f;border-radius:16px;padding:12px 14px;margin-bottom:8px;}
+        .selector-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid #1e2732;}
+        .selector-row:last-child{border-bottom:none;}
+        .selector-row .label{color:#aab8c9;font-size:14px;}
+        .selector-row .value{background:#1e2732;padding:4px 14px;border-radius:30px;font-size:13px;color:#e8edf5;border:1px solid #2a3340;}
+        .game-grid{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 8px 0;}
+        .game-btn{background:#1e2732;border:1px solid #2a3340;padding:6px 14px;border-radius:30px;font-size:13px;color:#ccd7e6;cursor:pointer;transition:0.2s;}
+        .game-btn:hover{border-color:#f7971e;color:#fff;}
+        .game-btn.selected{background:#f7971e;border-color:#f7971e;color:#0b0e14;font-weight:600;}
+        .game-btn.vip{border-color:#ffd700;color:#ffd700;}
+        .game-btn.vip.selected{background:#ffd700;color:#0b0e14;}
+        .game-btn.thuong{border-color:#34c759;color:#34c759;}
+        .game-btn.thuong.selected{background:#34c759;color:#0b0e14;}
+        .package-btn{background:#1e2732;border:1px solid #2a3340;padding:6px 14px;border-radius:30px;font-size:13px;color:#ccd7e6;cursor:pointer;transition:0.2s;}
+        .package-btn:hover{border-color:#34c759;color:#fff;}
+        .package-btn.selected{background:#34c759;border-color:#34c759;color:#0b0e14;font-weight:600;}
+        .package-btn.permanent{border-color:#ffd700;color:#ffd700;}
+        .package-btn.permanent.selected{background:#ffd700;color:#0b0e14;}
+        .price-tag{background:#1e2732;border-radius:16px;padding:12px 16px;margin:8px 0 14px 0;display:flex;justify-content:space-between;align-items:center;border-left:4px solid #34c759;}
+        .price-tag .price{font-size:22px;font-weight:700;color:#34c759;}
+        .price-tag .price span{font-size:14px;font-weight:400;color:#8899aa;}
+        .buy-btn{background:#34c759;border:none;color:#0b0e14;font-weight:700;font-size:16px;padding:12px 0;border-radius:40px;width:100%;cursor:pointer;transition:0.2s;margin:4px 0 8px 0;}
+        .buy-btn:disabled{opacity:0.4;cursor:not-allowed;}
+        .buy-btn:not(:disabled):hover{background:#28a745;transform:scale(1.01);}
+        .note{font-size:12px;color:#8899aa;text-align:center;padding:4px 0 12px 0;border-bottom:1px solid #1e2732;}
+        .key-tabs{display:flex;gap:4px;margin:16px 0 12px 0;background:#10171f;padding:4px;border-radius:40px;}
+        .key-tabs .tab{flex:1;text-align:center;padding:6px 0;border-radius:30px;font-size:13px;color:#8899aa;cursor:pointer;transition:0.2s;}
+        .key-tabs .tab.active{background:#1e2732;color:#fff;font-weight:600;}
+        .key-tabs .tab:hover:not(.active){color:#ccd7e6;}
+        .search-box{background:#10171f;border:1px solid #1e2732;border-radius:40px;padding:10px 16px;width:100%;color:#e8edf5;font-size:14px;outline:none;margin-bottom:14px;}
+        .search-box::placeholder{color:#556677;}
+        .empty-state{text-align:center;padding:40px 0 20px 0;color:#556677;}
+        .empty-state .icon{font-size:48px;margin-bottom:10px;opacity:0.4;}
+        .empty-state .sub{font-size:13px;color:#3d4a5a;}
+        .key-item{background:#10171f;border-radius:12px;padding:10px 14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;border-left:3px solid #34c759;}
+        .key-item .code{font-family:monospace;font-size:14px;color:#e8edf5;}
+        .key-item .status{font-size:12px;padding:2px 12px;border-radius:30px;background:#1e2732;}
+        .key-item .status.active{color:#34c759;}
+        .key-item .status.expired{color:#ff3b30;}
+        .key-item .status.locked{color:#ff9500;}
+        .footer-spacer{height:20px;}
+        .logout-btn{background:#ff3b30;border:none;color:#fff;font-weight:700;font-size:13px;padding:6px 16px;border-radius:30px;cursor:pointer;margin-left:auto;}
+        .logout-btn:hover{background:#d92d23;}
+        .admin-panel{display:none;background:#10171f;border-radius:16px;padding:16px;margin-bottom:16px;border:1px solid #ffd700;}
+        .admin-panel.show{display:block;}
+        .admin-panel h3{color:#ffd700;font-size:15px;margin-bottom:10px;}
+        .admin-panel input{background:#0b0e14;border:1px solid #2a3340;border-radius:40px;padding:10px 16px;color:#e8edf5;font-size:14px;outline:none;width:100%;margin-bottom:8px;}
+        .admin-panel input:focus{border-color:#ffd700;}
+        .admin-panel .gen-btn{background:#ffd700;border:none;color:#0b0e14;font-weight:700;padding:10px 0;border-radius:40px;width:100%;cursor:pointer;}
+        .admin-panel .gen-btn:hover{background:#e6c200;}
+        .admin-panel .key-output{background:#0b0e14;padding:8px 14px;border-radius:30px;font-family:monospace;font-size:13px;color:#34c759;margin-top:6px;word-break:break-all;border:1px dashed #2a3340;}
+        .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:1000;justify-content:center;align-items:center;padding:20px;}
+        .modal-overlay.show{display:flex;}
+        .modal{background:#131a22;border-radius:24px;padding:24px 20px;max-width:400px;width:100%;border:1px solid #2a3340;max-height:90vh;overflow-y:auto;}
+        .modal h2{font-size:20px;font-weight:700;margin-bottom:16px;color:#ffd700;}
+        .modal .close-btn{float:right;background:none;border:none;color:#8899aa;font-size:24px;cursor:pointer;}
+        .modal .close-btn:hover{color:#fff;}
+        .modal .method-tabs{display:flex;gap:6px;margin-bottom:16px;background:#0b0e14;padding:4px;border-radius:40px;}
+        .modal .method-tabs .mtab{flex:1;text-align:center;padding:8px 0;border-radius:30px;font-size:14px;font-weight:600;color:#8899aa;cursor:pointer;transition:0.2s;}
+        .modal .method-tabs .mtab.active{background:#1e2732;color:#fff;}
+        .modal .method-content{display:none;flex-direction:column;gap:12px;}
+        .modal .method-content.show{display:flex;}
+        .modal .method-content input,.modal .method-content select{background:#0b0e14;border:1px solid #2a3340;border-radius:40px;padding:10px 16px;color:#e8edf5;font-size:14px;outline:none;}
+        .modal .method-content input:focus,.modal .method-content select:focus{border-color:#ffd700;}
+        .modal .method-content .info-row{display:flex;justify-content:space-between;font-size:14px;color:#aab8c9;padding:4px 0;}
+        .modal .method-content .info-row .val{color:#34c759;font-weight:600;}
+        .modal .deposit-btn{background:#34c759;border:none;color:#0b0e14;font-weight:700;font-size:16px;padding:12px 0;border-radius:40px;cursor:pointer;transition:0.2s;margin-top:4px;}
+        .modal .deposit-btn:hover{background:#28a745;}
+        .modal .discount-note{font-size:12px;color:#ff9500;text-align:center;padding:4px 0;}
+        .modal .bank-info{background:#0b0e14;border-radius:16px;padding:12px;border:1px dashed #2a3340;font-size:13px;color:#ccd7e6;}
+        .modal .bank-info .row{display:flex;justify-content:space-between;padding:4px 0;}
+        .modal .bank-info .row .label{color:#8899aa;}
+        .modal .qr-placeholder{background:#0b0e14;border-radius:16px;padding:20px;text-align:center;border:2px dashed #2a3340;color:#556677;font-size:14px;}
+        .modal .qr-placeholder img{max-width:100%;border-radius:8px;margin-top:8px;}
+        .auth-container{background:#10171f;border-radius:16px;padding:16px;margin-bottom:16px;border:1px solid #2a3340;}
+        .auth-tabs{display:flex;gap:4px;margin-bottom:14px;background:#0b0e14;padding:4px;border-radius:40px;}
+        .auth-tabs .atab{flex:1;text-align:center;padding:8px 0;border-radius:30px;font-size:14px;font-weight:600;color:#8899aa;cursor:pointer;transition:0.2s;}
+        .auth-tabs .atab.active{background:#1e2732;color:#fff;}
+        .auth-form{display:none;flex-direction:column;gap:10px;}
+        .auth-form.show{display:flex;}
+        .auth-form input{background:#0b0e14;border:1px solid #2a3340;border-radius:40px;padding:10px 16px;color:#e8edf5;font-size:14px;outline:none;}
+        .auth-form input:focus{border-color:#f7971e;}
+        .auth-form input::placeholder{color:#556677;}
+        .auth-btn{background:#f7971e;border:none;color:#0b0e14;font-weight:700;font-size:15px;padding:10px 0;border-radius:40px;cursor:pointer;transition:0.2s;margin-top:4px;}
+        .auth-btn:hover{background:#e08e0b;}
+        .auth-error{color:#ff3b30;font-size:12px;padding:0 4px;min-height:18px;}
+        .auth-success{color:#34c759;font-size:12px;padding:0 4px;min-height:18px;}
+        .remember-row{display:flex;align-items:center;gap:8px;font-size:13px;color:#8899aa;padding:2px 4px;}
+        .remember-row input[type="checkbox"]{accent-color:#f7971e;width:16px;height:16px;cursor:pointer;}
+        .auth-form .password-hint{font-size:11px;color:#8899aa;padding:0 4px;}
+        .auth-form .password-hint .ok{color:#34c759;}
+        .auth-form .password-hint .fail{color:#ff3b30;}
+        .hidden{display:none!important;}
+        .amount-input-group{display:flex;gap:8px;align-items:center;}
+        .amount-input-group input{flex:1;}
+        .amount-input-group button{background:#2a3340;border:1px solid #2a3340;border-radius:40px;padding:10px 16px;color:#e8edf5;cursor:pointer;font-weight:600;}
+        .amount-input-group button:hover{background:#3d4a5a;}
+        @media (max-width:450px){.container{padding:14px 10px;}}
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+    <div class="header">
+        <h1>Shop Key OVISIT</h1>
+        <div class="balance-wrapper" id="balanceWrapper">
+            <span>💰</span>
+            <span id="balanceDisplay">0đ</span>
+        </div>
+    </div>
+
+    <div class="admin-row">
+        <span class="name">ADMIN: OVISITKING</span>
+        <span class="verified">✓ XANH</span>
+        <span style="margin-left:auto;font-size:13px;color:#8899aa;">@OVISITKING</span>
+        <button class="logout-btn" id="logoutBtn" style="display:none;">Đăng xuất</button>
+    </div>
+
+    <!-- AUTH LOGIN -->
+    <div class="auth-container" id="authContainer">
+        <div class="auth-tabs">
+            <span class="atab active" data-atform="login">Đăng nhập</span>
+            <span class="atab" data-atform="register">Đăng ký</span>
+        </div>
+        <div class="auth-form show" id="loginForm">
+            <input type="text" id="loginUsername" placeholder="Tên đăng nhập">
+            <input type="password" id="loginPassword" placeholder="Mật khẩu">
+            <div class="remember-row">
+                <input type="checkbox" id="rememberMe" checked>
+                <label for="rememberMe">Lưu tài khoản</label>
+            </div>
+            <div id="loginError" class="auth-error"></div>
+            <button class="auth-btn" id="loginBtn">Đăng nhập</button>
+        </div>
+        <div class="auth-form" id="registerForm">
+            <input type="text" id="regUsername" placeholder="Tên đăng nhập *">
+            <input type="email" id="regEmail" placeholder="Email *">
+            <input type="text" id="regPhone" placeholder="Số điện thoại (nếu có)">
+            <input type="password" id="regPassword" placeholder="Mật khẩu *">
+            <input type="password" id="regConfirm" placeholder="Xác nhận mật khẩu *">
+            <div class="password-hint" id="pwdHint">
+                Mật khẩu cần: <span id="hintUpper" class="fail">✗ Chữ hoa</span>
+                <span id="hintNumber" class="fail">✗ Số</span>
+                <span id="hintSpecial" class="fail">✗ Ký tự đặc biệt</span>
+                <span id="hintLength" class="fail">✗ ≥8 ký tự</span>
+            </div>
+            <div id="regError" class="auth-error"></div>
+            <div id="regSuccess" class="auth-success"></div>
+            <button class="auth-btn" id="registerBtn">Đăng ký</button>
+        </div>
+    </div>
+
+    <!-- ADMIN PANEL -->
+    <div class="admin-panel" id="adminPanel">
+        <h3>⚙️ ADMIN: Tạo Key</h3>
+        <input type="text" id="adminGameInput" placeholder="Tên game" value="Delta Force">
+        <input type="text" id="adminPackageInput" placeholder="Gói" value="Vĩnh viễn">
+        <input type="number" id="adminPriceInput" placeholder="Giá" value="150000">
+        <button class="gen-btn" id="adminGenKeyBtn">Tạo Key</button>
+        <div class="key-output" id="adminKeyOutput">Chưa tạo key</div>
+    </div>
+
+    <!-- STATS -->
+    <div class="stats">
+        <div><div class="num" id="totalKeys">0</div><div class="label">Tổng key</div></div>
+        <div><div class="num active" id="activeKeys">0</div><div class="label">Hoạt động</div></div>
+        <div><div class="num expired" id="expiredKeys">0</div><div class="label">Hết hạn</div></div>
+    </div>
+
+    <!-- MUA KEY -->
+    <div class="section-title">Mua Key mới</div>
+    <div class="selector-group">
+        <div class="selector-row">
+            <span class="label">Chọn ứng dụng</span>
+            <span class="value" id="selectedAppDisplay">Chưa chọn game</span>
+        </div>
+        <div class="game-grid" id="gameGrid"></div>
+        <div class="selector-row" style="margin-top:6px;">
+            <span class="label">Chọn gói</span>
+            <span class="value" id="selectedPackageDisplay">Chưa chọn gói</span>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;" id="packageGrid"></div>
+    </div>
+
+    <div class="price-tag">
+        <span>Giá</span>
+        <span class="price" id="priceDisplay">0<span>đ</span></span>
+    </div>
+    <button class="buy-btn" id="buyBtn" disabled>Mua ngay</button>
+    <div class="note">Không nhận card: Nếu không có tài khoản ngân hàng vui lòng tạo mã qr và nhờ người khác quét hộ</div>
+
+    <!-- KEY CỦA BẠN -->
+    <div class="section-title" style="margin-top:6px;">Key của bạn</div>
+    <div class="key-tabs">
+        <span class="tab active" data-filter="all">Tất cả</span>
+        <span class="tab" data-filter="active">Hoạt động</span>
+        <span class="tab" data-filter="expired">Hết hạn</span>
+        <span class="tab" data-filter="locked">Bị khoá</span>
+    </div>
+    <input class="search-box" id="searchBox" placeholder="Tìm kiếm GKey..." type="text">
+    <div id="keyListContainer"></div>
+    <div class="footer-spacer"></div>
+</div>
+
+<!-- MODAL NẠP TIỀN -->
+<div class="modal-overlay" id="depositModal">
+    <div class="modal">
+        <button class="close-btn" id="modalClose">&times;</button>
+        <h2>💳 Nạp tiền</h2>
+        <div class="method-tabs">
+            <span class="mtab active" data-method="card">Thẻ cào</span>
+            <span class="mtab" data-method="bank">Bank / QR</span>
+        </div>
+        <!-- Thẻ cào -->
+        <div class="method-content show" id="methodCard">
+            <select id="cardType">
+                <option value="viettel">Viettel</option>
+                <option value="vinaphone">Vinaphone</option>
+                <option value="mobifone">Mobifone</option>
+                <option value="gate">GATE</option>
+            </select>
+            <select id="cardDenomination">
+                <option value="10000">10.000đ</option>
+                <option value="20000">20.000đ</option>
+                <option value="50000">50.000đ</option>
+                <option value="100000">100.000đ</option>
+                <option value="200000">200.000đ</option>
+                <option value="500000">500.000đ</option>
+            </select>
+            <input type="text" id="cardSerial" placeholder="Serial thẻ">
+            <input type="text" id="cardCode" placeholder="Mã thẻ">
+            <div class="discount-note">📌 Chiết khấu: +15% giá trị thẻ (ví dụ 100k → 115k)</div>
+            <div class="info-row"><span>Số tiền nhận được</span><span class="val" id="cardNetAmount">0đ</span></div>
+            <button class="deposit-btn" id="cardDepositBtn">Nạp thẻ</button>
+        </div>
+        <!-- Bank / QR -->
+        <div class="method-content" id="methodBank">
+            <div class="bank-info">
+                <div class="row"><span class="label">Ngân hàng</span><span>MB Bank</span></div>
+                <div class="row"><span class="label">Chủ tài khoản</span><span>LAM CHI CUONG</span></div>
+                <div class="row"><span class="label">Số tài khoản</span><span>0394628916</span></div>
+                <div class="row"><span class="label">Nội dung</span><span>NAP KEY + SĐT</span></div>
+            </div>
+            <div class="qr-placeholder">
+                <div style="font-weight:600;color:#ccd7e6;margin-bottom:6px;">📱 Quét QR để chuyển khoản</div>
+                <div style="background:#fff;padding:12px;border-radius:12px;display:inline-block;">
+                    <svg width="180" height="180" viewBox="0 0 180 180" style="display:block;">
+                        <rect width="180" height="180" fill="white"/>
+                        <rect x="10" y="10" width="40" height="40" fill="black"/>
+                        <rect x="60" y="10" width="40" height="40" fill="black"/>
+                        <rect x="110" y="10" width="40" height="40" fill="black"/>
+                        <rect x="10" y="60" width="40" height="40" fill="black"/>
+                        <rect x="110" y="60" width="40" height="40" fill="black"/>
+                        <rect x="10" y="110" width="40" height="40" fill="black"/>
+                        <rect x="60" y="110" width="40" height="40" fill="black"/>
+                        <rect x="110" y="110" width="40" height="40" fill="black"/>
+                        <rect x="35" y="35" width="10" height="10" fill="white"/>
+                        <rect x="85" y="35" width="10" height="10" fill="white"/>
+                        <rect x="135" y="35" width="10" height="10" fill="white"/>
+                        <rect x="35" y="85" width="10" height="10" fill="white"/>
+                        <rect x="135" y="85" width="10" height="10" fill="white"/>
+                        <rect x="35" y="135" width="10" height="10" fill="white"/>
+                        <rect x="85" y="135" width="10" height="10" fill="white"/>
+                        <rect x="135" y="135" width="10" height="10" fill="white"/>
+                        <rect x="70" y="70" width="20" height="20" fill="black"/>
+                        <rect x="70" y="90" width="20" height="10" fill="black"/>
+                    </svg>
+                </div>
+                <div style="margin-top:8px;font-size:12px;color:#34c759;">✅ Tự động cộng tiền sau khi xác nhận</div>
+            </div>
+            <div class="amount-input-group">
+                <input type="number" id="bankAmount" placeholder="Nhập số tiền (VNĐ)" value="50000">
+                <button id="bankAmountPreset50">50k</button>
+                <button id="bankAmountPreset100">100k</button>
+            </div>
+            <button class="deposit-btn" id="bankDepositBtn">Xác nhận đã chuyển</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    (function(){
+        // ==============================================================
+        // CONFIG
+        // ==============================================================
+        const GAME_LIST = [
+            { name: 'Delta Force', type: 'vip', basePrice: 150000 },
+            { name: 'Liên Quân',   type: 'vip', basePrice: 120000 },
+            { name: 'Free Fire',   type: 'thuong', basePrice: 50000 },
+            { name: 'Max Blood Strike', type: 'thuong', basePrice: 35000 }
+        ];
+
+        const PACKAGE_LIST = [
+            { name: '1 tuần', multiplier: 1 },
+            { name: '1 tháng', multiplier: 3 },
+            { name: '3 tháng', multiplier: 7 },
+            { name: '6 tháng', multiplier: 12 },
+            { name: '1 năm', multiplier: 20, discount: 0.4 },
+            { name: 'Vĩnh viễn', multiplier: 20, isPermanent: true }
+        ];
+
+        const ADMIN_CRED = {
+            username: 'OVISITKING',
+            password: 'Admin@2026#Secure'
+        };
+
+        // ==============================================================
+        // STATE
+        // ==============================================================
+        let selectedGame = null;
+        let selectedPackage = null;
+        let currentFilter = 'all';
+        let searchQuery = '';
+        let keyDatabase = [];
+        let nextKeyId = 1;
+        let userBalance = 0;
+        let currentUser = null;
+        let isLoggedIn = false;
+
+        // ==============================================================
+        // DOM REFS
+        // ==============================================================
+        const gameGrid = document.getElementById('gameGrid');
+        const packageGrid = document.getElementById('packageGrid');
+        const selectedAppDisplay = document.getElementById('selectedAppDisplay');
+        const selectedPackageDisplay = document.getElementById('selectedPackageDisplay');
+        const priceDisplay = document.getElementById('priceDisplay');
+        const buyBtn = document.getElementById('buyBtn');
+        const keyListContainer = document.getElementById('keyListContainer');
+        const searchBox = document.getElementById('searchBox');
+        const totalKeysEl = document.getElementById('totalKeys');
+        const activeKeysEl = document.getElementById('activeKeys');
+        const expiredKeysEl = document.getElementById('expiredKeys');
+        const balanceDisplay = document.getElementById('balanceDisplay');
+        const balanceWrapper = document.getElementById('balanceWrapper');
+        const depositModal = document.getElementById('depositModal');
+        const modalClose = document.getElementById('modalClose');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const adminPanel = document.getElementById('adminPanel');
+        const authContainer = document.getElementById('authContainer');
+
+        // Auth
+        const loginForm = document.getElementById('loginForm');
+        const registerForm = document.getElementById('registerForm');
+        const loginUsername = document.getElementById('loginUsername');
+        const loginPassword = document.getElementById('loginPassword');
+        const loginError = document.getElementById('loginError');
+        const loginBtn = document.getElementById('loginBtn');
+        const regUsername = document.getElementById('regUsername');
+        const regEmail = document.getElementById('regEmail');
+        const regPhone = document.getElementById('regPhone');
+        const regPassword = document.getElementById('regPassword');
+        const regConfirm = document.getElementById('regConfirm');
+        const regError = document.getElementById('regError');
+        const regSuccess = document.getElementById('regSuccess');
+        const registerBtn = document.getElementById('registerBtn');
+        const rememberMe = document.getElementById('rememberMe');
+
+        const hintUpper = document.getElementById('hintUpper');
+        const hintNumber = document.getElementById('hintNumber');
+        const hintSpecial = document.getElementById('hintSpecial');
+        const hintLength = document.getElementById('hintLength');
+
+        // Admin
+        const adminGameInput = document.getElementById('adminGameInput');
+        const adminPackageInput = document.getElementById('adminPackageInput');
+        const adminPriceInput = document.getElementById('adminPriceInput');
+        const adminGenKeyBtn = document.getElementById('adminGenKeyBtn');
+        const adminKeyOutput = document.getElementById('adminKeyOutput');
+
+        // Bank
+        const bankAmount = document.getElementById('bankAmount');
+
+        // ==============================================================
+        // LOAD / SAVE
+        // ==============================================================
+        function loadState() {
+            try {
+                const saved = localStorage.getItem('shopKeyOVISIT_data_v5');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    keyDatabase = parsed.keys || [];
+                    nextKeyId = parsed.nextKeyId || 1;
+                    userBalance = parsed.balance || 0;
+                }
+                const sess = localStorage.getItem('shopKeyOVISIT_session_v5');
+                if (sess) {
+                    const s = JSON.parse(sess);
+                    if (s.username === ADMIN_CRED.username && s.password === ADMIN_CRED.password) {
+                        currentUser = { username: s.username, isAdmin: true };
+                        isLoggedIn = true;
+                    } else if (s.username) {
+                        currentUser = { username: s.username, isAdmin: false };
+                        isLoggedIn = true;
+                    }
+                }
+            } catch(e) {}
+        }
+
+        function saveState() {
+            localStorage.setItem('shopKeyOVISIT_data_v5', JSON.stringify({
+                keys: keyDatabase,
+                nextKeyId: nextKeyId,
+                balance: userBalance
+            }));
+            if (currentUser) {
+                localStorage.setItem('shopKeyOVISIT_session_v5', JSON.stringify({
+                    username: currentUser.username,
+                    password: currentUser.isAdmin ? ADMIN_CRED.password : 'userpass'
+                }));
+            } else {
+                localStorage.removeItem('shopKeyOVISIT_session_v5');
+            }
+        }
+
+        // ==============================================================
+        // RENDER
+        // ==============================================================
+        function renderGames() {
+            gameGrid.innerHTML = '';
+            GAME_LIST.forEach(game => {
+                const btn = document.createElement('span');
+                const typeClass = game.type === 'vip' ? 'vip' : 'thuong';
+                btn.className = `game-btn ${typeClass}`;
+                if (selectedGame && selectedGame.name === game.name) btn.classList.add('selected');
+                btn.textContent = game.name + (game.type === 'vip' ? ' ⭐' : '');
+                btn.addEventListener('click', () => {
+                    if (!isLoggedIn) { alert('Vui lòng đăng nhập trước!'); return; }
+                    selectedGame = game;
+                    selectedPackage = null;
+                    renderGames();
+                    renderPackages();
+                    updateSelectionDisplay();
+                    updatePrice();
+                });
+                gameGrid.appendChild(btn);
+            });
+        }
+
+        function renderPackages() {
+            packageGrid.innerHTML = '';
+            if (!selectedGame) {
+                packageGrid.innerHTML = '<span style="color:#556677;font-size:13px;padding:4px 0;">Vui lòng chọn game trước</span>';
+                return;
+            }
+            PACKAGE_LIST.forEach(pkg => {
+                const btn = document.createElement('span');
+                let cls = 'package-btn';
+                if (pkg.isPermanent) cls += ' permanent';
+                btn.className = cls;
+                if (selectedPackage && selectedPackage.name === pkg.name) btn.classList.add('selected');
+                let label = pkg.name;
+                if (pkg.discount) label += ' -60%';
+                if (pkg.isPermanent) label += ' ♾️';
+                btn.textContent = label;
+                btn.addEventListener('click', () => {
+                    if (!isLoggedIn) { alert('Vui lòng đăng nhập trước!'); return; }
+                    selectedPackage = pkg;
+                    renderPackages();
+                    updateSelectionDisplay();
+                    updatePrice();
+                });
+                packageGrid.appendChild(btn);
+            });
+        }
+
+        function updateSelectionDisplay() {
+            selectedAppDisplay.textContent = selectedGame ? selectedGame.name : 'Chưa chọn game';
+            selectedPackageDisplay.textContent = selectedPackage ? selectedPackage.name : 'Chưa chọn gói';
+        }
+
+        function updatePrice() {
+            if (selectedGame && selectedPackage && isLoggedIn) {
+                let total = selectedGame.basePrice * selectedPackage.multiplier;
+                if (selectedPackage.discount) total = Math.round(total * selectedPackage.discount);
+                priceDisplay.innerHTML = `${total.toLocaleString('vi-VN')}<span>đ</span>`;
+                buyBtn.disabled = false;
+            } else {
+                priceDisplay.innerHTML = `0<span>đ</span>`;
+                buyBtn.disabled = true;
+            }
+        }
+
+        function updateBalance() {
+            balanceDisplay.textContent = userBalance.toLocaleString('vi-VN') + 'đ';
+        }
+
+        function updateUIAfterLogin() {
+            if (isLoggedIn && currentUser) {
+                authContainer.style.display = 'none';
+                logoutBtn.style.display = 'inline-block';
+                if (currentUser.isAdmin) {
+                    adminPanel.classList.add('show');
+                } else {
+                    adminPanel.classList.remove('show');
+                }
+                renderGames();
+                renderPackages();
+                updateSelectionDisplay();
+                updatePrice();
+                renderKeyList();
+                updateStats();
+                updateBalance();
+            } else {
+                authContainer.style.display = 'block';
+                logoutBtn.style.display = 'none';
+                adminPanel.classList.remove('show');
+                selectedGame = null;
+                selectedPackage = null;
+                renderGames();
+                renderPackages();
+                updateSelectionDisplay();
+                updatePrice();
+                renderKeyList();
+                updateStats();
+            }
+        }
+
+        // ==============================================================
+        // BUY
+        // ==============================================================
+        buyBtn.addEventListener('click', () => {
+            if (!isLoggedIn) { alert('Vui lòng đăng nhập!'); return; }
+            if (!selectedGame || !selectedPackage) return;
+            let total = selectedGame.basePrice * selectedPackage.multiplier;
+            if (selectedPackage.discount) total = Math.round(total * selectedPackage.discount);
+            if (userBalance < total) {
+                alert('Số dư không đủ! Vui lòng nạp thêm.');
+                depositModal.classList.add('show');
+                return;
+            }
+            userBalance -= total;
+            const code = `OVISIT-${Math.random().toString(36).substring(2,6).toUpperCase()}-${Math.random().toString(36).substring(2,6).toUpperCase()}`;
+            keyDatabase.push({
+                id: nextKeyId++,
+                code: code,
+                status: 'active',
+                game: selectedGame.name,
+                package: selectedPackage.name,
+                owner: currentUser.username,
+                purchasedAt: new Date().toISOString()
+            });
+            selectedGame = null;
+            selectedPackage = null;
+            renderGames();
+            renderPackages();
+            updateSelectionDisplay();
+            updatePrice();
+            renderKeyList();
+            updateStats();
+            updateBalance();
+            saveState();
+            const toast = document.createElement('div');
+            toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#34c759;color:#0b0e14;padding:12px 24px;border-radius:40px;font-weight:600;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,0.5);';
+            toast.textContent = `✅ Đã mua key: ${code}`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        });
+
+        // ==============================================================
+        // RENDER KEY LIST
+        // ==============================================================
+        function renderKeyList() {
+            let filtered = [...keyDatabase];
+            if (currentFilter !== 'all') filtered = filtered.filter(k => k.status === currentFilter);
+            if (searchQuery.trim() !== '') {
+                const q = searchQuery.trim().toLowerCase();
+                filtered = filtered.filter(k => k.code.toLowerCase().includes(q) || k.game.toLowerCase().includes(q));
+            }
+            if (isLoggedIn && currentUser && !currentUser.isAdmin) {
+                filtered = filtered.filter(k => k.owner === currentUser.username);
+            }
+            if (!isLoggedIn) filtered = [];
+
+            if (filtered.length === 0) {
+                keyListContainer.innerHTML = `<div class="empty-state"><div class="icon">🔑</div><div>Chưa có Key</div><div class="sub">Mua thêm key để sử dụng</div></div>`;
+                return;
+            }
+            let html = '';
+            filtered.forEach(k => {
+                const statusLabel = k.status === 'active' ? '✅ Hoạt động' : k.status === 'expired' ? '⛔ Hết hạn' : '🔒 Bị khoá';
+                html += `<div class="key-item"><span class="code">${k.code}</span><span class="status ${k.status}">${statusLabel}</span></div>`;
+            });
+            keyListContainer.innerHTML = html;
+        }
+
+        // ==============================================================
+        // STATS
+        // ==============================================================
+        function updateStats() {
+            let keys = keyDatabase;
+            if (isLoggedIn && currentUser && !currentUser.isAdmin) {
+                keys = keys.filter(k => k.owner === currentUser.username);
+            }
+            if (!isLoggedIn) keys = [];
+            totalKeysEl.textContent = keys.length;
+            activeKeysEl.textContent = keys.filter(k => k.status === 'active').length;
+            expiredKeysEl.textContent = keys.filter(k => k.status === 'expired').length;
+        }
+
+        // ==============================================================
+        // TABS & SEARCH
+        // ==============================================================
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                currentFilter = tab.dataset.filter;
+                renderKeyList();
+            });
+        });
+        searchBox.addEventListener('input', (e) => { searchQuery = e.target.value; renderKeyList(); });
+
+        // ==============================================================
+        // BALANCE -> DEPOSIT
+        // ==============================================================
+        balanceWrapper.addEventListener('click', () => {
+            if (!isLoggedIn) { alert('Vui lòng đăng nhập!'); return; }
+            depositModal.classList.add('show');
+        });
+        modalClose.addEventListener('click', () => depositModal.classList.remove('show'));
+        depositModal.addEventListener('click', (e) => { if (e.target === depositModal) depositModal.classList.remove('show'); });
+
+        // ==============================================================
+        // CARD DEPOSIT (auto +15%)
+        // ==============================================================
+        document.getElementById('cardDenomination').addEventListener('change', function() {
+            const val = parseInt(this.value);
+            const net = Math.round(val * 1.15);
+            document.getElementById('cardNetAmount').textContent = net.toLocaleString('vi-VN') + 'đ';
+        });
+        document.getElementById('cardDenomination').dispatchEvent(new Event('change'));
+
+        document.getElementById('cardDepositBtn').addEventListener('click', () => {
+            if (!isLoggedIn) { alert('Vui lòng đăng nhập!'); return; }
+            const serial = document.getElementById('cardSerial').value.trim();
+            const code = document.getElementById('cardCode').value.trim();
+            if (!serial || !code) { alert('Vui lòng nhập đầy đủ Serial và Mã thẻ.'); return; }
+            const denom = parseInt(document.getElementById('cardDenomination').value);
+            const net = Math.round(denom * 1.15);
+            userBalance += net;
+            updateBalance();
+            saveState();
+            document.getElementById('cardSerial').value = '';
+            document.getElementById('cardCode').value = '';
+            depositModal.classList.remove('show');
+            const toast = document.createElement('div');
+            toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#34c759;color:#0b0e14;padding:12px 24px;border-radius:40px;font-weight:600;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,0.5);';
+            toast.textContent = `✅ Nạp thành công +${net.toLocaleString('vi-VN')}đ (chiết khấu 15%)`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        });
+
+        // ==============================================================
+        // BANK DEPOSIT (auto with custom amount)
+        // ==============================================================
+        document.getElementById('bankAmountPreset50').addEventListener('click', () => { bankAmount.value = 50000; });
+        document.getElementById('bankAmountPreset100').addEventListener('click', () => { bankAmount.value = 100000; });
+
+        document.getElementById('bankDepositBtn').addEventListener('click', () => {
+            if (!isLoggedIn) { alert('Vui lòng đăng nhập!'); return; }
+            const amount = parseInt(bankAmount.value) || 0;
+            if (amount <= 0) { alert('Vui lòng nhập số tiền hợp lệ!'); return; }
+            userBalance += amount;
+            updateBalance();
+            saveState();
+            depositModal.classList.remove('show');
+            const toast = document.createElement('div');
+            toast.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#34c759;color:#0b0e14;padding:12px 24px;border-radius:40px;font-weight:600;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,0.5);';
+            toast.textContent = `✅ Nạp thành công +${amount.toLocaleString('vi-VN')}đ`;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        });
+
+        // ==============================================================
+        // MODAL TABS
+        // ==============================================================
+        document.querySelectorAll('.mtab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.mtab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                document.querySelectorAll('.method-content').forEach(c => c.classList.remove('show'));
+                document.getElementById('method' + tab.dataset.method.charAt(0).toUpperCase() + tab.dataset.method.slice(1)).classList.add('show');
+            });
+        });
+
+        // ==============================================================
+        // AUTH: LOGIN
+        // ==============================================================
+        loginBtn.addEventListener('click', () => {
+            const user = loginUsername.value.trim();
+            const pass = loginPassword.value.trim();
+            if (!user || !pass) { loginError.textContent = 'Vui lòng nhập đầy đủ!'; return; }
+            if (user === ADMIN_CRED.username && pass === ADMIN_CRED.password) {
+                currentUser = { username: user, isAdmin: true };
+                isLoggedIn = true;
+                loginError.textContent = '';
+                loginUsername.value = '';
+                loginPassword.value = '';
+                if (rememberMe.checked) saveState();
+                else localStorage.removeItem('shopKeyOVISIT_session_v5');
+                updateUIAfterLogin();
+                return;
+            }
+            const users = JSON.parse(localStorage.getItem('shopKeyOVISIT_users') || '[]');
+            const found = users.find(u => u.username === user && u.password === pass);
+            if (found) {
+                currentUser = { username: user, isAdmin: false };
+                isLoggedIn = true;
+                loginError.textContent = '';
+                loginUsername.value = '';
+                loginPassword.value = '';
+                if (rememberMe.checked) saveState();
+                else localStorage.removeItem('shopKeyOVISIT_session_v5');
+                updateUIAfterLogin();
+            } else {
+                loginError.textContent = 'Sai tên đăng nhập hoặc mật khẩu!';
+            }
+        });
+
+        // ==============================================================
+        // AUTH: REGISTER
+        // ==============================================================
+        function checkPasswordStrength(pwd) {
+            return {
+                hasUpper: /[A-Z]/.test(pwd),
+                hasNumber: /[0-9]/.test(pwd),
+                hasSpecial: /[!@#$%^&*()_+\-=\[\]{};:'",.<>?\/\\|`~]/.test(pwd),
+                hasLength: pwd.length >= 8
+            };
+        }
+
+        regPassword.addEventListener('input', () => {
+            const pwd = regPassword.value;
+            const s = checkPasswordStrength(pwd);
+            hintUpper.textContent = s.hasUpper ? '✓ Chữ hoa' : '✗ Chữ hoa';
+            hintUpper.className = s.hasUpper ? 'ok' : 'fail';
+            hintNumber.textContent = s.hasNumber ? '✓ Số' : '✗ Số';
+            hintNumber.className = s.hasNumber ? 'ok' : 'fail';
+            hintSpecial.textContent = s.hasSpecial ? '✓ Ký tự đặc biệt' : '✗ Ký tự đặc biệt';
+            hintSpecial.className = s.hasSpecial ? 'ok' : 'fail';
+            hintLength.textContent = s.hasLength ? '✓ ≥8 ký tự' : '✗ ≥8 ký tự';
+            hintLength.className = s.hasLength ? 'ok' : 'fail';
+        });
+
+        registerBtn.addEventListener('click', () => {
+            const user = regUsername.value.trim();
+            const email = regEmail.value.trim();
+            const phone = regPhone.value.trim();
+            const pwd = regPassword.value;
+            const confirm = regConfirm.value;
+            regError.textContent = '';
+            regSuccess.textContent = '';
+
+            if (!user || !email || !pwd || !confirm) {
+                regError.textContent = 'Vui lòng điền đầy đủ các trường bắt buộc!';
+                return;
+            }
+            if (pwd !== confirm) {
+                regError.textContent = 'Mật khẩu xác nhận không khớp!';
+                return;
+            }
+            const s = checkPasswordStrength(pwd);
+            if (!s.hasUpper || !s.hasNumber || !s.hasSpecial || !s.hasLength) {
+                regError.textContent = 'Mật khẩu không đáp ứng yêu cầu!';
+                return;
+            }
+            const users = JSON.parse(localStorage.getItem('shopKeyOVISIT_users') || '[]');
+            if (users.find(u => u.username === user)) {
+                regError.textContent = 'Tên đăng nhập đã tồn tại!';
+                return;
+            }
+            users.push({ username: user, email: email, phone: phone, password: pwd });
+            localStorage.setItem('shopKeyOVISIT_users', JSON.stringify(users));
+            regSuccess.textContent = '✅ Đăng ký thành công! Vui lòng đăng nhập.';
+            regUsername.value = '';
+            regEmail.value = '';
+            regPhone.value = '';
+            regPassword.value = '';
+            regConfirm.value = '';
+            document.querySelectorAll('.atab').forEach(t => t.classList.remove('active'));
+            document.querySelector('[data-atform="login"]').classList.add('active');
+            loginForm.classList.add('show');
+            registerForm.classList.remove('show');
+        });
+
+        // ==============================================================
+        // AUTH: TAB SWITCH
+        // ==============================================================
+        document.querySelectorAll('.atab').forEach(tab => {
+            tab.addEventListener('click', () => {
+                document.querySelectorAll('.atab').forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                const form = tab.dataset.atform;
+                if (form === 'login') {
+                    loginForm.classList.add('show');
+                    registerForm.classList.remove('show');
+                } else {
+                    loginForm.classList.remove('show');
+                    registerForm.classList.add('show');
+                }
+                document.getElementById('loginError').textContent = '';
+                document.getElementById('regError').textContent = '';
+                document.getElementById('regSuccess').textContent = '';
+            });
+        });
+
+        // ==============================================================
+        // LOGOUT
+        // ==============================================================
+        logoutBtn.addEventListener('click', () => {
+            currentUser = null;
+            isLoggedIn = false;
+            localStorage.removeItem('shopKeyOVISIT_session_v5');
+            updateUIAfterLogin();
+        });
+
+        // ==============================================================
+        // ADMIN: TẠO KEY
+        // ==============================================================
+        adminGenKeyBtn.addEventListener('click', () => {
+            if (!isLoggedIn || !currentUser.isAdmin) { alert('Chỉ admin mới được tạo key!'); return; }
+            const game = adminGameInput.value.trim() || 'Unknown';
+            const pkg = adminPackageInput.value.trim() || 'Unknown';
+            const price = parseInt(adminPriceInput.value) || 0;
+            const code = `ADMIN-${Math.random().toString(36).substring(2,8).toUpperCase()}`;
+            keyDatabase.push({
+                id: nextKeyId++,
+                code: code,
+                status: 'active',
+                game: game,
+                package: pkg,
+                owner: 'ADMIN',
+                purchasedAt: new Date().toISOString()
+            });
+            adminKeyOutput.textContent = `✅ Đã tạo: ${code} | ${game} - ${pkg} | ${price.toLocaleString('vi-VN')}đ`;
+            renderKeyList();
+            updateStats();
+            saveState();
+        });
+
+        // ==============================================================
+        // INIT
+        // ==============================================================
+        loadState();
+        renderGames();
+        renderPackages();
+        updateSelectionDisplay();
+        updatePrice();
+        renderKeyList();
+        updateStats();
+        updateBalance();
+        updateUIAfterLogin();
+    })();
+</script>
+</body>
+</html>
