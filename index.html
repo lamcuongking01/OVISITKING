@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>OVISIT KEY SHOP - Cloud</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js">
+    </script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js">
+    </script>
+    
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0e17;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 10px;
+        }
+        .tele-app {
+            width: 100%;
+            max-width: 430px;
+            background: linear-gradient(145deg, #111827 0%, #0f172a 100%);
+            border-radius: 24px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.8);
+            overflow: hidden;
+            border: 1px solid #1e293b;
+            position: relative;
+            max-height: 95vh;
+            overflow-y: auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 15px;
+            background: #0f172a;
+            border-bottom: 1px solid #1e293b;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .admin-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: #1e293b;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #38bdf8;
+        }
+        .verified-icon { color: #3b82f6; font-size: 16px; }
+        .balance-section { position: relative; cursor: pointer; }
+        .balance-btn {
+            background: #fbbf24;
+            color: #000;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+        }
+        .balance-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 40px;
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 12px;
+            min-width: 160px;
+            z-index: 50;
+            border: 1px solid #334155;
+            box-shadow: 0 10px 15px rgba(0,0,0,0.5);
+        }
+        .balance-dropdown.active { display: block; }
+        .balance-amount {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #fbbf24;
+        }
+        .deposit-options { display: flex; flex-direction: column; gap: 6px; }
+        .deposit-btn {
+            background: #334155;
+            border: none;
+            color: white;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 13px;
+            transition: 0.2s;
+        }
+        .deposit-btn:hover { background: #475569; }
+        .auth-container { padding: 15px; }
+        .profile-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 15px;
+            background: #1e293b;
+            margin: 0 15px;
+            border-radius: 12px;
+            font-size: 13px;
+        }
+        .user-name { color: #e2e8f0; font-weight: 600; }
+        .user-role { color: #94a3b8; font-size: 11px; }
+        .form-group { margin-bottom: 10px; }
+        .form-group label {
+            display: block;
+            margin-bottom: 4px;
+            color: #94a3b8;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 8px;
+            color: white;
+            font-size: 13px;
+            outline: none;
+            transition: 0.2s;
+        }
+        .form-group input:focus, .form-group select:focus { border-color: #3b82f6; }
+        .form-group select option { background: #1e293b; color: white; }
+        .captcha-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            font-size: 13px;
+        }
+        .captcha-img {
+            background: #334155;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-style: italic;
+            letter-spacing: 2px;
+            font-weight: bold;
+            user-select: none;
+            color: #fbbf24;
+        }
+        .btn {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .btn-primary { background: #3b82f6; color: white; }
+        .btn-primary:hover { background: #2563eb; }
+        .btn-google {
+            background: white;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 8px;
+        }
+        .btn-logout { background: #ef4444; color: white; margin-top: 8px; }
+        .btn-success { background: #10b981; color: white; }
+        .btn-success:hover { background: #059669; }
+        .btn-warning { background: #f59e0b; color: black; }
+        .btn-warning:hover { background: #d97706; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-xs { padding: 6px 10px; font-size: 11px; border-radius: 6px; width: auto; }
+        .toggle-auth { text-align: center; margin-top: 12px; color: #94a3b8; cursor: pointer; font-size: 13px; }
+        .toggle-auth span { color: #3b82f6; font-weight: 600; }
+        .game-selection { padding: 12px 15px; display: none; }
+        .game-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+        .game-card {
+            background: #1e293b;
+            border-radius: 12px;
+            padding: 15px 8px;
+            text-align: center;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: 0.2s;
+            font-weight: bold;
+            color: #cbd5e1;
+            font-size: 13px;
+        }
+        .game-card.selected {
+            border-color: #3b82f6;
+            background: #1e3a5f;
+            color: white;
+            box-shadow: 0 0 20px rgba(59,130,246,0.3);
+        }
+        .pricing-section { display: none; padding: 0 15px 12px; }
+        .game-title-display {
+            font-size: 18px;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 15px;
+            color: #fbbf24;
+        }
+        .plan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .plan-card {
+            background: #1e293b;
+            padding: 12px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            border: 1px solid #334155;
+            transition: 0.2s;
+        }
+        .plan-card.selected { border-color: #fbbf24; background: #2d3a4f; }
+        .plan-duration { font-weight: bold; font-size: 14px; color: #e2e8f0; }
+        .plan-price { color: #fbbf24; font-size: 16px; font-weight: bold; margin-top: 4px; }
+        .plan-type {
+            font-size: 11px;
+            background: #334155;
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 8px;
+            margin-bottom: 4px;
+        }
+        .buy-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            border: none;
+            border-radius: 12px;
+            color: black;
+            font-weight: bold;
+            font-size: 16px;
+            margin-top: 15px;
+            cursor: pointer;
+        }
+        .buy-btn:disabled { background: #4b5563; color: #9ca3af; cursor: not-allowed; }
+        .key-display {
+            display: none;
+            padding: 15px;
+            background: #0f172a;
+            margin: 0 15px 15px;
+            border-radius: 14px;
+            border: 1px solid #fbbf24;
+        }
+        .key-status { color: #10b981; font-weight: bold; font-size: 13px; }
+        .key-value {
+            background: #000;
+            padding: 10px;
+            border-radius: 8px;
+            margin: 8px 0;
+            word-break: break-all;
+            color: #fbbf24;
+            font-family: monospace;
+            cursor: pointer;
+            user-select: all;
+            font-size: 13px;
+        }
+        .key-expiry { font-size: 12px; color: #94a3b8; }
+        .key-history { padding: 0 15px 15px; display: none; }
+        .key-history h3 { text-align: center; margin-bottom: 8px; color: #fbbf24; font-size: 15px; }
+        .key-item {
+            background: #1e293b;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            font-size: 11px;
+            border-left: 3px solid #3b82f6;
+        }
+        .key-item .copy-key { color: #38bdf8; cursor: pointer; word-break: break-all; }
+        .telegram-notice {
+            text-align: center;
+            font-size: 11px;
+            color: #64748b;
+            padding: 12px;
+            border-top: 1px solid #1e293b;
+        }
+        .hidden { display: none !important; }
+        .loading-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
+        .loading-overlay.active { display: flex; }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid #334155;
+            border-top-color: #fbbf24;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        /* ADMIN PANEL */
+        .admin-panel {
+            display: none;
+            padding: 15px;
+            background: linear-gradient(145deg, #1a1a2e, #16213e);
+            margin: 0 15px 15px;
+            border-radius: 14px;
+            border: 1px solid #fbbf24;
+        }
+        .admin-panel h3 { color: #fbbf24; text-align: center; margin-bottom: 12px; font-size: 16px; }
+        .admin-panel .section-title {
+            color: #38bdf8;
+            font-size: 13px;
+            font-weight: bold;
+            margin: 12px 0 8px;
+            border-bottom: 1px solid #334155;
+            padding-bottom: 4px;
+        }
+        .admin-create-key {
+            background: #0f172a;
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+        }
+        .admin-create-key .form-group { margin-bottom: 8px; }
+        .admin-create-key label { font-size: 11px; color: #94a3b8; }
+        .admin-create-key select, .admin-create-key input {
+            width: 100%;
+            padding: 8px 10px;
+            background: #1e293b;
+            border: 1px solid #334155;
+            border-radius: 6px;
+            color: white;
+            font-size: 13px;
+            margin-top: 3px;
+        }
+        .admin-create-key select:focus, .admin-create-key input:focus {
+            border-color: #fbbf24;
+            outline: none;
+        }
+        .admin-key-result {
+            background: #000;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 8px;
+            word-break: break-all;
+            color: #fbbf24;
+            font-family: monospace;
+            font-size: 12px;
+            text-align: center;
+            cursor: pointer;
+            display: none;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .admin-key-result.show { display: block; }
+        .key-bulk-item {
+            background: #1a1a2e;
+            padding: 6px 10px;
+            margin: 4px 0;
+            border-radius: 6px;
+            font-size: 11px;
+            border-left: 2px solid #10b981;
+        }
+        .admin-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+        }
+        .admin-actions .btn { padding: 8px; font-size: 12px; border-radius: 6px; }
+        .row-flex { display: flex; gap: 6px; align-items: center; }
+        .row-flex .form-group { flex: 1; margin-bottom: 0; }
+        .sync-status { text-align: center; font-size: 10px; padding: 4px; color: #10b981; }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div></div>
+
+    <div class="tele-app" id="appRoot">
+        <div class="header">
+            <div class="admin-badge">Admin: OVISIT <span class="verified-icon">✓</span></div>
+            <div class="balance-section" id="balanceSection">
+                <button class="balance-btn" id="balanceBtn">💰 <span id="balanceDisplay">0 VNĐ</span></button>
+                <div class="balance-dropdown" id="balanceDropdown">
+                    <div class="balance-amount" id="balanceAmount">0 VNĐ</div>
+                    <div class="deposit-options">
+                        <button class="deposit-btn" id="depositBank">🏦 Nạp Bank</button>
+                        <button class="deposit-btn" id="depositCard">💳 Nạp Card</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="sync-status" id="syncStatus">🟢 Đã kết nối Cloud</div>
+
+        <!-- AUTH -->
+        <div id="authScreen" class="auth-container">
+            <div id="loginForm">
+                <h2 style="text-align:center; margin-bottom:15px;">Đăng Nhập</h2>
+                <div class="form-group"><label>Tên đăng nhập</label><input type="text" id="loginUsername" placeholder="Nhập tên đăng nhập"></div>
+                <div class="form-group"><label>Mật khẩu</label><input type="password" id="loginPassword" placeholder="Nhập mật khẩu"></div>
+                <button class="btn btn-primary" id="loginBtn">Đăng Nhập</button>
+                <button class="btn btn-google" id="googleLoginBtn">🅶 Đăng nhập với Google</button>
+                <div class="toggle-auth">Chưa có tài khoản? <span id="showRegister">Đăng ký ngay</span></div>
+            </div>
+            <div id="registerForm" class="hidden">
+                <h2 style="text-align:center; margin-bottom:15px;">Tạo Tài Khoản</h2>
+                <div class="form-group"><label>Tên đăng nhập</label><input type="text" id="regUsername" placeholder="Tên đăng nhập"></div>
+                <div class="form-group"><label>Email</label><input type="email" id="regEmail" placeholder="Email"></div>
+                <div class="form-group"><label>Số điện thoại (nếu có)</label><input type="tel" id="regPhone" placeholder="Số điện thoại"></div>
+                <div class="form-group"><label>Mật khẩu</label><input type="password" id="regPassword" placeholder="Mật khẩu"></div>
+                <div class="form-group"><label>Nhập lại mật khẩu</label><input type="password" id="regConfirmPassword" placeholder="Xác nhận mật khẩu"></div>
+                <div class="captcha-box"><label>Mã xác nhận:</label><span class="captcha-img" id="captchaText">A3B9X</span><input type="text" id="captchaInput" placeholder="Nhập mã" style="flex:1;"></div>
+                <button class="btn btn-primary" id="registerBtn">Đăng Ký</button>
+                <div class="toggle-auth">Đã có tài khoản? <span id="showLogin">Đăng nhập</span></div>
+            </div>
+        </div>
+
+        <!-- MAIN -->
+        <div id="mainScreen" class="hidden">
+            <div class="profile-info">
+                <div><div class="user-name" id="displayName">User</div><div class="user-role" id="displayRole">Đối tác</div></div>
+                <button class="btn btn-logout btn-xs" id="logoutBtn">Đăng xuất</button>
+            </div>
+
+            <!-- ADMIN PANEL -->
+            <div class="admin-panel" id="adminPanel">
+                <h3>🔧 ADMIN PANEL</h3>
+                <div class="section-title">⚡ TẠO KEY LOAT (Nhiều Key Cùng Lúc)</div>
+                <div class="admin-create-key">
+                    <div class="form-group"><label>🎯 Chọn Game</label><select id="adminGameSelect"><option value="">-- Chọn Game --</option><option value="delta-force">Delta Force VIP</option><option value="lien-quan">Liên Quân VIP</option><option value="free-fire">Free Fire</option><option value="free-fire-max">Free Fire MAX</option><option value="blood-strike">Blood Strike</option></select></div>
+                    <div class="form-group"><label>📦 Chọn Gói</label><select id="adminPlanSelect"><option value="">-- Chọn Game Trước --</option></select></div>
+                    <div class="row-flex">
+                        <div class="form-group"><label>🔢 Số Lượng Key</label><input type="number" id="adminKeyQuantity" value="1" min="1" max="100"></div>
+                        <div class="form-group"><label>👤 Người Nhận</label><input type="text" id="adminRecipient" placeholder="Tên người nhận"></div>
+                    </div>
+                    <button class="btn btn-success" id="adminCreateKeyBtn" style="margin-top:8px;">🔑 TẠO KEY LOAT</button>
+                    <div class="admin-key-result" id="adminKeyResult" onclick="copyToClipboard(this.textContent)" title="Nhấn để sao chép tất cả"></div>
+                </div>
+                <div class="section-title">📋 QUẢN LÝ</div>
+                <div class="admin-actions">
+                    <button class="btn btn-primary" id="viewAllKeysBtn">📋 Xem Key</button>
+                    <button class="btn btn-warning" id="exportKeysBtn">📥 Xuất CSV</button>
+                    <button class="btn btn-warning" id="viewStatsBtn">📊 Thống Kê</button>
+                </div>
+            </div>
+
+            <div class="game-selection" id="gameSelection">
+                <h3 style="text-align:center;">Chọn Game</h3>
+                <div class="game-grid">
+                    <div class="game-card" data-game="delta-force"><span style="font-size:28px;">🔫</span><br>Delta Force VIP</div>
+                    <div class="game-card" data-game="lien-quan"><span style="font-size:28px;">⚔️</span><br>Liên Quân VIP</div>
+                    <div class="game-card" data-game="free-fire"><span style="font-size:28px;">🔥</span><br>Free Fire</div>
+                    <div class="game-card" data-game="free-fire-max"><span style="font-size:28px;">💥</span><br>Free Fire MAX</div>
+                    <div class="game-card" data-game="blood-strike"><span style="font-size:28px;">🩸</span><br>Blood Strike</div>
+                </div>
+            </div>
+
+            <div class="pricing-section" id="pricingSection">
+                <div class="game-title-display" id="selectedGameTitle"></div>
+                <div class="plan-grid" id="planGrid"></div>
+                <button class="buy-btn" id="buyBtn" disabled>Mua Key</button>
+            </div>
+
+            <div class="key-display" id="keyDisplay">
+                <div>Trạng thái: <span class="key-status">🟢 Hoạt động</span></div>
+                <div class="key-value" id="keyValue" title="Nhấn để sao chép">Chưa có key</div>
+                <div class="key-expiry" id="keyExpiry">Thời hạn: --</div>
+            </div>
+
+            <div class="key-history" id="keyHistory">
+                <h3>📜 Lịch sử Key</h3>
+                <div id="keyHistoryList"></div>
+            </div>
+        </div>
+
+        <div class="telegram-notice">
+            🤖 Bot: <a href="https://t.me/OVISITKINGkeybot" style="color:#38bdf8;" target="_blank">@OVISITKINGkeybot</a>
+        </div>
+    </div>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyBVDvCWn6c4tavojCbs-4HVqOELwv1juEYY",
+            authDomain: "ovisit-king.firebaseapp.com",
+            projectId: "ovisit-king",
+            storageBucket: "ovisit-king.appspot.com",
+            messagingSenderId: "8744886860",
+            appId: "1:8744886860:web:abc123def456ghi789jkl"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        const TELEGRAM_BOT_TOKEN = "8744886860:AAFVmoCW6c4tavojCbs-4HVqOELwv1juEYY";
+        const TELEGRAM_CHAT_ID = "YOUR_CHAT_ID";
+        const TELEGRAM_BOT_URL = "https://t.me/OVISITKINGkeybot";
+
+        const ADMIN_ACCOUNT = { username: "OVISIT", password: "admin123", role: "admin" };
+        let usersDB = JSON.parse(localStorage.getItem('ovisit_users')) || [ADMIN_ACCOUNT];
+        if (!usersDB.some(u => u.username === 'OVISIT')) usersDB.push(ADMIN_ACCOUNT);
+
+        const GAME_PRICES = {
+            vip: {
+                games: ['delta-force', 'lien-quan'],
+                plans: [
+                    { duration: '1 Ngày', days: 1, price: 40000, type: 'VIP' },
+                    { duration: '7 Ngày', days: 7, price: 125000, type: 'VIP' },
+                    { duration: '30 Ngày', days: 30, price: 340000, type: 'VIP' },
+                    { duration: '1 Năm', days: 365, price: 870000, type: 'VIP' },
+                    { duration: 'Vĩnh Viễn', days: Infinity, price: 3500000, type: 'VIP' }
+                ]
+            },
+            thuong: {
+                games: ['free-fire', 'free-fire-max', 'blood-strike'],
+                plans: [
+                    { duration: '1 Ngày', days: 1, price: 20000, type: 'Thường' },
+                    { duration: '7 Ngày', days: 7, price: 65000, type: 'Thường' },
+                    { duration: '30 Ngày', days: 30, price: 135000, type: 'Thường' },
+                    { duration: '1 Năm', days: 365, price: 550000, type: 'Thường' },
+                    { duration: 'Vĩnh Viễn', days: Infinity, price: 2000000, type: 'Thường' }
+                ]
+            }
+        };
+        const GAME_NAMES = {
+            'delta-force': 'Delta Force VIP', 'lien-quan': 'Liên Quân VIP',
+            'free-fire': 'Free Fire', 'free-fire-max': 'Free Fire MAX', 'blood-strike': 'Blood Strike'
+        };
+        function getPlansForGame(game) {
+            if (GAME_PRICES.vip.games.includes(game)) return GAME_PRICES.vip.plans;
+            if (GAME_PRICES.thuong.games.includes(game)) return GAME_PRICES.thuong.plans;
+            return [];
+        }
+
+        let currentUser = JSON.parse(sessionStorage.getItem('ovisit_currentUser')) || null;
+        let selectedGame = sessionStorage.getItem('ovisit_selectedGame') || null;
+        let selectedPlan = null;
+        let currentCaptcha = '';
+
+        // ==================== FIREBASE ====================
+        async function saveKeysToCloudBatch(keysDataArray) {
+            // Lưu nhiều key cùng lúc với batch write (nhanh hơn)
+            try {
+                showLoading(true);
+                const batch = db.batch();
+                const savedKeys = [];
+                for (const keyData of keysDataArray) {
+                    const ref = db.collection('keys').doc();
+                    batch.set(ref, { ...keyData, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+                    savedKeys.push({ id: ref.id, ...keyData });
+                }
+                await batch.commit();
+                updateSyncStatus(true);
+                return savedKeys;
+            } catch (error) {
+                console.error('Lỗi lưu batch:', error);
+                updateSyncStatus(false);
+                keysDataArray.forEach(k => saveKeyLocal(k));
+                return keysDataArray;
+            } finally {
+                showLoading(false);
+            }
+        }
+
+        async function saveKeyToCloud(keyData) {
+            return (await saveKeysToCloudBatch([keyData]))[0];
+        }
+
+        function saveKeyLocal(keyData) {
+            let localKeys = JSON.parse(localStorage.getItem('ovisit_keys_local')) || [];
+            localKeys.push({ ...keyData, createdAt: new Date().toISOString() });
+            localStorage.setItem('ovisit_keys_local', JSON.stringify(localKeys));
+        }
+
+        async function getAllKeysFromCloud() {
+            try {
+                showLoading(true);
+                const snapshot = await db.collection('keys').orderBy('createdAt', 'desc').limit(500).get();
+                const keys = [];
+                snapshot.forEach(doc => keys.push({ id: doc.id, ...doc.data() }));
+                updateSyncStatus(true);
+                return keys;
+            } catch (error) {
+                updateSyncStatus(false);
+                return JSON.parse(localStorage.getItem('ovisit_keys_local') || '[]');
+            } finally { showLoading(false); }
+        }
+
+        async function getUserKeys(username) {
+            try {
+                const snapshot = await db.collection('keys').where('createdBy', '==', username).orderBy('createdAt', 'desc').limit(100).get();
+                const keys = [];
+                snapshot.forEach(doc => keys.push({ id: doc.id, ...doc.data() }));
+                return keys;
+            } catch (error) {
+                const localKeys = JSON.parse(localStorage.getItem('ovisit_keys_local') || '[]');
+                return localKeys.filter(k => k.createdBy === username);
+            }
+        }
+
+        async function sendTelegramNotification(message) {
+            try {
+                await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+                    method: 'POST', headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text: message, parse_mode: 'HTML' })
+                });
+            } catch (error) { console.error('Telegram error:', error); }
+        }
+
+        function updateSyncStatus(connected) {
+            const el = document.getElementById('syncStatus');
+            el.textContent = connected ? '🟢 Đã đồng bộ Cloud' : '🟡 Local (Cloud lỗi)';
+            el.style.color = connected ? '#10b981' : '#fbbf24';
+        }
+
+        function showLoading(show) { document.getElementById('loadingOverlay').classList.toggle('active', show); }
+
+        // ==================== UTILS ====================
+        function saveUsers() { localStorage.setItem('ovisit_users', JSON.stringify(usersDB)); }
+        function updateUI() {
+            const authScreen = document.getElementById('authScreen');
+            const mainScreen = document.getElementById('mainScreen');
+            const adminPanel = document.getElementById('adminPanel');
+            if (currentUser) {
+                authScreen.classList.add('hidden');
+                mainScreen.classList.remove('hidden');
+                document.getElementById('displayName').textContent = currentUser.username;
+                document.getElementById('displayRole').textContent = currentUser.role === 'admin' ? 'Admin' : 'Đối tác';
+                adminPanel.style.display = currentUser.role === 'admin' ? 'block' : 'none';
+                if (selectedGame) {
+                    showPricing(selectedGame);
+                    document.getElementById('gameSelection').style.display = 'block';
+                    document.getElementById('pricingSection').style.display = 'block';
+                    document.querySelectorAll('.game-card').forEach(c => c.classList.toggle('selected', c.dataset.game === selectedGame));
+                } else {
+                    document.getElementById('gameSelection').style.display = 'block';
+                    document.getElementById('pricingSection').style.display = 'none';
+                }
+                loadKeyHistory();
+            } else {
+                authScreen.classList.remove('hidden');
+                mainScreen.classList.add('hidden');
+                document.getElementById('loginForm').classList.remove('hidden');
+                document.getElementById('registerForm').classList.add('hidden');
+            }
+            generateCaptcha();
+        }
+        function generateCaptcha() {
+            const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+            currentCaptcha = '';
+            for (let i = 0; i < 5; i++) currentCaptcha += chars.charAt(Math.floor(Math.random() * chars.length));
+            const el = document.getElementById('captchaText');
+            if (el) el.textContent = currentCaptcha;
+        }
+        function generateKey(game, plan) {
+            return `OVISIT-${game.substring(0,3).toUpperCase()}-${Math.random().toString(36).substring(2,10).toUpperCase()}-${Date.now().toString(36).toUpperCase()}`;
+        }
+        function calculateExpiry(days) {
+            if (days === Infinity) return '∞ (Vĩnh viễn)';
+            const now = new Date();
+            now.setDate(now.getDate() + days);
+            return now.toLocaleString('vi-VN');
+        }
+        async function loadKeyHistory() {
+            if (!currentUser) return;
+            const keys = await getUserKeys(currentUser.username);
+            const hDiv = document.getElementById('keyHistory');
+            const hList = document.getElementById('keyHistoryList');
+            if (keys.length > 0) {
+                hDiv.style.display = 'block';
+                hList.innerHTML = keys.map(k => `<div class="key-item"><strong>🎮 ${GAME_NAMES[k.game]||k.game}</strong> | ${k.planType}<br><span class="copy-key" onclick="copyToClipboard('${k.key}')">🔑 ${k.key}</span><br><small>📅 Hết hạn: ${k.expires===Infinity?'Vĩnh viễn':calculateExpiry(k.planDays)}</small></div>`).join('');
+            } else { hDiv.style.display = 'none'; }
+        }
+        window.copyToClipboard = function(text) {
+            if (!text || text === 'Chưa có key') return;
+            navigator.clipboard.writeText(text).then(() => alert('✅ Đã sao chép!')).catch(() => prompt('Sao chép thủ công:', text));
+        };
+        function updateAdminPlanOptions() {
+            const game = document.getElementById('adminGameSelect').value;
+            const planSelect = document.getElementById('adminPlanSelect');
+            planSelect.innerHTML = '<option value="">-- Chọn Gói --</option>';
+            if (!game) return;
+            getPlansForGame(game).forEach((plan, i) => {
+                planSelect.innerHTML += `<option value="${i}">${plan.type} | ${plan.duration} | ${plan.price.toLocaleString()} VNĐ</option>`;
+            });
+        }
+
+        // ==================== EVENTS ====================
+        document.getElementById('balanceBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.getElementById('balanceDropdown').classList.toggle('active');
+        });
+        document.addEventListener('click', () => document.getElementById('balanceDropdown').classList.remove('active'));
+        document.getElementById('balanceSection').addEventListener('click', (e) => e.stopPropagation());
+        document.getElementById('showRegister').addEventListener('click', () => {
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('registerForm').classList.remove('hidden');
+            generateCaptcha();
+        });
+        document.getElementById('showLogin').addEventListener('click', () => {
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+        });
+        document.getElementById('adminGameSelect').addEventListener('change', updateAdminPlanOptions);
+
+        // ==================== ADMIN TẠO KEY LOAT ====================
+        document.getElementById('adminCreateKeyBtn').addEventListener('click', async () => {
+            if (currentUser?.role !== 'admin') { alert('Chỉ Admin mới có quyền!'); return; }
+            const game = document.getElementById('adminGameSelect').value;
+            const planIndex = document.getElementById('adminPlanSelect').value;
+            const quantity = parseInt(document.getElementById('adminKeyQuantity').value) || 1;
+            const recipient = document.getElementById('adminRecipient').value.trim() || 'Admin';
+            if (!game || planIndex === '') { alert('Vui lòng chọn Game và Gói!'); return; }
+            if (quantity < 1 || quantity > 100) { alert('Số lượng từ 1-100!'); return; }
+
+            const plan = getPlansForGame(game)[parseInt(planIndex)];
+            const keysDataArray = [];
+            const keyList = [];
+            for (let i = 0; i < quantity; i++) {
+                const newKey = generateKey(game, plan);
+                keyList.push(newKey);
+                keysDataArray.push({
+                    key: newKey, game, planType: plan.type, planDuration: plan.duration,
+                    planDays: plan.days, planPrice: plan.price, expires: plan.days,
+                    createdBy: recipient, createdAt: new Date().toISOString(), createdVia: 'Admin Loạt'
+                });
+            }
+
+            // Lưu loat lên Cloud
+            await saveKeysToCloudBatch(keysDataArray);
+
+            // Hiển thị kết quả
+            const keyResultEl = document.getElementById('adminKeyResult');
+            if (quantity === 1) {
+                keyResultEl.textContent = keyList[0];
+            } else {
+                keyResultEl.innerHTML = keyList.map((k, i) => `<div class="key-bulk-item">${i+1}. ${k}</div>`).join('');
+            }
+            keyResultEl.classList.add('show');
+
+            // Gửi Telegram
+            const telegramMsg = `🔑 <b>ADMIN TẠO ${quantity} KEY LOẠT!</b>\n━━━━━━━━━━━━━━━\n🎮 <b>Game:</b> ${GAME_NAMES[game]}\n📦 <b>Gói:</b> ${plan.type} - ${plan.duration}\n🔢 <b>Số lượng:</b> ${quantity}\n👤 <b>Người nhận:</b> ${recipient}\n🔐 <b>Key:</b>\n<code>${keyList.slice(0,20).join('\n')}${quantity>20?'\n... (xem thêm trong app)':''}</code>\n━━━━━━━━━━━━━━━\n🕐 <i>${new Date().toLocaleString('vi-VN')}</i>`;
+            await sendTelegramNotification(telegramMsg);
+            await loadKeyHistory();
+            alert(`✅ Đã tạo ${quantity} key thành công!\n🎮 ${GAME_NAMES[game]}\n📦 ${plan.type} - ${plan.duration}\n👤 ${recipient}`);
+        });
+
+        // Register
+        document.getElementById('registerBtn').addEventListener('click', () => {
+            const u = document.getElementById('regUsername').value.trim();
+            const e = document.getElementById('regEmail').value.trim();
+            const p = document.getElementById('regPhone').value.trim();
+            const pw = document.getElementById('regPassword').value;
+            const cpw = document.getElementById('regConfirmPassword').value;
+            const cap = document.getElementById('captchaInput').value.trim();
+            if (!u || !e || !pw || !cpw) { alert('Điền đầy đủ thông tin!'); return; }
+            if (pw !== cpw) { alert('Mật khẩu không khớp!'); return; }
+            if (cap.toUpperCase() !== currentCaptcha) { alert('Sai mã xác nhận!'); generateCaptcha(); return; }
+            if (usersDB.some(x => x.username === u)) { alert('Tên đăng nhập đã tồn tại!'); return; }
+            usersDB.push({ username: u, email: e, phone: p, password: pw, role: 'partner', balance: 0 });
+            saveUsers();
+            alert('Đăng ký thành công!');
+            document.getElementById('registerForm').classList.add('hidden');
+            document.getElementById('loginForm').classList.remove('hidden');
+            ['regUsername','regEmail','regPhone','regPassword','regConfirmPassword','captchaInput'].forEach(id => document.getElementById(id).value='');
+            generateCaptcha();
+        });
+
+        // Login
+        document.getElementById('loginBtn').addEventListener('click', () => {
+            const u = document.getElementById('loginUsername').value.trim();
+            const pw = document.getElementById('loginPassword').value;
+            const user = usersDB.find(x => x.username === u && x.password === pw);
+            if (user) {
+                currentUser = { ...user };
+                sessionStorage.setItem('ovisit_currentUser', JSON.stringify(currentUser));
+                updateUI();
+                document.getElementById('loginUsername').value = '';
+                document.getElementById('loginPassword').value = '';
+                const bal = (user.balance||0).toLocaleString();
+                document.getElementById('balanceDisplay').textContent = bal + ' VNĐ';
+                document.getElementById('balanceAmount').textContent = bal + ' VNĐ';
+            } else { alert('Sai tên đăng nhập hoặc mật khẩu!'); }
+        });
+
+        document.getElementById('googleLoginBtn').addEventListener('click', () => {
+            const gu = { username: 'G_'+Math.random().toString(36).substring(2,6), email: 'g@gmail.com', phone:'', password:'', role:'partner', balance:0 };
+            if (!usersDB.some(x => x.username === gu.username)) { usersDB.push(gu); saveUsers(); }
+            currentUser = { ...gu };
+            sessionStorage.setItem('ovisit_currentUser', JSON.stringify(currentUser));
+            updateUI();
+            document.getElementById('balanceDisplay').textContent = '0 VNĐ';
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            currentUser = null; sessionStorage.clear(); selectedGame = null; selectedPlan = null;
+            updateUI();
+            document.getElementById('balanceDisplay').textContent = '0 VNĐ';
+            document.getElementById('keyDisplay').style.display = 'none';
+            document.getElementById('keyHistory').style.display = 'none';
+            document.getElementById('adminKeyResult').classList.remove('show');
+        });
+
+        document.querySelectorAll('.game-card').forEach(card => {
+            card.addEventListener('click', () => {
+                selectedGame = card.dataset.game;
+                sessionStorage.setItem('ovisit_selectedGame', selectedGame);
+                document.querySelectorAll('.game-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                showPricing(selectedGame);
+                document.getElementById('pricingSection').style.display = 'block';
+                document.getElementById('keyDisplay').style.display = 'none';
+                selectedPlan = null;
+                document.getElementById('buyBtn').disabled = true;
+            });
+        });
+
+        function showPricing(game) {
+            document.getElementById('selectedGameTitle').textContent = GAME_NAMES[game] || game;
+            const pg = document.getElementById('planGrid');
+            pg.innerHTML = '';
+            getPlansForGame(game).forEach(plan => {
+                const card = document.createElement('div');
+                card.className = 'plan-card';
+                card.innerHTML = `<span class="plan-type">${plan.type}</span><div class="plan-duration">${plan.duration}</div><div class="plan-price">${plan.price.toLocaleString()} VNĐ</div>`;
+                card.addEventListener('click', () => {
+                    document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    selectedPlan = plan;
+                    document.getElementById('buyBtn').disabled = false;
+                });
+                pg.appendChild(card);
+            });
+        }
+
+        // Mua key
+        document.getElementById('buyBtn').addEventListener('click', async () => {
+            if (!currentUser || !selectedGame || !selectedPlan) { alert('Chọn đầy đủ thông tin!'); return; }
+            const user = usersDB.find(u => u.username === currentUser.username);
+            if (currentUser.role !== 'admin') {
+                if (!user || (user.balance||0) < selectedPlan.price) { alert('Không đủ tiền!'); return; }
+                user.balance -= selectedPlan.price;
+                currentUser.balance = user.balance;
+                sessionStorage.setItem('ovisit_currentUser', JSON.stringify(currentUser));
+                saveUsers();
+                const bal = user.balance.toLocaleString();
+                document.getElementById('balanceDisplay').textContent = bal + ' VNĐ';
+                document.getElementById('balanceAmount').textContent = bal + ' VNĐ';
+            }
+            const newKey = generateKey(selectedGame, selectedPlan);
+            const keyData = { key: newKey, game: selectedGame, planType: selectedPlan.type, planDuration: selectedPlan.duration, planDays: selectedPlan.days, planPrice: selectedPlan.price, expires: selectedPlan.days, createdBy: currentUser.username, createdAt: new Date().toISOString() };
+            await saveKeyToCloud(keyData);
+            document.getElementById('keyValue').textContent = newKey;
+            document.getElementById('keyExpiry').textContent = 'Thời hạn: ' + calculateExpiry(selectedPlan.days);
+            document.getElementById('keyDisplay').style.display = 'block';
+            await sendTelegramNotification(`🔑 <b>KEY MỚI!</b>\n🎮 ${GAME_NAMES[selectedGame]}\n📦 ${selectedPlan.type} - ${selectedPlan.duration}\n💰 ${selectedPlan.price.toLocaleString()} VNĐ\n👤 ${currentUser.username}\n🔐 <code>${newKey}</code>`);
+            await loadKeyHistory();
+            selectedPlan = null;
+            document.querySelectorAll('.plan-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById('buyBtn').disabled = true;
+            alert(`✅ Mua key thành công!\n🔑 ${newKey}`);
+        });
+
+        document.getElementById('keyValue').addEventListener('click', function() { copyToClipboard(this.textContent); });
+
+        // Nạp tiền
+        function napTien(amount) {
+            if (!currentUser) return;
+            const user = usersDB.find(u => u.username === currentUser.username);
+            user.balance = (user.balance||0) + amount;
+            currentUser.balance = user.balance;
+            sessionStorage.setItem('ovisit_currentUser', JSON.stringify(currentUser));
+            saveUsers();
+            const bal = user.balance.toLocaleString();
+            document.getElementById('balanceDisplay').textContent = bal + ' VNĐ';
+            document.getElementById('balanceAmount').textContent = bal + ' VNĐ';
+        }
+        document.getElementById('depositBank').addEventListener('click', () => {
+            const a = prompt('Nhập số tiền (VNĐ):');
+            if (a && !isNaN(a) && parseInt(a) > 0) { napTien(parseInt(a)); alert('✅ Nạp ' + parseInt(a).toLocaleString() + ' VNĐ qua Bank!'); }
+        });
+        document.getElementById('depositCard').addEventListener('click', () => {
+            const a = prompt('Nhập số tiền (VNĐ):');
+            if (a && !isNaN(a) && parseInt(a) > 0) { napTien(parseInt(a)); alert('✅ Nạp ' + parseInt(a).toLocaleString() + ' VNĐ qua Card!'); }
+        });
+
+        // Admin actions
+        document.getElementById('viewAllKeysBtn').addEventListener('click', async () => {
+            if (currentUser?.role !== 'admin') return;
+            const keys = await getAllKeysFromCloud();
+            if (!keys.length) { alert('Chưa có key!'); return; }
+            let msg = `📋 TẤT CẢ KEY (${keys.length}):\n\n`;
+            keys.slice(0,50).forEach((k,i) => { msg += `${i+1}. ${k.key}\n   🎮 ${GAME_NAMES[k.game]||k.game} | 👤 ${k.createdBy}\n\n`; });
+            if (keys.length > 50) msg += `... và ${keys.length-50} key nữa`;
+            alert(msg);
+        });
+        document.getElementById('exportKeysBtn').addEventListener('click', async () => {
+            if (currentUser?.role !== 'admin') return;
+            const keys = await getAllKeysFromCloud();
+            if (!keys.length) { alert('Không có key!'); return; }
+            let csv = '\uFEFFGame,Key,Người nhận,Loại,Thời hạn,Giá\n';
+            keys.forEach(k => { csv += `"${GAME_NAMES[k.game]||k.game}","${k.key}","${k.createdBy}","${k.planType}","${k.planDuration}","${k.planPrice}"\n`; });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `OVISIT_Keys_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+            alert('✅ Đã xuất CSV!');
+        });
+        document.getElementById('viewStatsBtn').addEventListener('click', async () => {
+            if (currentUser?.role !== 'admin') return;
+            const keys = await getAllKeysFromCloud();
+            const stats = {};
+            keys.forEach(k => { const n = GAME_NAMES[k.game]||k.game; stats[n] = (stats[n]||0)+1; });
+            let msg = `📊 THỐNG KÊ (${keys.length} key):\n\n`;
+            for (const [g,c] of Object.entries(stats)) msg += `🎮 ${g}: ${c}\n`;
+            alert(msg);
+        });
+
+        // ==================== INIT ====================
+        updateUI();
+        updateAdminPlanOptions();
+        if (currentUser) {
+            const bal = (currentUser.balance||0).toLocaleString();
+            document.getElementById('balanceDisplay').textContent = bal + ' VNĐ';
+            document.getElementById('balanceAmount').textContent = bal + ' VNĐ';
+            if (selectedGame) {
+                document.getElementById('gameSelection').style.display = 'block';
+                showPricing(selectedGame);
+                document.getElementById('pricingSection').style.display = 'block';
+            }
+            loadKeyHistory();
+        }
+        db.collection('keys').limit(1).get().then(() => updateSyncStatus(true)).catch(() => updateSyncStatus(false));
+    </script>
+</body>
+</html>
