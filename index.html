@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Hack Store - Bán Key & File Hack Game</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+        body {
+            background: #0a0a0f;
+            color: #eee;
+            min-height: 100vh;
+            padding: 12px;
+        }
+        .container {
+            max-width: 480px;
+            margin: 0 auto;
+            background: #111118;
+            border-radius: 20px;
+            border: 1px solid #2a2a3a;
+            overflow: hidden;
+            box-shadow: 0 0 60px rgba(0,200,255,0.05);
+        }
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #0d0d1a, #1a0a2a);
+            padding: 20px 18px 14px;
+            border-bottom: 1px solid #2a2a3a;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #00ff88, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: 1px;
+        }
+        .logo span { color: #ff00aa; -webkit-text-fill-color: #ff00aa; }
+        .header-balance {
+            background: #1a1a2a;
+            padding: 4px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            color: #ffcc00;
+            border: 1px solid #ffcc0044;
+            font-weight: 600;
+        }
+        .header-nav {
+            display: flex;
+            gap: 4px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+        .header-nav a {
+            flex: 1;
+            text-align: center;
+            padding: 8px 4px;
+            color: #8899aa;
+            text-decoration: none;
+            font-size: 13px;
+            font-weight: 600;
+            border-radius: 8px;
+            transition: 0.3s;
+            min-width: 50px;
+            background: #1a1a2a;
+            border: 1px solid transparent;
+        }
+        .header-nav a.active {
+            color: #00ff88;
+            background: #0a1a1a;
+            border-color: #00ff8844;
+        }
+        .header-nav a:active { transform: scale(0.95); }
+        .header-nav a i { margin-right: 4px; }
+
+        /* Content */
+        .content {
+            padding: 14px 16px 20px;
+        }
+
+        /* Page */
+        .page { display: none; }
+        .page.active { display: block; }
+
+        /* Cards */
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin: 16px 0 12px;
+            color: #ddeeff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .section-title .badge {
+            font-size: 11px;
+            background: #ff00aa33;
+            color: #ff00aa;
+            padding: 2px 10px;
+            border-radius: 30px;
+            font-weight: 400;
+        }
+        .game-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+        .game-card {
+            background: #16162a;
+            border-radius: 14px;
+            padding: 14px 12px;
+            border: 1px solid #2a2a3a;
+            transition: 0.3s;
+            text-align: center;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        .game-card:active { transform: scale(0.97); }
+        .game-card .icon {
+            font-size: 32px;
+            margin-bottom: 4px;
+            display: block;
+        }
+        .game-card .name {
+            font-size: 14px;
+            font-weight: 700;
+            color: #ddeeff;
+        }
+        .game-card .price {
+            font-size: 12px;
+            color: #00ff88;
+            margin-top: 2px;
+            font-weight: 600;
+        }
+        .game-card .tag {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            font-size: 9px;
+            background: #ff00aa33;
+            color: #ff00aa;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+        .game-card.featured {
+            border-color: #00ff8844;
+            background: #0a1a1a;
+        }
+        .game-card .download-btn {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 4px 14px;
+            background: #00ff8833;
+            color: #00ff88;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1px solid #00ff8844;
+            transition: 0.3s;
+        }
+        .game-card .download-btn:active { background: #00ff8866; }
+
+        /* Key list */
+        .key-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 8px;
+        }
+        .key-item {
+            background: #16162a;
+            border-radius: 12px;
+            padding: 12px 14px;
+            border: 1px solid #2a2a3a;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: 0.3s;
+        }
+        .key-item:active { transform: scale(0.98); }
+        .key-item .info .name { font-size: 15px; font-weight: 600; color: #ddeeff; }
+        .key-item .info .desc { font-size: 11px; color: #778899; margin-top: 2px; }
+        .key-item .price-tag {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ffcc00;
+        }
+        .key-item .buy-btn {
+            padding: 6px 16px;
+            background: #00ff88;
+            color: #0a0a0a;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-left: 6px;
+        }
+        .key-item .buy-btn:active { transform: scale(0.95); background: #ff00aa; color: #fff; }
+
+        /* Form */
+        .form-group {
+            margin-bottom: 14px;
+        }
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            color: #99aabb;
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px 14px;
+            background: #1a1a2a;
+            border: 1px solid #2a2a3a;
+            border-radius: 10px;
+            color: #eee;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+        }
+        .form-group input:focus, .form-group select:focus {
+            border-color: #00ff88;
+            box-shadow: 0 0 20px rgba(0,255,136,0.05);
+        }
+        .form-group select option { background: #1a1a2a; }
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #00ff88, #00ccaa);
+            color: #0a0a0a;
+            border: none;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .btn-primary:active { transform: scale(0.97); opacity: 0.8; }
+        .btn-danger {
+            background: #ff004466;
+            color: #ff4444;
+            border: 1px solid #ff444466;
+        }
+        .btn-danger:active { background: #ff004488; }
+
+        /* History */
+        .history-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 0;
+            border-bottom: 1px solid #1a1a2a;
+            font-size: 13px;
+        }
+        .history-item .date { color: #778899; }
+        .history-item .product { color: #ddeeff; font-weight: 600; }
+        .history-item .status { color: #00ff88; }
+        .history-item .status.pending { color: #ffaa00; }
+
+        /* Contact */
+        .contact-card {
+            background: #16162a;
+            border-radius: 14px;
+            padding: 16px;
+            border: 1px solid #2a2a3a;
+            margin-bottom: 10px;
+        }
+        .contact-card .row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 14px;
+        }
+        .contact-card .row .label { color: #778899; }
+        .contact-card .row .value { color: #ddeeff; font-weight: 600; }
+        .contact-card .row .value a { color: #00ff88; text-decoration: none; }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a2a;
+            color: #eee;
+            padding: 12px 24px;
+            border-radius: 12px;
+            border: 1px solid #2a2a3a;
+            font-size: 14px;
+            z-index: 999;
+            display: none;
+            max-width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+        }
+        .toast.show { display: block; animation: fadeIn 0.3s; }
+        .toast.success { border-color: #00ff8866; color: #00ff88; }
+        .toast.error { border-color: #ff444466; color: #ff4444; }
+        @keyframes fadeIn { from { opacity:0; transform: translateX(-50%) translateY(10px); } to { opacity:1; transform: translateX(-50%) translateY(0); } }
+
+        /* Responsive */
+        @media (max-width: 380px) {
+            .game-grid { grid-template-columns: 1fr 1fr; gap: 6px; }
+            .game-card { padding: 10px 8px; }
+            .game-card .icon { font-size: 26px; }
+            .game-card .name { font-size: 12px; }
+            .header-nav a { font-size: 11px; padding: 6px 2px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-top">
+            <div class="logo">HACK<span>STORE</span></div>
+            <div class="header-balance" id="balanceDisplay">💰 0 VND</div>
+        </div>
+        <div class="header-nav">
+            <a href="#" class="active" data-page="home">🏠 Trang chủ</a>
+            <a href="#" data-page="keys">🔑 Mua Key</a>
+            <a href="#" data-page="files">📦 File Hack</a>
+            <a href="#" data-page="history">📜 Lịch sử</a>
+            <a href="#" data-page="contact">📞 Liên hệ</a>
+        </div>
+    </div>
+
+    <!-- CONTENT -->
+    <div class="content">
+        <!-- PAGE: HOME -->
+        <div id="page-home" class="page active">
+            <div class="section-title">🔥 Game nổi bật <span class="badge">HOT</span></div>
+            <div class="game-grid">
+                <div class="game-card featured" onclick="navigateTo('keys')">
+                    <span class="icon">🔫</span>
+                    <div class="name">Free Fire</div>
+                    <div class="price">Key từ 50k</div>
+                    <span class="tag">HOT</span>
+                </div>
+                <div class="game-card featured" onclick="navigateTo('keys')">
+                    <span class="icon">⚔️</span>
+                    <div class="name">Liên Quân</div>
+                    <div class="price">Key từ 40k</div>
+                    <span class="tag">NEW</span>
+                </div>
+                <div class="game-card" onclick="navigateTo('keys')">
+                    <span class="icon">🎯</span>
+                    <div class="name">PUBG</div>
+                    <div class="price">Key từ 60k</div>
+                </div>
+                <div class="game-card" onclick="navigateTo('keys')">
+                    <span class="icon">💀</span>
+                    <div class="name">Blood Strike</div>
+                    <div class="price">Key từ 45k</div>
+                </div>
+                <div class="game-card" onclick="navigateTo('keys')">
+                    <span class="icon">🌀</span>
+                    <div class="name">Delta Force</div>
+                    <div class="price">Key từ 55k</div>
+                </div>
+                <div class="game-card" onclick="navigateTo('keys')">
+                    <span class="icon">🔥</span>
+                    <div class="name">FF Max</div>
+                    <div class="price">Key từ 50k</div>
+                </div>
+            </div>
+
+            <div class="section-title" style="margin-top:20px;">📦 File Hack <span class="badge">Tải ngay</span></div>
+            <div class="game-grid">
+                <div class="game-card" onclick="navigateTo('files')">
+                    <span class="icon">📱</span>
+                    <div class="name">FF Hack Mod</div>
+                    <span class="download-btn">⬇ Tải</span>
+                </div>
+                <div class="game-card" onclick="navigateTo('files')">
+                    <span class="icon">📱</span>
+                    <div class="name">Blood Strike Mod</div>
+                    <span class="download-btn">⬇ Tải</span>
+                </div>
+                <div class="game-card" onclick="navigateTo('files')">
+                    <span class="icon">📱</span>
+                    <div class="name">Liên Quân Mod</div>
+                    <span class="download-btn">⬇ Tải</span>
+                </div>
+                <div class="game-card" onclick="navigateTo('files')">
+                    <span class="icon">📱</span>
+                    <div class="name">PUBG Mod</div>
+                    <span class="download-btn">⬇ Tải</span>
+                </div>
+            </div>
+
+            <div style="margin-top:18px;text-align:center;font-size:12px;color:#445566;">
+                ⚡ Liên hệ hỗ trợ: <a href="#" onclick="navigateTo('contact')" style="color:#00ff88;">tại đây</a>
+            </div>
+        </div>
+
+        <!-- PAGE: KEYS -->
+        <div id="page-keys" class="page">
+            <div class="section-title">🔑 Mua Key Hack</div>
+            <div class="key-list" id="keyList">
+                <!-- Dynamically loaded -->
+            </div>
+            <div style="margin-top:16px;">
+                <div class="form-group">
+                    <label>🎮 Chọn game</label>
+                    <select id="keyGameSelect">
+                        <option value="Free Fire">Free Fire</option>
+                        <option value="Liên Quân">Liên Quân</option>
+                        <option value="PUBG">PUBG</option>
+                        <option value="Blood Strike">Blood Strike</option>
+                        <option value="Delta Force">Delta Force</option>
+                        <option value="FF Max">FF Max</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>📝 Số lượng</label>
+                    <input type="number" id="keyQuantity" value="1" min="1" max="10">
+                </div>
+                <button class="btn-primary" id="buyKeyBtn">🛒 Mua Key</button>
+            </div>
+        </div>
+
+        <!-- PAGE: FILES -->
+        <div id="page-files" class="page">
+            <div class="section-title">📦 File Hack Tải Về</div>
+            <div class="key-list" id="fileList">
+                <!-- Dynamically loaded -->
+            </div>
+        </div>
+
+        <!-- PAGE: HISTORY -->
+        <div id="page-history" class="page">
+            <div class="section-title">📜 Lịch sử mua hàng</div>
+            <div id="historyContainer">
+                <div style="text-align:center;color:#445566;padding:30px 0;font-size:14px;">
+                    ⏳ Chưa có lịch sử mua hàng
+                </div>
+            </div>
+            <button class="btn-primary btn-danger" id="clearHistoryBtn" style="margin-top:12px;">🗑 Xóa lịch sử</button>
+        </div>
+
+        <!-- PAGE: CONTACT -->
+        <div id="page-contact" class="page">
+            <div class="section-title">📞 Liên hệ hỗ trợ</div>
+            <div class="contact-card">
+                <div class="row"><span class="label">📧 Email</span><span class="value">support@hackstore.vn</span></div>
+                <div class="row"><span class="label">📱 Telegram</span><span class="value"><a href="https://t.me/OVISITKINGkeybot" target="_blank">@OVISITKINGkeybot</a></span></div>
+                <div class="row"><span class="label">💬 Zalo</span><span class="value">0988.123.456</span></div>
+                <div class="row"><span class="label">⏰ Giờ làm việc</span><span class="value">8:00 - 22:00</span></div>
+            </div>
+            <div class="contact-card">
+                <div class="row"><span class="label">🏦 Ngân hàng</span><span class="value">Vietcombank - 123456789</span></div>
+                <div class="row"><span class="label">👤 Chủ TK</span><span class="value">NGUYEN VAN A</span></div>
+                <div class="row"><span class="label">📝 Nội dung</span><span class="value">NAP + SĐT</span></div>
+            </div>
+            <div style="margin-top:12px;">
+                <div class="form-group">
+                    <label>💬 Gửi tin nhắn</label>
+                    <textarea rows="3" placeholder="Nhập nội dung cần hỗ trợ..." id="contactMsg"></textarea>
+                </div>
+                <button class="btn-primary" id="sendContactBtn">📤 Gửi</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+    (function() {
+        'use strict';
+
+        // ============================================================
+        // DATA
+        // ============================================================
+        const KEY_DATA = [
+            { id: 1, game: 'Free Fire', name: 'Key Hack FF - VIP 1 Tháng', price: 50000, desc: 'Aimbot, ESP, Skin' },
+            { id: 2, game: 'Liên Quân', name: 'Key Hack LQ - Rank', price: 40000, desc: 'Map hack, Skin full' },
+            { id: 3, game: 'PUBG', name: 'Key Hack PUBG - X-Ray', price: 60000, desc: 'ESP, Aimbot, No Recoil' },
+            { id: 4, game: 'Blood Strike', name: 'Key Hack Blood Strike', price: 45000, desc: 'Aim, ESP, Skin' },
+            { id: 5, game: 'Delta Force', name: 'Key Hack Delta Force', price: 55000, desc: 'ESP, Aimbot, Wallhack' },
+            { id: 6, game: 'FF Max', name: 'Key Hack FF Max', price: 50000, desc: 'Aimbot, ESP, Speed' },
+        ];
+
+        const FILE_DATA = [
+            { id: 1, game: 'Free Fire', name: 'FF Hack Mod v3.2', size: '45MB', link: '#', icon: '📱' },
+            { id: 2, game: 'Blood Strike', name: 'Blood Strike Mod v2.1', size: '38MB', link: '#', icon: '📱' },
+            { id: 3, game: 'Liên Quân', name: 'Liên Quân Mod v4.0', size: '52MB', link: '#', icon: '📱' },
+            { id: 4, game: 'PUBG', name: 'PUBG Mod v1.8', size: '61MB', link: '#', icon: '📱' },
+            { id: 5, game: 'Delta Force', name: 'Delta Force Mod v1.2', size: '44MB', link: '#', icon: '📱' },
+            { id: 6, game: 'FF Max', name: 'FF Max Mod v2.0', size: '48MB', link: '#', icon: '📱' },
+        ];
+
+        // ============================================================
+        // STATE
+        // ============================================================
+        let balance = parseInt(localStorage.getItem('hackstore_balance')) || 0;
+        let history = JSON.parse(localStorage.getItem('hackstore_history')) || [];
+        let currentPage = 'home';
+
+        // ============================================================
+        // DOM REFS
+        // ============================================================
+        const balanceDisplay = document.getElementById('balanceDisplay');
+        const keyList = document.getElementById('keyList');
+        const fileList = document.getElementById('fileList');
+        const historyContainer = document.getElementById('historyContainer');
+        const toast = document.getElementById('toast');
+        const keyGameSelect = document.getElementById('keyGameSelect');
+        const keyQuantity = document.getElementById('keyQuantity');
+        const buyKeyBtn = document.getElementById('buyKeyBtn');
+        const clearHistoryBtn = document.getElementById('clearHistoryBtn');
+        const sendContactBtn = document.getElementById('sendContactBtn');
+        const contactMsg = document.getElementById('contactMsg');
+
+        // ============================================================
+        // FUNCTIONS
+        // ============================================================
+        function updateBalance() {
+            balanceDisplay.textContent = '💰 ' + balance.toLocaleString() + ' VND';
+            localStorage.setItem('hackstore_balance', balance);
+        }
+
+        function showToast(msg, type = 'success') {
+            toast.textContent = msg;
+            toast.className = 'toast show ' + type;
+            clearTimeout(toast._timer);
+            toast._timer = setTimeout(() => { toast.classList.remove('show'); }, 3000);
+        }
+
+        function navigateTo(page) {
+            currentPage = page;
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById('page-' + page).classList.add('active');
+            document.querySelectorAll('.header-nav a').forEach(a => {
+                a.classList.toggle('active', a.dataset.page === page);
+            });
+            // Render data if needed
+            if (page === 'keys') renderKeys();
+            if (page === 'files') renderFiles();
+            if (page === 'history') renderHistory();
+        }
+
+        // ============================================================
+        // RENDER KEYS
+        // ============================================================
+        function renderKeys() {
+            const filter = keyGameSelect.value;
+            const filtered = filter === 'all' ? KEY_DATA : KEY_DATA.filter(k => k.game === filter);
+            if (filtered.length === 0) {
+                keyList.innerHTML = '<div style="text-align:center;color:#445566;padding:20px;">Không có key cho game này</div>';
+                return;
+            }
+            keyList.innerHTML = filtered.map(k => `
+                <div class="key-item">
+                    <div class="info">
+                        <div class="name">${k.name}</div>
+                        <div class="desc">${k.desc} • ${k.game}</div>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:6px;">
+                        <span class="price-tag">${k.price.toLocaleString()}đ</span>
+                        <button class="buy-btn" data-id="${k.id}">Mua</button>
+                    </div>
+                </div>
+            `).join('');
+
+            // Buy button events
+            keyList.querySelectorAll('.buy-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const id = parseInt(this.dataset.id);
+                    const key = KEY_DATA.find(k => k.id === id);
+                    if (key) buyKey(key);
+                });
+            });
+        }
+
+        // ============================================================
+        // BUY KEY
+        // ============================================================
+        function buyKey(key) {
+            const price = key.price;
+            if (balance < price) {
+                showToast('❌ Số dư không đủ! Vui lòng nạp thêm.', 'error');
+                return;
+            }
+            balance -= price;
+            updateBalance();
+
+            // Add to history
+            history.push({
+                id: Date.now(),
+                product: key.name,
+                game: key.game,
+                price: price,
+                date: new Date().toLocaleString('vi-VN'),
+                status: 'Thành công'
+            });
+            localStorage.setItem('hackstore_history', JSON.stringify(history));
+
+            showToast('✅ Mua thành công: ' + key.name + ' - ' + price.toLocaleString() + 'đ', 'success');
+            renderKeys();
+            renderHistory();
+        }
+
+        // ============================================================
+        // RENDER FILES
+        // ============================================================
+        function renderFiles() {
+            fileList.innerHTML = FILE_DATA.map(f => `
+                <div class="key-item" style="flex-wrap:wrap;">
+                    <div class="info">
+                        <div class="name">${f.icon} ${f.name}</div>
+                        <div class="desc">${f.game} • ${f.size}</div>
+                    </div>
+                    <a href="${f.link}" class="buy-btn" style="background:#00ccff;text-decoration:none;color:#0a0a0a;padding:6px 20px;">⬇ Tải</a>
+                </div>
+            `).join('');
+        }
+
+        // ============================================================
+        // RENDER HISTORY
+        // ============================================================
+        function renderHistory() {
+            if (history.length === 0) {
+                historyContainer.innerHTML = '<div style="text-align:center;color:#445566;padding:30px 0;font-size:14px;">⏳ Chưa có lịch sử mua hàng</div>';
+                return;
+            }
+            historyContainer.innerHTML = history.slice().reverse().map(h => `
+                <div class="history-item">
+                    <span class="date">${h.date}</span>
+                    <span class="product">${h.product}</span>
+                    <span class="status">${h.status}</span>
+                    <span style="color:#ffcc00;font-weight:600;">${h.price.toLocaleString()}đ</span>
+                </div>
+            `).join('');
+        }
+
+        // ============================================================
+        // EVENTS
+        // ============================================================
+        // Navigation
+        document.querySelectorAll('.header-nav a').forEach(a => {
+            a.addEventListener('click', function(e) {
+                e.preventDefault();
+                navigateTo(this.dataset.page);
+            });
+        });
+
+        // Buy key form
+        buyKeyBtn.addEventListener('click', function() {
+            const game = keyGameSelect.value;
+            const qty = parseInt(keyQuantity.value) || 1;
+            const keys = KEY_DATA.filter(k => k.game === game);
+            if (keys.length === 0) {
+                showToast('❌ Không có key cho game này', 'error');
+                return;
+            }
+            const key = keys[0];
+            const total = key.price * qty;
+            if (balance < total) {
+                showToast('❌ Số dư không đủ! Cần ' + total.toLocaleString() + 'đ', 'error');
+                return;
+            }
+            balance -= total;
+            updateBalance();
+            for (let i = 0; i < qty; i++) {
+                history.push({
+                    id: Date.now() + i,
+                    product: key.name + (qty > 1 ? ' x' + (i+1) : ''),
+                    game: key.game,
+                    price: key.price,
+                    date: new Date().toLocaleString('vi-VN'),
+                    status: 'Thành công'
+                });
+            }
+            localStorage.setItem('hackstore_history', JSON.stringify(history));
+            showToast('✅ Mua ' + qty + ' key ' + game + ' thành công!', 'success');
+            renderKeys();
+            renderHistory();
+        });
+
+        // Clear history
+        clearHistoryBtn.addEventListener('click', function() {
+            if (confirm('Xóa toàn bộ lịch sử mua hàng?')) {
+                history = [];
+                localStorage.setItem('hackstore_history', JSON.stringify(history));
+                renderHistory();
+                showToast('🗑 Đã xóa lịch sử', 'success');
+            }
+        });
+
+        // Contact
+        sendContactBtn.addEventListener('click', function() {
+            const msg = contactMsg.value.trim();
+            if (!msg) {
+                showToast('❌ Vui lòng nhập nội dung', 'error');
+                return;
+            }
+            showToast('✅ Đã gửi tin nhắn! Chúng tôi sẽ phản hồi sớm.', 'success');
+            contactMsg.value = '';
+        });
+
+        // Filter keys by game select
+        keyGameSelect.addEventListener('change', renderKeys);
+
+        // ============================================================
+        // INIT
+        // ============================================================
+        updateBalance();
+        renderKeys();
+        renderFiles();
+        renderHistory();
+
+        // Simulate some balance for demo
+        if (balance === 0) {
+            balance = 200000;
+            updateBalance();
+            showToast('🎁 Bạn được tặng 200,000 VND để trải nghiệm!', 'success');
+        }
+
+        console.log('HackStore v1.0 loaded');
+        console.log('Balance:', balance);
+        console.log('History:', history);
+    })();
+</script>
+
+</body>
+</html>
