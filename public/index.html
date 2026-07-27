@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Meo Lazy - Hoa Đào</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      background: #0d0d0d;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      color: #eee;
+      min-height: 100vh;
+      overflow-x: hidden;
+      position: relative;
+    }
+    #sakura-container {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+    .petal {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: #ffb7c5;
+      border-radius: 50% 0 50% 50%;
+      opacity: 0.7;
+      transform-origin: center;
+      animation: fall linear infinite;
+      pointer-events: none;
+    }
+    .petal:nth-child(odd) { background: #ff9eb5; width: 16px; height: 16px; }
+    .petal:nth-child(3n) { background: #ffc0cb; width: 24px; height: 24px; }
+    @keyframes fall {
+      0% { transform: translateY(-10vh) rotate(0deg) scale(0.8); opacity: 0.6; }
+      100% { transform: translateY(110vh) rotate(720deg) scale(1.2); opacity: 0.1; }
+    }
+    /* Menu */
+    .menu {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(26,26,26,0.9);
+      padding: 14px 18px;
+      position: relative;
+      z-index: 10;
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid #333;
+    }
+    .hamburger {
+      font-size: 30px;
+      cursor: pointer;
+      color: #ffb7c5;
+      user-select: none;
+      transition: 0.2s;
+    }
+    .hamburger:hover { color: #ff9eb5; }
+    .brand { font-weight: bold; font-size: 20px; color: #ffb7c5; letter-spacing: 1px; }
+    .balance { background: #2a2a2a; padding: 4px 14px; border-radius: 30px; font-size: 15px; border: 1px solid #ffb7c5; }
+    .nav-links {
+      display: none;
+      flex-direction: column;
+      background: rgba(34,34,34,0.95);
+      position: absolute;
+      top: 68px;
+      left: 0;
+      width: 100%;
+      z-index: 20;
+      backdrop-filter: blur(4px);
+      border-bottom: 1px solid #444;
+    }
+    .nav-links.active { display: flex; }
+    .nav-links a {
+      padding: 16px 22px;
+      color: #ddd;
+      text-decoration: none;
+      border-bottom: 1px solid #333;
+      font-size: 16px;
+      transition: 0.15s;
+    }
+    .nav-links a:hover { background: #3a2a2a; color: #ffb7c5; }
+    /* Content */
+    .content {
+      position: relative;
+      z-index: 5;
+      padding: 20px 16px 30px;
+    }
+    .card {
+      background: rgba(30,30,30,0.85);
+      backdrop-filter: blur(4px);
+      padding: 18px 16px;
+      border-radius: 14px;
+      margin-bottom: 18px;
+      border: 1px solid #333;
+    }
+    .card h2 {
+      font-size: 19px;
+      margin-bottom: 14px;
+      color: #ffb7c5;
+      border-left: 4px solid #ffb7c5;
+      padding-left: 12px;
+    }
+    .flex-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+    }
+    .key-item {
+      background: #222;
+      padding: 14px 10px;
+      border-radius: 10px;
+      flex: 1 1 40%;
+      min-width: 130px;
+      text-align: center;
+      border: 1px solid #3a3a3a;
+      transition: 0.2s;
+    }
+    .key-item:hover { border-color: #ffb7c5; }
+    .key-item strong { display: block; font-size: 18px; color: #fff; }
+    .key-item .price { color: #ffb7c5; font-weight: bold; font-size: 15px; display: block; margin: 4px 0 8px; }
+    .btn {
+      background: #ffb7c5;
+      color: #1a1a1a;
+      padding: 8px 20px;
+      border: none;
+      border-radius: 30px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+      font-size: 14px;
+    }
+    .btn:hover { background: #ff9eb5; transform: scale(1.02); }
+    .btn:active { transform: scale(0.96); }
+    .footer-note { text-align: center; color: #666; font-size: 12px; margin-top: 20px; }
+    /* Responsive */
+    @media (max-width: 480px) {
+      .brand { font-size: 17px; }
+      .balance { font-size: 13px; padding: 2px 10px; }
+      .key-item { min-width: 100px; }
+    }
+  </style>
+</head>
+<body>
+
+<div id="sakura-container"></div>
+
+<div class="menu">
+  <div class="hamburger" onclick="toggleMenu()">&#9776;</div>
+  <div class="brand">🌸 Meo Lazy</div>
+  <div class="balance" id="balanceDisplay">0 VND</div>
+</div>
+
+<div class="nav-links" id="navLinks">
+  <a href="#" onclick="closeMenu(); showToast('Trang chủ')">🏠 Trang chủ</a>
+  <a href="#" onclick="closeMenu(); showToast('Nạp tiền - giả lập')">💳 Nạp tiền</a>
+  <a href="#" onclick="closeMenu(); showToast('Tài khoản - giả lập')">👤 Tài khoản</a>
+  <a href="#" onclick="closeMenu(); showToast('Đăng xuất')">🚪 Đăng xuất</a>
+</div>
+
+<div class="content">
+  <div class="card">
+    <h2>🌸 Chọn key tăng kỹ năng iOS</h2>
+    <div class="flex-grid">
+      <div class="key-item"><strong>1h</strong><span class="price">10,000 VND</span><button class="btn" onclick="buyKey('1h')">Mua</button></div>
+      <div class="key-item"><strong>1d</strong><span class="price">50,000 VND</span><button class="btn" onclick="buyKey('1d')">Mua</button></div>
+      <div class="key-item"><strong>7d</strong><span class="price">150,000 VND</span><button class="btn" onclick="buyKey('7d')">Mua</button></div>
+      <div class="key-item"><strong>30d</strong><span class="price">450,000 VND</span><button class="btn" onclick="buyKey('30d')">Mua</button></div>
+    </div>
+  </div>
+  <div class="footer-note">🌸 Hoa anh đào rơi - Tự động</div>
+</div>
+
+<script>
+  // ===== SAKURA FALL =====
+  (function createSakura() {
+    const container = document.getElementById('sakura-container');
+    const petalCount = 45;
+    for (let i = 0; i < petalCount; i++) {
+      const petal = document.createElement('div');
+      petal.className = 'petal';
+      const left = Math.random() * 100;
+      const size = 14 + Math.random() * 18;
+      const duration = 8 + Math.random() * 12;
+      const delay = Math.random() * 15;
+      petal.style.left = left + '%';
+      petal.style.width = size + 'px';
+      petal.style.height = size + 'px';
+      petal.style.animationDuration = duration + 's';
+      petal.style.animationDelay = delay + 's';
+      petal.style.borderRadius = Math.random() > 0.5 ? '50% 0 50% 50%' : '0 50% 50% 50%';
+      petal.style.opacity = 0.4 + Math.random() * 0.4;
+      container.appendChild(petal);
+    }
+  })();
+
+  // ===== MENU =====
+  function toggleMenu() {
+    document.getElementById('navLinks').classList.toggle('active');
+  }
+  function closeMenu() {
+    document.getElementById('navLinks').classList.remove('active');
+  }
+  // Close menu on outside click
+  document.addEventListener('click', function(e) {
+    const menu = document.querySelector('.menu');
+    const nav = document.getElementById('navLinks');
+    if (!menu.contains(e.target) && !nav.contains(e.target)) {
+      nav.classList.remove('active');
+    }
+  });
+
+  // ===== FAKE BALANCE (demo) =====
+  let balance = 250000;
+  document.getElementById('balanceDisplay').textContent = balance.toLocaleString() + ' VND';
+
+  // ===== TOAST =====
+  function showToast(msg) {
+    const old = document.querySelector('.toast-msg');
+    if (old) old.remove();
+    const div = document.createElement('div');
+    div.className = 'toast-msg';
+    div.textContent = msg;
+    Object.assign(div.style, {
+      position: 'fixed', bottom: '30px', left: '50%', transform: 'translateX(-50%)',
+      background: 'rgba(0,0,0,0.8)', color: '#ffb7c5', padding: '10px 24px',
+      borderRadius: '40px', zIndex: '999', fontSize: '15px',
+      backdropFilter: 'blur(4px)', border: '1px solid #ffb7c5',
+      transition: 'opacity 0.3s', fontFamily: 'Arial'
+    });
+    document.body.appendChild(div);
+    setTimeout(() => { div.style.opacity = '0'; setTimeout(() => div.remove(), 400); }, 2000);
+  }
+
+  // ===== BUY KEY =====
+  function buyKey(duration) {
+    const prices = { '1h': 10000, '1d': 50000, '7d': 150000, '30d': 450000 };
+    const price = prices[duration];
+    if (!price) return showToast('Lỗi: loại key không hợp lệ');
+    if (balance < price) {
+      showToast('❌ Không đủ tiền! Vui lòng nạp thêm.');
+      return;
+    }
+    if (confirm('🌸 Mua key ' + duration + ' với giá ' + price.toLocaleString() + ' VND?')) {
+      balance -= price;
+      document.getElementById('balanceDisplay').textContent = balance.toLocaleString() + ' VND';
+      const code = 'ML' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substr(2,4).toUpperCase();
+      showToast('✅ Mua thành công! Key: ' + code);
+      // Gọi API backend nếu cần: fetch('/buy_key?duration=' + duration) ...
+    }
+  }
+
+  // ===== CLOSE MENU ON NAV CLICK =====
+  document.querySelectorAll('.nav-links a').forEach(a => {
+    a.addEventListener('click', closeMenu);
+  });
+
+  console.log('🌸 Meo Lazy với hoa anh đào - chạy tốt trên iOS');
+</script>
+</body>
+</html>
