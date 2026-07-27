@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meo Lazy Hack Store</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:Arial; background:#0d0d0d; color:#eee; }
+    .menu { display:flex; justify-content:space-between; align-items:center; background:#1a1a1a; padding:12px 16px; position:relative; }
+    .hamburger { font-size:28px; cursor:pointer; color:white; user-select:none; }
+    .brand { font-weight:bold; font-size:18px; }
+    .balance { background:#2a2a2a; padding:4px 12px; border-radius:20px; }
+    .nav-links { display:none; flex-direction:column; background:#222; position:absolute; top:60px; left:0; width:100%; z-index:100; }
+    .nav-links.active { display:flex; }
+    .nav-links a { padding:14px 20px; color:white; text-decoration:none; border-bottom:1px solid #333; }
+    .nav-links a:hover { background:#333; }
+    .card { background:#1e1e1e; margin:16px; padding:16px; border-radius:8px; }
+    .card h2 { margin-bottom:12px; font-size:18px; }
+    .flex { display:flex; flex-wrap:wrap; gap:12px; }
+    .key-item { background:#2a2a2a; padding:12px; border-radius:6px; flex:1 1 40%; min-width:120px; text-align:center; }
+    .key-item strong { display:block; font-size:16px; }
+    .key-item .price { color:#4CAF50; font-weight:bold; }
+    .btn { background:#4CAF50; color:white; padding:6px 16px; border:none; border-radius:4px; cursor:pointer; margin-top:6px; }
+    .btn:hover { background:#66bb6a; }
+  </style>
+</head>
+<body>
+  <div class="menu">
+    <div class="hamburger" onclick="toggleMenu()">&#9776;</div>
+    <div class="brand">Meo Lazy</div>
+    <div class="balance"><%= user.balance %> VND</div>
+  </div>
+  <div class="nav-links" id="navLinks">
+    <a href="/">Trang chu</a>
+    <a href="/recharge">Nap tien</a>
+    <a href="/account">Tai khoan</a>
+    <a href="/logout">Dang xuat</a>
+  </div>
+
+  <div class="card">
+    <h2>Chon key tang ky nang iOS</h2>
+    <div class="flex">
+      <div class="key-item"><strong>1h</strong><span class="price">10,000 VND</span><br><button class="btn" onclick="buy('1h')">Mua</button></div>
+      <div class="key-item"><strong>1d</strong><span class="price">50,000 VND</span><br><button class="btn" onclick="buy('1d')">Mua</button></div>
+      <div class="key-item"><strong>7d</strong><span class="price">150,000 VND</span><br><button class="btn" onclick="buy('7d')">Mua</button></div>
+      <div class="key-item"><strong>30d</strong><span class="price">450,000 VND</span><br><button class="btn" onclick="buy('30d')">Mua</button></div>
+    </div>
+  </div>
+
+  <script>
+    function toggleMenu() {
+      document.getElementById('navLinks').classList.toggle('active');
+    }
+    function buy(dur) {
+      if (confirm('Mua key ' + dur + ' ?')) {
+        window.location.href = '/buy_key?duration=' + dur;
+      }
+    }
+  </script>
+</body>
+</html>
