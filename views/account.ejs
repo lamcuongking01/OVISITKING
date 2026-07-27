@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tai khoan</title>
+  <style>
+    body { background:#0d0d0d; color:#eee; font-family:Arial; display:flex; justify-content:center; align-items:center; height:100vh; margin:0; }
+    .box { background:#1a1a1a; padding:30px; border-radius:8px; width:300px; }
+    p { margin:10px 0; }
+    a { color:#4CAF50; display:block; margin-top:15px; text-align:center; }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <h2>Thong tin tai khoan</h2>
+    <p><strong>Ten dang nhap:</strong> <%= user.username %></p>
+    <p><strong>So du:</strong> <%= user.balance %> VND</p>
+    <a href="/">Trang chu</a>
+    <a href="/logout">Dang xuat</a>
+  </div>
+</body>
+</html>
