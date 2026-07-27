@@ -1,0 +1,16 @@
+{
+  "name": "meo-lazy-hack",
+  "version": "1.0.0",
+  "description": "Meo Lazy Hack Store",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "ejs": "^3.1.9",
+    "sqlite3": "^5.1.6",
+    "express-session": "^1.17.3",
+    "body-parser": "^1.20.2"
+  }
+}
