@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MeoLuoi Shop - Hack Game</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #0a0a0f, #1a1a2e);
+            min-height: 100vh;
+            color: #eef2ff;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: rgba(10, 10, 20, 0.95);
+            backdrop-filter: blur(12px);
+            padding: 14px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header .brand {
+            font-size: 1.6rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #f0b34b, #ff7b7b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header .brand i {
+            -webkit-text-fill-color: #f0b34b;
+            font-size: 1.8rem;
+        }
+
+        .header .nav-links {
+            display: flex;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+
+        .header .nav-links a {
+            color: #b0bce0;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            padding: 6px 12px;
+            border-radius: 30px;
+            transition: 0.2s;
+        }
+
+        .header .nav-links a:hover,
+        .header .nav-links a.active {
+            background: rgba(255, 200, 80, 0.15);
+            color: #f0d080;
+        }
+
+        .header .nav-links a i {
+            margin-right: 6px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 16px 40px;
+        }
+
+        .banner {
+            background: linear-gradient(135deg, rgba(240, 180, 60, 0.15), rgba(255, 100, 100, 0.10));
+            border-radius: 28px;
+            padding: 30px 24px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 200, 80, 0.2);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .banner .left h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: #f0d080;
+        }
+
+        .banner .left p {
+            color: #b0bce0;
+            font-size: 1.05rem;
+            margin-top: 6px;
+        }
+
+        .banner .left .badges {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .banner .left .badges span {
+            background: rgba(255, 255, 255, 0.06);
+            padding: 6px 18px;
+            border-radius: 40px;
+            font-size: 0.8rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: #aab4e0;
+        }
+
+        .banner .right .btn-cta {
+            background: #f0b34b;
+            border: none;
+            padding: 14px 34px;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: #0a0a0f;
+            cursor: pointer;
+            transition: 0.2s;
+            box-shadow: 0 4px 24px rgba(240, 180, 60, 0.3);
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .banner .right .btn-cta:hover {
+            transform: scale(0.97);
+            background: #f5c86a;
+        }
+
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 600;
+            color: #d0dcff;
+            margin: 30px 0 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title i {
+            color: #f0b34b;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 30px;
+        }
+
+        .product-card {
+            background: rgba(18, 22, 45, 0.8);
+            backdrop-filter: blur(8px);
+            border-radius: 24px;
+            padding: 20px 18px 22px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            transition: 0.25s;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            border-color: rgba(240, 180, 60, 0.25);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.6);
+        }
+
+        .product-card .icon {
+            font-size: 2.8rem;
+            color: #f0b34b;
+            margin-bottom: 6px;
+        }
+
+        .product-card .game-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #e0e8ff;
+            margin: 4px 0 2px;
+        }
+
+        .product-card .desc {
+            font-size: 0.85rem;
+            color: #8892b0;
+            margin: 4px 0 10px;
+            flex: 1;
+        }
+
+        .product-card .tag {
+            display: inline-block;
+            background: rgba(240, 180, 60, 0.15);
+            color: #f0d080;
+            font-size: 0.7rem;
+            padding: 2px 12px;
+            border-radius: 30px;
+            margin-top: 6px;
+            align-self: flex-start;
+        }
+
+        .product-card .tag.hot {
+            background: rgba(255, 80, 80, 0.2);
+            color: #ff7b7b;
+        }
+
+        .package-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 20px 0 30px;
+        }
+
+        .package-card {
+            background: rgba(18, 22, 45, 0.85);
+            backdrop-filter: blur(8px);
+            border-radius: 20px;
+            padding: 20px 16px 18px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            text-align: center;
+            transition: 0.25s;
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .package-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(240, 180, 60, 0.3);
+            box-shadow: 0 10px 32px rgba(0, 0, 0, 0.5);
+        }
+
+        .package-card .pkg-duration {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #f0d080;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .package-card .pkg-price {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: #fff;
+            margin: 8px 0 4px;
+        }
+
+        .package-card .pkg-price small {
+            font-size: 0.8rem;
+            font-weight: 400;
+            color: #8892b0;
+        }
+
+        .package-card .pkg-stock {
+            font-size: 0.85rem;
+            color: #6a8a5a;
+            margin-bottom: 12px;
+        }
+
+        .package-card .pkg-stock i {
+            margin-right: 4px;
+        }
+
+        .package-card .btn-buy-pkg {
+            background: #3d56b0;
+            border: none;
+            padding: 10px 0;
+            border-radius: 60px;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.2s;
+            width: 100%;
+            box-shadow: 0 4px 14px rgba(50, 80, 200, 0.3);
+        }
+
+        .package-card .btn-buy-pkg:hover {
+            background: #5a72d0;
+            transform: scale(0.97);
+        }
+
+        .package-card .btn-buy-pkg.pro-btn {
+            background: #b08a3d;
+        }
+
+        .package-card .btn-buy-pkg.pro-btn:hover {
+            background: #d0a84a;
+        }
+
+        .package-card .pkg-badge {
+            display: inline-block;
+            font-size: 0.65rem;
+            padding: 2px 14px;
+            border-radius: 30px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .pkg-badge.lite {
+            background: rgba(100, 130, 255, 0.2);
+            color: #7a8cdb;
+        }
+
+        .pkg-badge.pro {
+            background: rgba(240, 180, 60, 0.2);
+            color: #f0b34b;
+        }
+
+        .btn-back {
+            background: rgba(255, 255, 255, 0.06);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            padding: 10px 24px;
+            border-radius: 40px;
+            color: #b0bce0;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: inline-block;
+        }
+
+        .btn-back:hover {
+            background: rgba(255, 255, 255, 0.12);
+        }
+
+        .deposit-box {
+            background: rgba(18, 22, 45, 0.7);
+            border-radius: 28px;
+            padding: 28px 24px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            margin: 20px 0;
+        }
+
+        .deposit-box .bank-info {
+            font-size: 1.2rem;
+            color: #b8cbff;
+            padding: 8px 0;
+        }
+
+        .deposit-box .bank-info span {
+            color: #f0b34b;
+            font-weight: 700;
+        }
+
+        .deposit-amount {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin: 16px 0;
+        }
+
+        .deposit-amount button {
+            background: #1a2a4a;
+            border: 1px solid #3a5a8a;
+            padding: 10px 22px;
+            border-radius: 30px;
+            color: #b8cbff;
+            cursor: pointer;
+            transition: 0.2s;
+            font-weight: 600;
+        }
+
+        .deposit-amount button:hover,
+        .deposit-amount button.active {
+            background: #2a4a7a;
+            border-color: #f0b34b;
+        }
+
+        .deposit-input-group {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .deposit-input-group input {
+            padding: 14px 20px;
+            border-radius: 40px;
+            border: 1px solid #2f3a6a;
+            background: #0d1126;
+            color: #fff;
+            font-size: 1rem;
+            width: 220px;
+            outline: none;
+        }
+
+        .deposit-input-group input:focus {
+            border-color: #f0b34b;
+        }
+
+        .deposit-input-group button {
+            padding: 14px 32px;
+            border-radius: 60px;
+            border: none;
+            background: #2d7a4a;
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .deposit-input-group button:hover {
+            background: #3d9a5a;
+        }
+
+        .history-item {
+            background: rgba(10, 14, 30, 0.5);
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin: 10px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            border-left: 4px solid #f0b34b;
+        }
+
+        .history-item .key-code {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #b8cbff;
+            letter-spacing: 2px;
+        }
+
+        .history-item .key-status {
+            color: #6a8a5a;
+            font-size: 0.85rem;
+        }
+
+        .history-item .key-status.used {
+            color: #b05a5a;
+        }
+
+        .history-item .key-actions i {
+            margin-left: 12px;
+            cursor: pointer;
+            color: #7a8cdb;
+        }
+
+        .history-item .key-actions i:hover {
+            color: #b8cbff;
+        }
+
+        .footer {
+            text-align: center;
+            opacity: 0.4;
+            font-size: 0.85rem;
+            padding: 30px 0 10px;
+            color: #8892b0;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            margin-top: 20px;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(6px);
+            z-index: 2000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-box {
+            background: rgba(20, 26, 50, 0.98);
+            border-radius: 36px;
+            padding: 36px 32px;
+            max-width: 460px;
+            width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.9);
+            text-align: center;
+        }
+
+        .modal-box h3 {
+            color: #f0d080;
+            font-size: 1.6rem;
+            margin-bottom: 12px;
+        }
+
+        .modal-box p {
+            color: #d0d9fc;
+            margin: 16px 0;
+            line-height: 1.6;
+        }
+
+        .modal-box .btn-group {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .modal-box .btn-group button {
+            padding: 12px 32px;
+            border-radius: 60px;
+            border: none;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .modal-box .btn-group .btn-confirm {
+            background: #f0b34b;
+            color: #0a0a0f;
+        }
+
+        .modal-box .btn-group .btn-confirm:hover {
+            background: #f5c86a;
+        }
+
+        .modal-box .btn-group .btn-cancel {
+            background: #3a3a5a;
+            color: #aab4e0;
+        }
+
+        .modal-box .btn-group .btn-cancel:hover {
+            background: #5a5a7a;
+        }
+
+        .page-content {
+            display: none;
+            animation: fadeUp 0.3s ease;
+        }
+
+        .page-content.active {
+            display: block;
+        }
+
+        @keyframes fadeUp {
+            0% {
+                opacity: 0.3;
+                transform: translateY(12px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .banner.hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 600px) {
+            .header .brand {
+                font-size: 1.2rem;
+            }
+            .header .nav-links a {
+                font-size: 0.8rem;
+                padding: 4px 10px;
+            }
+            .banner .left h1 {
+                font-size: 1.6rem;
+            }
+            .product-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .package-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .deposit-input-group input {
+                width: 160px;
+            }
+        }
+
+        @media (max-width: 420px) {
+            .product-grid {
+                grid-template-columns: 1fr;
+            }
+            .package-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header">
+        <div class="brand">
+            <i class="fas fa-cat"></i> MeoLuoi
+        </div>
+        <div class="nav-links">
+            <a href="#" class="active" data-page="home"><i class="fas fa-home"></i> Trang chủ</a>
+            <a href="#" data-page="products"><i class="fas fa-gamepad"></i> Danh mục</a>
+            <a href="#" data-page="orders"><i class="fas fa-shopping-bag"></i> Đơn hàng</a>
+            <a href="#" data-page="deposit"><i class="fas fa-wallet"></i> Nạp tiền</a>
+            <a href="#" data-page="login"><i class="fas fa-sign-in-alt"></i> Đăng nhập</a>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <div class="banner" id="mainBanner">
+            <div class="left">
+                <h1>🐱 Hack Game – Chất Lượng Cao</h1>
+                <p>Undetected • Auto-update • Anti-ban • HWID Spoofer</p>
+                <div class="badges">
+                    <span><i class="fas fa-shield-alt"></i> An toàn 100%</span>
+                    <span><i class="fas fa-bolt"></i> Kích hoạt tức thì</span>
+                    <span><i class="fas fa-headset"></i> Hỗ trợ 24/7</span>
+                </div>
+            </div>
+            <div class="right">
+                <a href="#" class="btn-cta" onclick="showPage('products');return false;"><i class="fas fa-shopping-cart"></i> MUA NGAY</a>
+            </div>
+        </div>
+
+        <div id="page-products" class="page-content active">
+            <div class="section-title"><i class="fas fa-gamepad"></i> Sản phẩm nổi bật</div>
+            <div class="product-grid" id="productGrid">
+                <!-- Render bằng JS -->
+            </div>
+        </div>
+
+        <div id="page-packages" class="page-content">
+            <button class="btn-back" id="backToProducts"><i class="fas fa-arrow-left"></i> Quay lại danh mục</button>
+            <div class="section-title" id="packageTitle"><i class="fas fa-box"></i> Chọn gói <span id="pkgGameName"></span></div>
+            <div class="package-grid" id="packageGrid">
+                <!-- Render bằng JS -->
+            </div>
+        </div>
+
+        <div id="page-deposit" class="page-content">
+            <div class="section-title"><i class="fas fa-wallet"></i> Nạp tiền vào ví</div>
+            <div class="deposit-box">
+                <p style="margin-bottom:12px;">Số dư hiện tại: <strong id="userBalance" style="color:#f0d080; font-size:1.6rem;">0₫</strong></p>
+                <div class="bank-info">
+                    <i class="fas fa-bank" style="color:#f0b34b;"></i> <span>MB Bank</span><br>
+                    <i class="fas fa-user"></i> Chủ tài khoản: <span>MEOLUOI SHOP</span><br>
+                    <i class="fas fa-hashtag"></i> Số tài khoản: <span style="font-size:1.6rem; letter-spacing:2px;">0394628916</span>
+                </div>
+                <p style="font-size:0.85rem; color:#8892b0; margin:10px 0;"><i class="fas fa-info-circle"></i> Nội dung: <strong style="color:#f0d080;">NAP + SỐ TIỀN</strong> (VD: NAP 100000)</p>
+                <div class="deposit-amount">
+                    <button onclick="document.getElementById('depositAmt').value='50000';">50k</button>
+                    <button onclick="document.getElementById('depositAmt').value='100000';">100k</button>
+                    <button onclick="document.getElementById('depositAmt').value='200000';">200k</button>
+                    <button onclick="document.getElementById('depositAmt').value='500000';">500k</button>
+                </div>
+                <div class="deposit-input-group">
+                    <input type="number" id="depositAmt" placeholder="Nhập số tiền (VNĐ)">
+                    <button id="depositBtn"><i class="fas fa-check"></i> Xác nhận đã chuyển</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-orders" class="page-content">
+            <div class="section-title"><i class="fas fa-history"></i> Lịch sử giao dịch</div>
+            <div id="historyList">
+                <p style="color:#8892b0; text-align:center; padding:20px;">Chưa có giao dịch nào.</p>
+            </div>
+        </div>
+
+        <div id="page-login" class="page-content">
+            <div class="section-title"><i class="fas fa-lock"></i> Đăng nhập</div>
+            <div style="background:rgba(18,22,45,0.7);border-radius:28px;padding:30px 24px;max-width:400px;margin:0 auto;">
+                <input type="email" placeholder="Email" style="width:100%;padding:14px 18px;border-radius:40px;border:1px solid #2f3a6a;background:#0d1126;color:#fff;font-size:1rem;margin-bottom:12px;">
+                <input type="password" placeholder="Mật khẩu" style="width:100%;padding:14px 18px;border-radius:40px;border:1px solid #2f3a6a;background:#0d1126;color:#fff;font-size:1rem;margin-bottom:16px;">
+                <button style="width:100%;padding:14px;border-radius:60px;border:none;background:#f0b34b;color:#0a0a0f;font-weight:700;font-size:1rem;cursor:pointer;">Đăng nhập</button>
+                <p style="text-align:center;margin-top:12px;color:#8892b0;">Demo – không lưu dữ liệu thực</p>
+            </div>
+        </div>
+
+        <div class="footer">© 2026 MeoLuoi Shop — Nạp tiền MB Bank 0394628916</div>
+    </div>
+
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-box">
+            <h3><i class="fas fa-exclamation-triangle" style="color:#f0b34b;"></i> Xác nhận mua</h3>
+            <p id="modalProductName">Bạn có chắc chắn muốn mua sản phẩm này?</p>
+            <div class="btn-group">
+                <button class="btn-cancel" id="modalCancel">Đóng</button>
+                <button class="btn-confirm" id="modalConfirm">Mua</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function() {
+
+            // ----- DANH SÁCH GAME (chỉ 5 game) -----
+            const products = [{
+                id: 'lienquan',
+                name: 'Liên Quân',
+                icon: 'fa-chess-queen',
+                desc: 'Hack Liên Quân - Lite & Pro',
+                tag: 'Hot'
+            }, {
+                id: 'freefire',
+                name: 'Free Fire',
+                icon: 'fa-fire',
+                desc: 'Aimbot, ESP, Wallhack, Auto-Headshot',
+                tag: 'Hot'
+            }, {
+                id: 'bloodstrike',
+                name: 'Blood Strike',
+                icon: 'fa-skull',
+                desc: 'Aimbot, ESP, No Recoil, Wallhack',
+                tag: 'Mới'
+            }, {
+                id: 'pubg',
+                name: 'PUBG Mobile',
+                icon: 'fa-gun',
+                desc: 'Aimbot, Magic Bullet, Wallhack, No Grass',
+                tag: 'Phổ biến'
+            }, {
+                id: 'deltaforce',
+                name: 'Delta Force',
+                icon: 'fa-crosshairs',
+                desc: 'Aimbot, Radar, No Recoil, ESP',
+                tag: 'Mới'
+            }];
+
+            // ----- DỮ LIỆU GÓI THEO GAME -----
+            const packageData = {
+                'lienquan': {
+                    name: 'Liên Quân',
+                    icon: 'fa-chess-queen',
+                    packages: [
+                        { id: 'lq_lite_1d', label: 'Lite 1D', duration: '1D', price: 20000, stock: 25,
+                            badge: 'Lite', badgeClass: 'lite', btnClass: '' },
+                        { id: 'lq_lite_7d', label: 'Lite 7D', duration: '7D', price: 70000, stock: 27,
+                            badge: 'Lite', badgeClass: 'lite', btnClass: '' },
+                        { id: 'lq_lite_30d', label: 'Lite 30D', duration: '30D', price: 150000, stock: 26,
+                            badge: 'Lite', badgeClass: 'lite', btnClass: '' },
+                        { id: 'lq_lite_90d', label: 'Lite 90D', duration: '90D', price: 300000, stock: 23,
+                            badge: 'Lite', badgeClass: 'lite', btnClass: '' },
+                        { id: 'lq_lite_vv', label: 'Lite Vĩnh viễn', duration: 'Vĩnh viễn', price: 500000,
+                            stock: 20, badge: 'Lite', badgeClass: 'lite', btnClass: '' },
+                        { id: 'lq_pro_2h', label: 'Pro 2H', duration: '2H', price: 10000, stock: 30,
+                            badge: 'Pro', badgeClass: 'pro', btnClass: 'pro-btn' },
+                        { id: 'lq_pro_1d', label: 'Pro 1D', duration: '1D', price: 45000, stock: 28,
+                            badge: 'Pro', badgeClass: 'pro', btnClass: 'pro-btn' },
+                        { id: 'lq_pro_3d', label: 'Pro 3D', duration: '3D', price: 90000, stock: 24,
+                            badge: 'Pro', badgeClass: 'pro', btnClass: 'pro-btn' },
+                        { id: 'lq_pro_7d', label: 'Pro 7D', duration: '7D', price: 175000, stock: 22,
+                            badge: 'Pro', badgeClass: 'pro', btnClass: 'pro-btn' },
+                        { id: 'lq_pro_30d', label: 'Pro 30D', duration: '30D', price: 350000, stock: 19,
+                            badge: 'Pro', badgeClass: 'pro', btnClass: 'pro-btn' },
+                        { id: 'lq_pro_90d', label: 'Pro 90D', duration: '90D', price: 800000, stock: 15,
+                            badge: 'Pro', badgeClass: 'pro', btnClass: 'pro-btn' },
+                        { id: 'lq_pro_vv', label: 'Pro Vĩnh viễn', duration: 'Vĩnh viễn', price: 1200000,
+                            stock: 12, badge: 'Pro', badgeClass: 'pro', btnClass: 'pro-btn' }
+                    ]
+                },
+                'freefire': {
+                    name: 'Free Fire',
+                    icon: 'fa-fire',
+                    packages: [
+                        { id: 'ff_1d', label: '1 DAY', duration: '1D', price: 20000, stock: 25, badge: '',
+                            badgeClass: '', btnClass: '' },
+                        { id: 'ff_7d', label: '7 DAY', duration: '7D', price: 70000, stock: 22, badge: '',
+                            badgeClass: '', btnClass: '' },
+                        { id: 'ff_30d', label: '30 DAY', duration: '30D', price: 150000, stock: 18,
+                            badge: '', badgeClass: '', btnClass: '' }
+                    ]
+                },
+                'bloodstrike': {
+                    name: 'Blood Strike',
+                    icon: 'fa-skull',
+                    packages: [
+                        { id: 'bs_1d', label: '1 DAY', duration: '1D', price: 25000, stock: 20, badge: '',
+                            badgeClass: '', btnClass: '' },
+                        { id: 'bs_7d', label: '7 DAY', duration: '7D', price: 80000, stock: 18, badge: '',
+                            badgeClass: '', btnClass: '' },
+                        { id: 'bs_30d', label: '30 DAY', duration: '30D', price: 180000, stock: 15,
+                            badge: '', badgeClass: '', btnClass: '' }
+                    ]
+                },
+                'pubg': {
+                    name: 'PUBG Mobile',
+                    icon: 'fa-gun',
+                    packages: [
+                        { id: 'pubg_1d', label: '1 DAY', duration: '1D', price: 15000, stock: 30, badge: '',
+                            badgeClass: '', btnClass: '' },
+                        { id: 'pubg_7d', label: '7 DAY', duration: '7D', price: 50000, stock: 25, badge: '',
+                            badgeClass: '', btnClass: '' },
+                        { id: 'pubg_30d', label: '30 DAY', duration: '30D', price: 120000, stock: 20,
+                            badge: '', badgeClass: '', btnClass: '' }
+                    ]
+                },
+                'deltaforce': {
+                    name: 'Delta Force',
+                    icon: 'fa-crosshairs',
+                    packages: [
+                        { id: 'df_1d', label: '1 DAY', duration: '1D', price: 25000, stock: 20, badge: '',
+                            badgeClass: '', btnClass: '' },
+                        { id: 'df_7d', label: '7 DAY', duration: '7D', price: 80000, stock: 18, badge: '',
+                            badgeClass: '', btnClass: '' },
+                        { id: 'df_30d', label: '30 DAY', duration: '30D', price: 180000, stock: 15,
+                            badge: '', badgeClass: '', btnClass: '' }
+                    ]
+                }
+            };
+
+            // ----- STATE -----
+            let balance = parseInt(localStorage.getItem('meoluoi_balance')) || 0;
+            let history = JSON.parse(localStorage.getItem('meoluoi_history')) || [];
+
+            function saveState() {
+                localStorage.setItem('meoluoi_balance', balance.toString());
+                localStorage.setItem('meoluoi_history', JSON.stringify(history));
+            }
+
+            function formatCurrency(v) {
+                return v.toLocaleString('vi-VN') + '₫';
+            }
+
+            function updateBalanceUI() {
+                document.getElementById('userBalance').textContent = formatCurrency(balance);
+            }
+
+            // ----- Render danh sách sản phẩm -----
+            function renderProducts() {
+                const grid = document.getElementById('productGrid');
+                grid.innerHTML = '';
+                products.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    const tagClass = p.tag === 'Hot' ? 'tag hot' : 'tag';
+                    card.innerHTML = `
+                        <div class="icon"><i class="fas ${p.icon}"></i></div>
+                        <div class="game-name">${p.name}</div>
+                        <div class="desc">${p.desc}</div>
+                        <span class="${tagClass}">${p.tag}</span>
+                        <div style="margin-top:12px;color:#f0b34b;font-size:0.85rem;"><i class="fas fa-chevron-right"></i> Xem gói</div>
+                    `;
+                    card.dataset.gameId = p.id;
+                    card.addEventListener('click', function() {
+                        showPackages(this.dataset.gameId);
+                    });
+                    grid.appendChild(card);
+                });
+            }
+
+            // ----- Hiển thị gói sản phẩm -----
+            function showPackages(gameId) {
+                const data = packageData[gameId];
+                if (!data) return;
+
+                document.getElementById('page-products').classList.remove('active');
+                document.getElementById('page-packages').classList.add('active');
+                document.getElementById('mainBanner').classList.add('hidden');
+
+                document.getElementById('pkgGameName').textContent = data.name;
+                const grid = document.getElementById('packageGrid');
+                grid.innerHTML = '';
+
+                data.packages.forEach(pkg => {
+                    const card = document.createElement('div');
+                    card.className = 'package-card';
+                    const badgeHtml = pkg.badge ? `<span class="pkg-badge ${pkg.badgeClass}">${pkg.badge}</span>` :
+                        '';
+                    card.innerHTML = `
+                        ${badgeHtml}
+                        <div class="pkg-duration">${pkg.duration}</div>
+                        <div class="pkg-price">${formatCurrency(pkg.price)} <small>VNĐ</small></div>
+                        <div class="pkg-stock"><i class="fas fa-circle" style="color:#6a8a5a;font-size:0.6rem;"></i> Còn ${pkg.stock} key</div>
+                        <button class="btn-buy-pkg ${pkg.btnClass}" data-id="${pkg.id}" data-name="${data.name} ${pkg.label}" data-price="${pkg.price}"><i class="fas fa-cart-plus"></i> Mua ngay</button>
+                    `;
+                    grid.appendChild(card);
+                });
+
+                document.querySelectorAll('#packageGrid .btn-buy-pkg').forEach(btn => {
+                    btn.addEventListener('click', function(e) {
+                        e.stopPropagation();
+                        const name = this.dataset.name;
+                        const price = parseInt(this.dataset.price);
+                        document.getElementById('modalProductName').textContent =
+                            `Bạn muốn mua "${name}" với giá ${formatCurrency(price)}? (Số dư: ${formatCurrency(balance)})`;
+                        document.getElementById('confirmModal').classList.add('active');
+                        window._pendingBuy = { name, price };
+                    });
+                });
+            }
+
+            // ----- Quay lại danh mục -----
+            document.getElementById('backToProducts').addEventListener('click', function() {
+                document.getElementById('page-products').classList.add('active');
+                document.getElementById('page-packages').classList.remove('active');
+                document.getElementById('mainBanner').classList.remove('hidden');
+            });
+
+            // ----- Mua hàng -----
+            document.getElementById('modalConfirm').addEventListener('click', function() {
+                const pending = window._pendingBuy;
+                if (!pending) return;
+                if (balance < pending.price) {
+                    alert('❌ Số dư không đủ! Vui lòng nạp tiền.');
+                    document.getElementById('confirmModal').classList.remove('active');
+                    window._pendingBuy = null;
+                    return;
+                }
+                balance -= pending.price;
+                const keyCode = Math.floor(10000000 + Math.random() * 90000000).toString();
+                history.push({
+                    id: 'H' + Date.now().toString(36),
+                    product: pending.name,
+                    price: pending.price,
+                    key: keyCode,
+                    date: new Date().toLocaleString('vi-VN'),
+                    status: 'chưa sử dụng'
+                });
+                saveState();
+                updateBalanceUI();
+                renderHistory();
+                document.getElementById('confirmModal').classList.remove('active');
+                window._pendingBuy = null;
+                alert(`✅ Mua thành công!\nKey: ${keyCode}\nĐã lưu vào lịch sử.`);
+            });
+
+            document.getElementById('modalCancel').addEventListener('click', function() {
+                document.getElementById('confirmModal').classList.remove('active');
+                window._pendingBuy = null;
+            });
+            document.getElementById('confirmModal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.classList.remove('active');
+                    window._pendingBuy = null;
+                }
+            });
+
+            // ----- Render lịch sử -----
+            function renderHistory() {
+                const container = document.getElementById('historyList');
+                if (history.length === 0) {
+                    container.innerHTML = `<p style="color:#8892b0; text-align:center; padding:20px;">Chưa có giao dịch nào.</p>`;
+                    return;
+                }
+                let html = '';
+                const sorted = [...history].reverse();
+                sorted.forEach(item => {
+                    html += `
+                        <div class="history-item">
+                            <div>
+                                <div style="font-weight:600;color:#f0d080;">${item.product}</div>
+                                <div style="font-size:0.85rem;color:#8892b0;">${item.date} - ${formatCurrency(item.price)}</div>
+                            </div>
+                            <div style="text-align:right;">
+                                <div class="key-code">${item.key}</div>
+                                <div class="key-status ${item.status === 'đã sử dụng' ? 'used' : ''}">
+                                    <i class="fas ${item.status === 'chưa sử dụng' ? 'fa-check-circle' : 'fa-times-circle'}"></i> ${item.status}
+                                </div>
+                                <div class="key-actions">
+                                    <i class="fas fa-copy" onclick="navigator.clipboard.writeText('${item.key}');alert('Đã sao chép key!')" title="Sao chép key"></i>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            }
+
+            // ----- Nạp tiền -----
+            document.getElementById('depositBtn').addEventListener('click', function() {
+                const input = document.getElementById('depositAmt');
+                const amount = parseInt(input.value);
+                if (!amount || amount <= 0) {
+                    alert('Vui lòng nhập số tiền hợp lệ.');
+                    return;
+                }
+                balance += amount;
+                history.push({
+                    id: 'D' + Date.now().toString(36),
+                    product: 'Nạp tiền',
+                    price: amount,
+                    key: '--',
+                    date: new Date().toLocaleString('vi-VN'),
+                    status: 'thành công'
+                });
+                saveState();
+                updateBalanceUI();
+                renderHistory();
+                input.value = '';
+                alert(`✅ Nạp thành công ${formatCurrency(amount)} vào ví!`);
+            });
+
+            // ----- Điều hướng trang -----
+            const pageMap = {
+                home: document.getElementById('mainBanner'),
+                products: document.getElementById('page-products'),
+                packages: document.getElementById('page-packages'),
+                deposit: document.getElementById('page-deposit'),
+                orders: document.getElementById('page-orders'),
+                login: document.getElementById('page-login')
+            };
+
+            function showPage(id) {
+                document.querySelectorAll('.page-content').forEach(el => el.classList.remove('active'));
+                if (id === 'home') {
+                    document.getElementById('mainBanner').classList.remove('hidden');
+                } else {
+                    document.getElementById('mainBanner').classList.add('hidden');
+                }
+                if (id === 'products') {
+                    document.getElementById('page-products').classList.add('active');
+                    document.getElementById('page-packages').classList.remove('active');
+                } else if (id === 'packages') {
+                    document.getElementById('page-packages').classList.add('active');
+                } else if (pageMap[id]) {
+                    if (id !== 'home') pageMap[id].classList.add('active');
+                }
+                document.querySelectorAll('.header .nav-links a').forEach(a => a.classList.remove('active'));
+                document.querySelector(`.header .nav-links a[data-page="${id}"]`)?.classList.add('active');
+                if (id === 'deposit') updateBalanceUI();
+                if (id === 'orders') renderHistory();
+            }
+
+            document.querySelectorAll('.header .nav-links a').forEach(a => {
+                a.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const page = this.dataset.page;
+                    if (page) showPage(page);
+                });
+            });
+
+            // ----- Khởi tạo -----
+            renderProducts();
+            updateBalanceUI();
+            renderHistory();
+            showPage('products');
+
+            window.addEventListener('storage', function(e) {
+                if (e.key === 'meoluoi_balance' || e.key === 'meoluoi_history') {
+                    balance = parseInt(localStorage.getItem('meoluoi_balance')) || 0;
+                    history = JSON.parse(localStorage.getItem('meoluoi_history')) || [];
+                    updateBalanceUI();
+                    renderHistory();
+                }
+            });
+
+            console.log('🐱 MeoLuoi Shop loaded - 5 games: Free Fire, Blood Strike, Liên Quân, PUBG, Delta Force');
+        })();
+    </script>
+
+</body>
+</html>
